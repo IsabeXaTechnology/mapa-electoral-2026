@@ -268,7 +268,8 @@
           infoWindow.setPosition(ev.latLng);
           infoWindow.open(map);
         });
-        L.data.loadGeoJson(`layers/${name}.geojson`, {}, features => {
+        const BASE = 'https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/';
+        L.data.loadGeoJson(`${BASE}${name}.geojson`, {}, features => {
           console.log(`${name}: ${features.length} features cargadas`);
         });
       }
