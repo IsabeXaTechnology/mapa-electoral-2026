@@ -241,64 +241,8 @@
   let map, clusterer, infoWindow;
   let allMarkers = [], allData = [];
 
-  // ── Definición de capas GeoJSON ─────────────────────────────────────────────
-  const GEO_LAYERS = {
-    MUNICIPIO: {
-      data: null, loaded: false,
-      style: { strokeColor:'#1565C0', strokeWeight:2, fillColor:'#1565C0', fillOpacity:0.06 },
-      infoFn: p => `<b>${p.MUNICIPIO||p.NOMBRE||'Municipio'}</b>`
-    },
-    SECCION: {
-      data: null, loaded: false,
-      style: { strokeColor:'#7B1FA2', strokeWeight:1, fillColor:'#7B1FA2', fillOpacity:0.06 },
-      infoFn: p => `<b>Sección ${p.SECCION}</b><br>${p.MUNICIPIO||''}`
-    },
-    DISTRITO_LOCAL: {
-      data: null, loaded: false,
-      style: { strokeColor:'#E65100', strokeWeight:2, fillColor:'#E65100', fillOpacity:0.06 },
-      infoFn: p => `<b>Distrito Local ${p.DISTRITO_L}</b><br>${p.MUNICIPIO||''}`
-    },
-    DISTRITO_FEDERAL: {
-      data: null, loaded: false,
-      style: { strokeColor:'#B71C1C', strokeWeight:2, fillColor:'#B71C1C', fillOpacity:0.06 },
-      infoFn: p => `<b>Distrito Federal ${p.DISTRITO_F}</b>`
-    },
-    CABECERA_MUNICIPAL: {
-      data: null, loaded: false,
-      style: { icon: { path: 'M 0,-1 0.588,0.809 -0.951,-0.309 0.951,-0.309 -0.588,0.809 Z', scale: 10, fillColor:'#FFD600', fillOpacity:1, strokeColor:'#F9A825', strokeWeight:1 } },
-      infoFn: p => `<b>${p.MUNICIPIO||p.NOMBRE||'Cabecera'}</b>`
-    },
-    COLONIA: {
-      data: null, loaded: false,
-      style: { strokeColor:'#00796B', strokeWeight:1, fillColor:'#00796B', fillOpacity:0.08 },
-      infoFn: p => `<b>${p.NOMBRE}</b><br>${p.MUNICIPIO||''} · CP ${p.CP||'—'}`
-    },
-    COLONIA_PUNTUAL: {
-      data: null, loaded: false,
-      style: { icon: { path: google.maps.SymbolPath.CIRCLE, scale:4, fillColor:'#00897B', fillOpacity:0.8, strokeColor:'#fff', strokeWeight:1 } },
-      infoFn: p => `<b>${p.NOMBRE}</b><br>${p.MUNICIPIO||''}`
-    },
-    CARRETERAS_X_MUNICIPIO: {
-      data: null, loaded: false,
-      style: { strokeColor:'#546E7A', strokeWeight:2, fillColor:'transparent', fillOpacity:0 },
-      infoFn: p => `<b>${p.NOMBRE||'Carretera'}</b>`
-    },
-    LINEA_METRO: {
-      data: null, loaded: false,
-      style: { strokeColor:'#D32F2F', strokeWeight:4, fillColor:'transparent', fillOpacity:0 },
-      infoFn: p => `<b>${p.NOMBRE||'Línea Metro'}</b>`
-    },
-    RIOS: {
-      data: null, loaded: false,
-      style: { strokeColor:'#1565C0', strokeWeight:1.5, fillColor:'transparent', fillOpacity:0 },
-      infoFn: p => `<b>${p.NOMBRE||'Río'}</b>`
-    },
-    LAGOS: {
-      data: null, loaded: false,
-      style: { strokeColor:'#1565C0', strokeWeight:1, fillColor:'#1565C0', fillOpacity:0.25 },
-      infoFn: p => `<b>${p.NOMBRE||'Lago/Presa'}</b>`
-    },
-  };
+  // GEO_LAYERS se inicializa dentro de initMap() para que google.maps esté disponible
+  let GEO_LAYERS = {};
 
   // ── Toggle panel capas ───────────────────────────────────────────────────────
   function toggleLayerPanel() {
@@ -498,6 +442,20 @@
   }
 
   function initMap() {
+    GEO_LAYERS = {
+      MUNICIPIO:            { data:null, style:{ strokeColor:'#1565C0', strokeWeight:2, fillColor:'#1565C0', fillOpacity:0.06 }, infoFn: p=>`<b>${p.MUNICIPIO||p.NOMBRE||'Municipio'}</b>` },
+      SECCION:              { data:null, style:{ strokeColor:'#7B1FA2', strokeWeight:1, fillColor:'#7B1FA2', fillOpacity:0.06 }, infoFn: p=>`<b>Sección ${p.SECCION}</b><br>${p.MUNICIPIO||''}` },
+      DISTRITO_LOCAL:       { data:null, style:{ strokeColor:'#E65100', strokeWeight:2, fillColor:'#E65100', fillOpacity:0.06 }, infoFn: p=>`<b>Distrito Local ${p.DISTRITO_L}</b><br>${p.MUNICIPIO||''}` },
+      DISTRITO_FEDERAL:     { data:null, style:{ strokeColor:'#B71C1C', strokeWeight:2, fillColor:'#B71C1C', fillOpacity:0.06 }, infoFn: p=>`<b>Distrito Federal ${p.DISTRITO_F}</b>` },
+      CABECERA_MUNICIPAL:   { data:null, style:{ icon:{ path:'M 0,-1 0.588,0.809 -0.951,-0.309 0.951,-0.309 -0.588,0.809 Z', scale:10, fillColor:'#FFD600', fillOpacity:1, strokeColor:'#F9A825', strokeWeight:1 } }, infoFn: p=>`<b>${p.MUNICIPIO||p.NOMBRE||'Cabecera'}</b>` },
+      COLONIA:              { data:null, style:{ strokeColor:'#00796B', strokeWeight:1, fillColor:'#00796B', fillOpacity:0.08 }, infoFn: p=>`<b>${p.NOMBRE}</b><br>${p.MUNICIPIO||''} · CP ${p.CP||'—'}` },
+      COLONIA_PUNTUAL:      { data:null, style:{ icon:{ path:google.maps.SymbolPath.CIRCLE, scale:4, fillColor:'#00897B', fillOpacity:0.8, strokeColor:'#fff', strokeWeight:1 } }, infoFn: p=>`<b>${p.NOMBRE}</b><br>${p.MUNICIPIO||''}` },
+      CARRETERAS_X_MUNICIPIO:{ data:null, style:{ strokeColor:'#546E7A', strokeWeight:2, fillColor:'transparent', fillOpacity:0 }, infoFn: p=>`<b>${p.NOMBRE||'Carretera'}</b>` },
+      LINEA_METRO:          { data:null, style:{ strokeColor:'#D32F2F', strokeWeight:4, fillColor:'transparent', fillOpacity:0 }, infoFn: p=>`<b>${p.NOMBRE||'Línea Metro'}</b>` },
+      RIOS:                 { data:null, style:{ strokeColor:'#1565C0', strokeWeight:1.5, fillColor:'transparent', fillOpacity:0 }, infoFn: p=>`<b>${p.NOMBRE||'Río'}</b>` },
+      LAGOS:                { data:null, style:{ strokeColor:'#1565C0', strokeWeight:1, fillColor:'#1565C0', fillOpacity:0.25 }, infoFn: p=>`<b>${p.NOMBRE||'Lago/Presa'}</b>` },
+    };
+
     map = new google.maps.Map(document.getElementById('map'), {
       center: { lat: 25.6866, lng: -100.3161 },
       zoom: 10,
