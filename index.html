@@ -203,9 +203,10 @@
   }
 
   // ── Fetch Google Sheets ──────────────────────────────────────────────────────
-  async function fetchSheet(name) {
+  async function fetchSheet(name, range) {
+    const r = range || 'A1:H2000';
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`
-              + `/values/${encodeURIComponent(name)}!A1:H2000?key=${API_KEY}`;
+              + `/values/${encodeURIComponent(name)}!${r}?key=${API_KEY}`;
     const res  = await fetch(url);
     const json = await res.json();
     if (json.error) throw new Error(json.error.message);
@@ -320,8 +321,31 @@
   async function loadData(showOverlay = false) {
     if (showOverlay) document.getElementById('overlay').style.display = 'flex';
     try {
-      const results = await Promise.all(SHEETS.map(fetchSheet));
-      allData = results.flat();
+      // Cargar casillas y estatus en paralelo
+      const [resA, resB, estatusRows] = await Promise.all([
+        fetchSheet('Mapa_Casillas_A'),
+        fetchSheet('Mapa_Casillas_B'),
+        fetchSheet('Estatus_Casillas', 'A1:F5000'),
+      ]);
+
+      // Construir mapa de estatus por sección (peor estado gana)
+      const PRIORIDAD = { ROJO: 3, NARANJA: 2, VERDE: 1, gris: 0 };
+      const estatusMap = {};
+      estatusRows.forEach(r => {
+        const sec = r.seccion;
+        if (!sec) return;
+        const key = estatusKey(r.estatus);
+        if (!estatusMap[sec] || PRIORIDAD[key] > PRIORIDAD[estatusKey(estatusMap[sec])]) {
+          estatusMap[sec] = r.estatus;
+        }
+      });
+
+      // Aplicar estatus real a cada casilla
+      allData = [...resA, ...resB].map(c => ({
+        ...c,
+        estatus: estatusMap[c.seccion] || c.estatus || 'operando'
+      }));
+
       populateMunicipios(allData);
       applyFilters();
       const now = new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
@@ -360,3 +384,5 @@
 
 </body>
 </html>
+
+
