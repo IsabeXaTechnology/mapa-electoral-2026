@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Electoral NL 2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    #header {
+      background: #1a237e;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    #header h1 { font-size: 17px; font-weight: bold; letter-spacing: 0.3px; }
+
+    #stats {
+      display: flex;
+      gap: 18px;
+      font-size: 13px;
+    }
+    .stat { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 13px; height: 13px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); }
+    .dot-gris    { background: #9E9E9E; }
+    .dot-verde   { background: #43A047; }
+    .dot-naranja { background: #FB8C00; }
+    .dot-rojo    { background: #E53935; }
+
+    #controls {
+      background: #283593;
+      padding: 7px 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    #controls select {
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: none;
+      font-size: 13px;
+      background: white;
+      cursor: pointer;
+      min-width: 180px;
+    }
+    #controls button {
+      padding: 5px 14px;
+      border-radius: 4px;
+      border: none;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #btn-refresh  { background: #42A5F5; color: white; }
+    #btn-refresh:hover { background: #1E88E5; }
+    #last-update { color: #90CAF9; font-size: 12px; margin-left: auto; }
+
+    #map { flex: 1; }
+
+    #overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #overlay-box {
+      background: white;
+      border-radius: 10px;
+      padding: 30px 40px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    #overlay-box h2 { color: #1a237e; margin-bottom: 10px; font-size: 20px; }
+    #overlay-box p  { color: #555; font-size: 14px; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid #e3e3e3;
+      border-top: 4px solid #1a237e;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin: 16px auto 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Info window style */
+    .iw-title { font-size: 15px; font-weight: bold; color: #1a237e; margin-bottom: 6px; }
+    .iw-sub   { font-size: 12px; color: #666; margin-bottom: 10px; }
+    .iw-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+    .iw-table td { padding: 3px 6px 3px 0; vertical-align: top; }
+    .iw-label { color: #888; white-space: nowrap; }
+    .iw-value { font-weight: 500; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div id="overlay">
+  <div id="overlay-box">
+    <h2>🗳️ Mapa Electoral NL 2026</h2>
+    <p>Cargando <strong>3,174 casillas</strong>…</p>
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<div id="header">
+  <h1>🗳️ Mapa Electoral · Nuevo León 2026</h1>
+  <div id="stats">
+    <div class="stat"><div class="dot dot-gris"></div>   <span id="cnt-gris">-</span>&nbsp;Sin check-in</div>
+    <div class="stat"><div class="dot dot-verde"></div>  <span id="cnt-verde">-</span>&nbsp;OK</div>
+    <div class="stat"><div class="dot dot-naranja"></div><span id="cnt-naranja">-</span>&nbsp;Alerta GPS</div>
+    <div class="stat"><div class="dot dot-rojo"></div>   <span id="cnt-rojo">-</span>&nbsp;Alerta Foto</div>
+  </div>
+</div>
+
+<div id="controls">
+  <select id="sel-municipio" onchange="applyFilters()">
+    <option value="">Todos los municipios</option>
+  </select>
+  <select id="sel-tipo" onchange="applyFilters()">
+    <option value="">Todos los tipos de casilla</option>
+    <option value="B">Básica (B)</option>
+    <option value="C">Contigua (C)</option>
+    <option value="E">Especial (E)</option>
+  </select>
+  <select id="sel-estatus" onchange="applyFilters()">
+    <option value="">Todos los estatus</option>
+    <option value="gris">Sin check-in</option>
+    <option value="VERDE">✅ OK</option>
+    <option value="NARANJA">⚠️ Alerta GPS</option>
+    <option value="ROJO">🚨 Alerta Foto</option>
+  </select>
+  <button id="btn-refresh" onclick="loadData(true)">↻ Actualizar</button>
+  <span id="last-update"></span>
+</div>
+
+<div id="map"></div>
+
+<script>
+  // ── Configuración ────────────────────────────────────────────────────────────
+  const SHEET_ID  = '1XBmDBMBSWMZwuXWbrUiKNVbwxOh3FJHdEqU3LsWAdqs';
+  const API_KEY   = 'AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI';
+  const SHEETS    = ['Mapa_Casillas_A', 'Mapa_Casillas_B'];
+  const AUTO_REFRESH_MS = 120000; // 2 minutos
+
+  const COLOR = {
+    gris:   '#9E9E9E',
+    VERDE:  '#43A047',
+    NARANJA:'#FB8C00',
+    ROJO:   '#E53935',
+  };
+  const BADGE_BG = {
+    gris:    '#9E9E9E',
+    VERDE:   '#43A047',
+    NARANJA: '#FB8C00',
+    ROJO:    '#E53935',
+  };
+  const LABEL = {
+    gris:    '⚫ Sin check-in',
+    VERDE:   '🟢 Dentro de geocerca',
+    NARANJA: '🟠 Fuera de geocerca',
+    ROJO:    '🔴 Inconsistencia de foto',
+  };
+
+  let map, clusterer, infoWindow;
+  let allMarkers = [];
+  let allData    = [];
+
+  // ── Utilidades ───────────────────────────────────────────────────────────────
+  function estatusKey(raw) {
+    if (!raw) return 'gris';
+    const u = raw.toUpperCase();
+    if (u === 'VERDE')   return 'VERDE';
+    if (u === 'NARANJA') return 'NARANJA';
+    if (u === 'ROJO')    return 'ROJO';
+    return 'gris';
+  }
+
+  function makeIcon(key) {
+    return {
+      path: google.maps.SymbolPath.CIRCLE,
+      fillColor:    COLOR[key],
+      fillOpacity:  0.92,
+      strokeColor:  'white',
+      strokeWeight: 1.8,
+      scale: 8,
+    };
+  }
+
+  // ── Fetch Google Sheets ──────────────────────────────────────────────────────
+  async function fetchSheet(name) {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`
+              + `/values/${encodeURIComponent(name)}!A1:H2000?key=${API_KEY}`;
+    const res  = await fetch(url);
+    const json = await res.json();
+    if (json.error) throw new Error(json.error.message);
+    const rows = json.values || [];
+    if (rows.length < 2) return [];
+    const h = rows[0];
+    return rows.slice(1).map(r => {
+      const o = {};
+      h.forEach((k, i) => o[k] = (r[i] || '').trim());
+      return o;
+    });
+  }
+
+  // ── Renderizar marcadores ────────────────────────────────────────────────────
+  function renderMarkers(data) {
+    allMarkers.forEach(m => m.setMap(null));
+    allMarkers = [];
+    if (clusterer) clusterer.clearMarkers();
+
+    data.forEach(row => {
+      const lat = parseFloat(row.latitud);
+      const lng = parseFloat(row.longitud);
+      if (!lat || !lng) return;
+
+      const eKey   = estatusKey(row.estatus);
+      const marker = new google.maps.Marker({
+        position: { lat, lng },
+        icon:  makeIcon(eKey),
+        title: row.id_casilla,
+      });
+
+      marker.addListener('click', () => {
+        const eKey = estatusKey(row.estatus);
+        infoWindow.setContent(`
+          <div style="min-width:220px;padding:4px 2px">
+            <div class="iw-title">${row.id_casilla}</div>
+            <div class="iw-sub">${row.nombre_casilla}</div>
+            <table class="iw-table">
+              <tr><td class="iw-label">Municipio</td><td class="iw-value">${row.municipio}</td></tr>
+              <tr><td class="iw-label">Sección</td>  <td class="iw-value">${row.seccion}</td></tr>
+              <tr><td class="iw-label">Tipo</td>     <td class="iw-value">${row.tipo_casilla}</td></tr>
+              <tr><td class="iw-label">Estatus</td>  <td>
+                <span class="badge" style="background:${BADGE_BG[eKey]}">${LABEL[eKey]}</span>
+              </td></tr>
+              <tr><td class="iw-label">Coords</td>   <td class="iw-value" style="font-size:11px">${row.latitud}, ${row.longitud}</td></tr>
+            </table>
+          </div>
+        `);
+        infoWindow.open(map, marker);
+      });
+
+      allMarkers.push(marker);
+    });
+
+    clusterer = new markerClusterer.MarkerClusterer({
+      map,
+      markers: allMarkers,
+      algorithm: new markerClusterer.SuperClusterAlgorithm({ maxZoom: 15, radius: 80 }),
+    });
+  }
+
+  // ── Stats ────────────────────────────────────────────────────────────────────
+  function updateStats(data) {
+    const c = { gris:0, VERDE:0, NARANJA:0, ROJO:0 };
+    data.forEach(r => { c[estatusKey(r.estatus)]++; });
+    document.getElementById('cnt-gris').textContent    = c.gris.toLocaleString();
+    document.getElementById('cnt-verde').textContent   = c.VERDE.toLocaleString();
+    document.getElementById('cnt-naranja').textContent = c.NARANJA.toLocaleString();
+    document.getElementById('cnt-rojo').textContent    = c.ROJO.toLocaleString();
+  }
+
+  // ── Filtros ──────────────────────────────────────────────────────────────────
+  function populateMunicipios(data) {
+    const munis = [...new Set(data.map(r => r.municipio).filter(Boolean))].sort();
+    const sel   = document.getElementById('sel-municipio');
+    const prev  = sel.value;
+    sel.innerHTML = '<option value="">Todos los municipios</option>';
+    munis.forEach(m => {
+      const o = document.createElement('option');
+      o.value = m; o.textContent = m;
+      sel.appendChild(o);
+    });
+    sel.value = prev;
+  }
+
+  function applyFilters() {
+    const mun    = document.getElementById('sel-municipio').value;
+    const tipo   = document.getElementById('sel-tipo').value;
+    const estKey = document.getElementById('sel-estatus').value;
+
+    const filtered = allData.filter(r => {
+      if (mun    && r.municipio !== mun)               return false;
+      if (tipo   && !r.tipo_casilla.startsWith(tipo))  return false;
+      if (estKey && estatusKey(r.estatus) !== estKey)   return false;
+      return true;
+    });
+
+    renderMarkers(filtered);
+    updateStats(filtered);
+
+    if (mun && filtered.length > 0) {
+      const bounds = new google.maps.LatLngBounds();
+      filtered.forEach(r => {
+        const lat = parseFloat(r.latitud), lng = parseFloat(r.longitud);
+        if (lat && lng) bounds.extend({ lat, lng });
+      });
+      map.fitBounds(bounds);
+    }
+  }
+
+  // ── Carga principal ──────────────────────────────────────────────────────────
+  async function loadData(showOverlay = false) {
+    if (showOverlay) document.getElementById('overlay').style.display = 'flex';
+    try {
+      const results = await Promise.all(SHEETS.map(fetchSheet));
+      allData = results.flat();
+      populateMunicipios(allData);
+      applyFilters();
+      const now = new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+      document.getElementById('last-update').textContent = `Actualizado ${now}`;
+    } catch(e) {
+      console.error('Error cargando datos:', e);
+      document.getElementById('last-update').textContent = '⚠️ Error al cargar datos';
+    }
+    document.getElementById('overlay').style.display = 'none';
+  }
+
+  // ── Init Map ─────────────────────────────────────────────────────────────────
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: 25.6866, lng: -100.3161 },
+      zoom: 10,
+      mapTypeControl: true,
+      fullscreenControl: true,
+      streetViewControl: false,
+      styles: [
+        { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+        { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+      ],
+    });
+    infoWindow = new google.maps.InfoWindow({ maxWidth: 300 });
+    loadData(false);
+    setInterval(() => loadData(false), AUTO_REFRESH_MS);
+  }
+</script>
+
+<script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async"
+  async defer>
+</script>
+
+</body>
+</html>
