@@ -17,13 +17,9 @@
       justify-content: space-between;
       flex-shrink: 0;
     }
-    #header h1 { font-size: 17px; font-weight: bold; letter-spacing: 0.3px; }
+    #header h1 { font-size: 17px; font-weight: bold; }
 
-    #stats {
-      display: flex;
-      gap: 18px;
-      font-size: 13px;
-    }
+    #stats { display: flex; gap: 18px; font-size: 13px; }
     .stat { display: flex; align-items: center; gap: 6px; }
     .dot { width: 13px; height: 13px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); }
     .dot-gris    { background: #9E9E9E; }
@@ -47,7 +43,7 @@
       font-size: 13px;
       background: white;
       cursor: pointer;
-      min-width: 180px;
+      min-width: 160px;
     }
     #controls button {
       padding: 5px 14px;
@@ -59,24 +55,63 @@
     }
     #btn-refresh  { background: #42A5F5; color: white; }
     #btn-refresh:hover { background: #1E88E5; }
+    #btn-layers   { background: #78909C; color: white; }
+    #btn-layers:hover { background: #546E7A; }
     #last-update { color: #90CAF9; font-size: 12px; margin-left: auto; }
 
+    #body-wrap { flex: 1; display: flex; overflow: hidden; position: relative; }
     #map { flex: 1; }
 
-    #overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
+    /* Panel de capas */
+    #layer-panel {
+      width: 230px;
+      background: white;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+      flex-shrink: 0;
+      display: none;
+      flex-direction: column;
+    }
+    #layer-panel.open { display: flex; }
+    .lp-group { border-bottom: 1px solid #eee; }
+    .lp-group-title {
+      background: #E8EAF6;
+      color: #1a237e;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 6px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .lp-item {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      user-select: none;
+    }
+    .lp-item:hover { background: #f5f5f5; }
+    .lp-item input[type=checkbox] { cursor: pointer; accent-color: #1a237e; }
+    .lp-swatch {
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+    .lp-loading { font-size: 11px; color: #999; margin-left: auto; }
+
+    /* Overlay carga inicial */
+    #overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex; align-items: center; justify-content: center;
       z-index: 9999;
     }
     #overlay-box {
-      background: white;
-      border-radius: 10px;
-      padding: 30px 40px;
-      text-align: center;
+      background: white; border-radius: 10px;
+      padding: 30px 40px; text-align: center;
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
     #overlay-box h2 { color: #1a237e; margin-bottom: 10px; font-size: 20px; }
@@ -91,7 +126,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Info window style */
     .iw-title { font-size: 15px; font-weight: bold; color: #1a237e; margin-bottom: 6px; }
     .iw-sub   { font-size: 12px; color: #666; margin-bottom: 10px; }
     .iw-table { width: 100%; font-size: 12px; border-collapse: collapse; }
@@ -99,12 +133,9 @@
     .iw-label { color: #888; white-space: nowrap; }
     .iw-value { font-weight: 500; }
     .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-      color: white;
+      display: inline-block; padding: 2px 8px;
+      border-radius: 12px; font-size: 11px;
+      font-weight: bold; color: white;
     }
   </style>
 </head>
@@ -133,7 +164,7 @@
     <option value="">Todos los municipios</option>
   </select>
   <select id="sel-tipo" onchange="applyFilters()">
-    <option value="">Todos los tipos de casilla</option>
+    <option value="">Todos los tipos</option>
     <option value="B">Básica (B)</option>
     <option value="C">Contigua (C)</option>
     <option value="E">Especial (E)</option>
@@ -146,42 +177,170 @@
     <option value="ROJO">🚨 Alerta Foto</option>
   </select>
   <button id="btn-refresh" onclick="loadData(true)">↻ Actualizar</button>
+  <button id="btn-layers"  onclick="toggleLayerPanel()">🗂 Capas</button>
   <span id="last-update"></span>
 </div>
 
-<div id="map"></div>
+<div id="body-wrap">
+  <!-- Panel de capas -->
+  <div id="layer-panel">
+    <div class="lp-group">
+      <div class="lp-group-title">Límites administrativos</div>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('MUNICIPIO',this.checked)" checked>
+        <span class="lp-swatch" style="background:#1565C0;border-color:#1565C0"></span>Municipios</label>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('SECCION',this.checked)">
+        <span class="lp-swatch" style="background:rgba(123,31,162,0.15);border-color:#7B1FA2"></span>Secciones</label>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('DISTRITO_LOCAL',this.checked)">
+        <span class="lp-swatch" style="background:rgba(230,81,0,0.15);border-color:#E65100"></span>Distritos Locales</label>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('DISTRITO_FEDERAL',this.checked)">
+        <span class="lp-swatch" style="background:rgba(183,28,28,0.15);border-color:#B71C1C"></span>Distritos Federales</label>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('CABECERA_MUNICIPAL',this.checked)">
+        <span class="lp-swatch" style="background:#FFD600;border-color:#F9A825"></span>Cabeceras municipales</label>
+    </div>
+    <div class="lp-group">
+      <div class="lp-group-title">Colonias</div>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('COLONIA',this.checked)">
+        <span class="lp-swatch" style="background:rgba(0,150,136,0.2);border-color:#00796B"></span>Colonias</label>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('COLONIA_PUNTUAL',this.checked)">
+        <span class="lp-swatch" style="background:#00897B;border-color:#00695C"></span>Colonias (puntual)</label>
+    </div>
+    <div class="lp-group">
+      <div class="lp-group-title">Vialidades y transporte</div>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('CARRETERAS_X_MUNICIPIO',this.checked)">
+        <span class="lp-swatch" style="background:#546E7A;border-color:#37474F"></span>Carreteras</label>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('LINEA_METRO',this.checked)">
+        <span class="lp-swatch" style="background:#D32F2F;border-color:#B71C1C"></span>Línea Metro</label>
+    </div>
+    <div class="lp-group">
+      <div class="lp-group-title">Hidrografía</div>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('RIOS',this.checked)">
+        <span class="lp-swatch" style="background:#1565C0;border-color:#0D47A1"></span>Ríos</label>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('LAGOS',this.checked)">
+        <span class="lp-swatch" style="background:rgba(21,101,192,0.3);border-color:#1565C0"></span>Lagos</label>
+    </div>
+  </div>
+
+  <div id="map"></div>
+</div>
 
 <script>
-  // ── Configuración ────────────────────────────────────────────────────────────
   const SHEET_ID  = '1XBmDBMBSWMZwuXWbrUiKNVbwxOh3FJHdEqU3LsWAdqs';
   const API_KEY   = 'AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI';
   const SHEETS    = ['Mapa_Casillas_A', 'Mapa_Casillas_B'];
-  const AUTO_REFRESH_MS = 120000; // 2 minutos
+  const AUTO_REFRESH_MS = 120000;
 
-  const COLOR = {
-    gris:   '#9E9E9E',
-    VERDE:  '#43A047',
-    NARANJA:'#FB8C00',
-    ROJO:   '#E53935',
-  };
-  const BADGE_BG = {
-    gris:    '#9E9E9E',
-    VERDE:   '#43A047',
-    NARANJA: '#FB8C00',
-    ROJO:    '#E53935',
-  };
+  const COLOR = { gris:'#9E9E9E', VERDE:'#43A047', NARANJA:'#FB8C00', ROJO:'#E53935' };
+  const BADGE_BG = { gris:'#9E9E9E', VERDE:'#43A047', NARANJA:'#FB8C00', ROJO:'#E53935' };
   const LABEL = {
-    gris:    '⚫ Sin check-in',
-    VERDE:   '🟢 Dentro de geocerca',
-    NARANJA: '🟠 Fuera de geocerca',
-    ROJO:    '🔴 Inconsistencia de foto',
+    gris:   '⚫ Sin check-in',
+    VERDE:  '🟢 Dentro de geocerca',
+    NARANJA:'🟠 Fuera de geocerca',
+    ROJO:   '🔴 Inconsistencia de foto',
   };
 
   let map, clusterer, infoWindow;
-  let allMarkers = [];
-  let allData    = [];
+  let allMarkers = [], allData = [];
 
-  // ── Utilidades ───────────────────────────────────────────────────────────────
+  // ── Definición de capas GeoJSON ─────────────────────────────────────────────
+  const GEO_LAYERS = {
+    MUNICIPIO: {
+      data: null, loaded: false,
+      style: { strokeColor:'#1565C0', strokeWeight:2, fillColor:'#1565C0', fillOpacity:0.06 },
+      infoFn: p => `<b>${p.MUNICIPIO||p.NOMBRE||'Municipio'}</b>`
+    },
+    SECCION: {
+      data: null, loaded: false,
+      style: { strokeColor:'#7B1FA2', strokeWeight:1, fillColor:'#7B1FA2', fillOpacity:0.06 },
+      infoFn: p => `<b>Sección ${p.SECCION}</b><br>${p.MUNICIPIO||''}`
+    },
+    DISTRITO_LOCAL: {
+      data: null, loaded: false,
+      style: { strokeColor:'#E65100', strokeWeight:2, fillColor:'#E65100', fillOpacity:0.06 },
+      infoFn: p => `<b>Distrito Local ${p.DISTRITO_L}</b><br>${p.MUNICIPIO||''}`
+    },
+    DISTRITO_FEDERAL: {
+      data: null, loaded: false,
+      style: { strokeColor:'#B71C1C', strokeWeight:2, fillColor:'#B71C1C', fillOpacity:0.06 },
+      infoFn: p => `<b>Distrito Federal ${p.DISTRITO_F}</b>`
+    },
+    CABECERA_MUNICIPAL: {
+      data: null, loaded: false,
+      style: { icon: { path: 'M 0,-1 0.588,0.809 -0.951,-0.309 0.951,-0.309 -0.588,0.809 Z', scale: 10, fillColor:'#FFD600', fillOpacity:1, strokeColor:'#F9A825', strokeWeight:1 } },
+      infoFn: p => `<b>${p.MUNICIPIO||p.NOMBRE||'Cabecera'}</b>`
+    },
+    COLONIA: {
+      data: null, loaded: false,
+      style: { strokeColor:'#00796B', strokeWeight:1, fillColor:'#00796B', fillOpacity:0.08 },
+      infoFn: p => `<b>${p.NOMBRE}</b><br>${p.MUNICIPIO||''} · CP ${p.CP||'—'}`
+    },
+    COLONIA_PUNTUAL: {
+      data: null, loaded: false,
+      style: { icon: { path: google.maps.SymbolPath.CIRCLE, scale:4, fillColor:'#00897B', fillOpacity:0.8, strokeColor:'#fff', strokeWeight:1 } },
+      infoFn: p => `<b>${p.NOMBRE}</b><br>${p.MUNICIPIO||''}`
+    },
+    CARRETERAS_X_MUNICIPIO: {
+      data: null, loaded: false,
+      style: { strokeColor:'#546E7A', strokeWeight:2, fillColor:'transparent', fillOpacity:0 },
+      infoFn: p => `<b>${p.NOMBRE||'Carretera'}</b>`
+    },
+    LINEA_METRO: {
+      data: null, loaded: false,
+      style: { strokeColor:'#D32F2F', strokeWeight:4, fillColor:'transparent', fillOpacity:0 },
+      infoFn: p => `<b>${p.NOMBRE||'Línea Metro'}</b>`
+    },
+    RIOS: {
+      data: null, loaded: false,
+      style: { strokeColor:'#1565C0', strokeWeight:1.5, fillColor:'transparent', fillOpacity:0 },
+      infoFn: p => `<b>${p.NOMBRE||'Río'}</b>`
+    },
+    LAGOS: {
+      data: null, loaded: false,
+      style: { strokeColor:'#1565C0', strokeWeight:1, fillColor:'#1565C0', fillOpacity:0.25 },
+      infoFn: p => `<b>${p.NOMBRE||'Lago/Presa'}</b>`
+    },
+  };
+
+  // ── Toggle panel capas ───────────────────────────────────────────────────────
+  function toggleLayerPanel() {
+    const p = document.getElementById('layer-panel');
+    p.classList.toggle('open');
+    document.getElementById('btn-layers').style.background =
+      p.classList.contains('open') ? '#455A64' : '#78909C';
+  }
+
+  // ── Activar / desactivar capa GeoJSON ────────────────────────────────────────
+  function toggleLayer(name, on) {
+    const L = GEO_LAYERS[name];
+    if (!L) return;
+
+    if (!L.data) {
+      L.data = new google.maps.Data({ map: on ? map : null });
+      // Aplicar estilo
+      if (name === 'CABECERA_MUNICIPAL' || name === 'COLONIA_PUNTUAL') {
+        L.data.setStyle(L.style);
+      } else {
+        L.data.setStyle(L.style);
+      }
+      // Click en feature
+      L.data.addListener('click', ev => {
+        const p = {};
+        ev.feature.forEachProperty((v, k) => p[k] = v);
+        infoWindow.setContent(`<div style="min-width:160px;padding:4px">${L.infoFn(p)}</div>`);
+        infoWindow.setPosition(ev.latLng);
+        infoWindow.open(map);
+      });
+      // Cargar archivo
+      const url = `layers/${name}.geojson`;
+      L.data.loadGeoJson(url, {}, features => {
+        L.loaded = true;
+        console.log(`${name}: ${features.length} features cargadas`);
+      });
+    } else {
+      L.data.setMap(on ? map : null);
+    }
+  }
+
+  // ── Utilidades casillas ──────────────────────────────────────────────────────
   function estatusKey(raw) {
     if (!raw) return 'gris';
     const u = raw.toUpperCase();
@@ -194,15 +353,12 @@
   function makeIcon(key) {
     return {
       path: google.maps.SymbolPath.CIRCLE,
-      fillColor:    COLOR[key],
-      fillOpacity:  0.92,
-      strokeColor:  'white',
-      strokeWeight: 1.8,
+      fillColor: COLOR[key], fillOpacity: 0.92,
+      strokeColor: 'white', strokeWeight: 1.8,
       scale: 8,
     };
   }
 
-  // ── Fetch Google Sheets ──────────────────────────────────────────────────────
   async function fetchSheet(name, range) {
     const r = range || 'A1:H2000';
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`
@@ -220,7 +376,6 @@
     });
   }
 
-  // ── Renderizar marcadores ────────────────────────────────────────────────────
   function renderMarkers(data) {
     allMarkers.forEach(m => m.setMap(null));
     allMarkers = [];
@@ -230,16 +385,14 @@
       const lat = parseFloat(row.latitud);
       const lng = parseFloat(row.longitud);
       if (!lat || !lng) return;
-
       const eKey   = estatusKey(row.estatus);
       const marker = new google.maps.Marker({
         position: { lat, lng },
-        icon:  makeIcon(eKey),
+        icon: makeIcon(eKey),
         title: row.id_casilla,
       });
-
       marker.addListener('click', () => {
-        const eKey = estatusKey(row.estatus);
+        const k = estatusKey(row.estatus);
         infoWindow.setContent(`
           <div style="min-width:220px;padding:4px 2px">
             <div class="iw-title">${row.id_casilla}</div>
@@ -249,7 +402,7 @@
               <tr><td class="iw-label">Sección</td>  <td class="iw-value">${row.seccion}</td></tr>
               <tr><td class="iw-label">Tipo</td>     <td class="iw-value">${row.tipo_casilla}</td></tr>
               <tr><td class="iw-label">Estatus</td>  <td>
-                <span class="badge" style="background:${BADGE_BG[eKey]}">${LABEL[eKey]}</span>
+                <span class="badge" style="background:${BADGE_BG[k]}">${LABEL[k]}</span>
               </td></tr>
               <tr><td class="iw-label">Coords</td>   <td class="iw-value" style="font-size:11px">${row.latitud}, ${row.longitud}</td></tr>
             </table>
@@ -257,7 +410,6 @@
         `);
         infoWindow.open(map, marker);
       });
-
       allMarkers.push(marker);
     });
 
@@ -268,7 +420,6 @@
     });
   }
 
-  // ── Stats ────────────────────────────────────────────────────────────────────
   function updateStats(data) {
     const c = { gris:0, VERDE:0, NARANJA:0, ROJO:0 };
     data.forEach(r => { c[estatusKey(r.estatus)]++; });
@@ -278,7 +429,6 @@
     document.getElementById('cnt-rojo').textContent    = c.ROJO.toLocaleString();
   }
 
-  // ── Filtros ──────────────────────────────────────────────────────────────────
   function populateMunicipios(data) {
     const munis = [...new Set(data.map(r => r.municipio).filter(Boolean))].sort();
     const sel   = document.getElementById('sel-municipio');
@@ -296,17 +446,14 @@
     const mun    = document.getElementById('sel-municipio').value;
     const tipo   = document.getElementById('sel-tipo').value;
     const estKey = document.getElementById('sel-estatus').value;
-
     const filtered = allData.filter(r => {
-      if (mun    && r.municipio !== mun)               return false;
-      if (tipo   && !r.tipo_casilla.startsWith(tipo))  return false;
-      if (estKey && estatusKey(r.estatus) !== estKey)   return false;
+      if (mun    && r.municipio !== mun)              return false;
+      if (tipo   && !r.tipo_casilla.startsWith(tipo)) return false;
+      if (estKey && estatusKey(r.estatus) !== estKey)  return false;
       return true;
     });
-
     renderMarkers(filtered);
     updateStats(filtered);
-
     if (mun && filtered.length > 0) {
       const bounds = new google.maps.LatLngBounds();
       filtered.forEach(r => {
@@ -317,19 +464,15 @@
     }
   }
 
-  // ── Carga principal ──────────────────────────────────────────────────────────
   async function loadData(showOverlay = false) {
     if (showOverlay) document.getElementById('overlay').style.display = 'flex';
     try {
-      // Cargar casillas y estatus en paralelo
       const [resA, resB, estatusRows] = await Promise.all([
         fetchSheet('Mapa_Casillas_A'),
         fetchSheet('Mapa_Casillas_B'),
         fetchSheet('Estatus_Casillas', 'A1:F5000'),
       ]);
-
-      // Construir mapa de estatus por sección (peor estado gana)
-      const PRIORIDAD = { ROJO: 3, NARANJA: 2, VERDE: 1, gris: 0 };
+      const PRIORIDAD = { ROJO:3, NARANJA:2, VERDE:1, gris:0 };
       const estatusMap = {};
       estatusRows.forEach(r => {
         const sec = r.seccion;
@@ -339,25 +482,21 @@
           estatusMap[sec] = r.estatus;
         }
       });
-
-      // Aplicar estatus real a cada casilla
       allData = [...resA, ...resB].map(c => ({
         ...c,
         estatus: estatusMap[c.seccion] || c.estatus || 'operando'
       }));
-
       populateMunicipios(allData);
       applyFilters();
       const now = new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
       document.getElementById('last-update').textContent = `Actualizado ${now}`;
     } catch(e) {
-      console.error('Error cargando datos:', e);
+      console.error('Error:', e);
       document.getElementById('last-update').textContent = '⚠️ Error al cargar datos';
     }
     document.getElementById('overlay').style.display = 'none';
   }
 
-  // ── Init Map ─────────────────────────────────────────────────────────────────
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       center: { lat: 25.6866, lng: -100.3161 },
@@ -366,11 +505,15 @@
       fullscreenControl: true,
       streetViewControl: false,
       styles: [
-        { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-        { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+        { featureType:'poi', stylers:[{ visibility:'off' }] },
+        { featureType:'transit', stylers:[{ visibility:'off' }] },
       ],
     });
     infoWindow = new google.maps.InfoWindow({ maxWidth: 300 });
+
+    // Activar capa Municipios por defecto
+    toggleLayer('MUNICIPIO', true);
+
     loadData(false);
     setInterval(() => loadData(false), AUTO_REFRESH_MS);
   }
@@ -384,5 +527,3 @@
 
 </body>
 </html>
-
-
