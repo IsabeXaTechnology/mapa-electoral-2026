@@ -218,6 +218,13 @@
       <label class="lp-item"><input type="checkbox" onchange="toggleLayer('LAGOS',this.checked)">
         <span class="lp-swatch" style="background:rgba(21,101,192,0.3);border-color:#1565C0"></span>Lagos</label>
     </div>
+    <div class="lp-group">
+      <div class="lp-group-title">Puntos de interés</div>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('CASILLA',this.checked)">
+        <span class="lp-swatch" style="background:#FF6F00;border-color:#E65100"></span>Casillas (INE)</label>
+      <label class="lp-item"><input type="checkbox" onchange="toggleLayer('ESCUELA',this.checked)">
+        <span class="lp-swatch" style="background:#2E7D32;border-color:#1B5E20"></span>Escuelas</label>
+    </div>
   </div>
 
   <div id="map"></div>
@@ -463,6 +470,8 @@
       LINEA_METRO:           { data:null, styleFn: line('#D32F2F',4),              infoFn: p=>`<b>${p.NOMBRE||'Línea Metro'}</b>` },
       RIOS:                  { data:null, styleFn: line('#1976D2',2),              infoFn: p=>`<b>${p.NOMBRE||'Río'}</b>` },
       LAGOS:                 { data:null, styleFn: poly('#1565C0','#1565C0',0.30), infoFn: p=>`<b>${p.NOMBRE||'Lago/Presa'}</b>` },
+      CASILLA:               { data:null, styleFn: pt('#FF6F00'),                  infoFn: p=>`<b>Casilla ${p.SECCION||''}</b><br>${p.MUNICIPIO||''} · ${p.TIPO_CAS||''}` },
+      ESCUELA:               { data:null, styleFn: pt('#2E7D32'),                  infoFn: p=>`<b>${p.NOMBRE||'Escuela'}</b><br>${p.MUNICIPIO||''} · ${p.NIVEL||''}` },
     };
 
     map = new google.maps.Map(document.getElementById('map'), {
