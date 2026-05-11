@@ -591,11 +591,28 @@
   let map, clusterer, infoWindow;
   let allMarkers = [], allData = [];
   let GEO_LAYERS = {};
+  let currentTab = 1;
+
+  // Tabs que muestran puntos de casilla (Check In y Conteo Rápido)
+  const MARKER_TABS = new Set([2, 4]);
 
   // ── Tab navigation ───────────────────────────────────────────────────────────
   function switchTab(n) {
+    const wasMarkers = MARKER_TABS.has(currentTab);
+    const isMarkers  = MARKER_TABS.has(n);
+    currentTab = n;
+
     document.querySelectorAll('.tb').forEach((b, i)    => b.classList.toggle('on', i + 1 === n));
     document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('on', i + 1 === n));
+
+    if (wasMarkers && !isMarkers) {
+      // Ocultar marcadores al salir de Check In / Conteo
+      allMarkers.forEach(m => m.setMap(null));
+      if (clusterer) { clusterer.setMap(null); clusterer = null; }
+    } else if (!wasMarkers && isMarkers && allData.length > 0) {
+      // Mostrar marcadores al entrar a Check In / Conteo
+      applyFilters();
+    }
   }
 
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
@@ -663,7 +680,11 @@
   function renderMarkers(data) {
     allMarkers.forEach(m => m.setMap(null));
     allMarkers = [];
-    if (clusterer) clusterer.clearMarkers();
+    if (clusterer) { clusterer.setMap(null); clusterer = null; }
+
+    // Solo renderizar puntos en Tab 2 (Check In) y Tab 4 (Conteo Rápido)
+    if (!MARKER_TABS.has(currentTab)) return;
+
     data.forEach(row => {
       const lat = parseFloat(row.latitud);
       const lng = parseFloat(row.longitud);
