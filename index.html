@@ -614,6 +614,7 @@
 
 <script>
   const SHEET_ID        = '1XBmDBMBSWMZwuXWbrUiKNVbwxOh3FJHdEqU3LsWAdqs';
+  const SHEET_ID_INC    = '1UsQ_lPNK-obsFUZVgiguTlfAdPQeqT_CYdGe5pcOmww';
   const API_KEY         = 'AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI';
   const AUTO_REFRESH_MS = 120000;
 
@@ -716,9 +717,9 @@
     };
   }
 
-  async function fetchSheet(name, range) {
+  async function fetchSheetId(sheetId, name, range) {
     const r = range || 'A1:H2000';
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`
               + `/values/${encodeURIComponent(name)}!${r}?key=${API_KEY}`;
     const res  = await fetch(url);
     const json = await res.json();
@@ -731,6 +732,10 @@
       h.forEach((k, i) => o[k] = (r[i] || '').trim());
       return o;
     });
+  }
+
+  async function fetchSheet(name, range) {
+    return fetchSheetId(SHEET_ID, name, range);
   }
 
   function renderMarkers(data) {
@@ -793,10 +798,10 @@
     document.getElementById('stats-rojo').textContent     = c.ROJO.toLocaleString();
   }
 
-  // ── Incidencias (Tab 3) — lee hoja INCIDENCIAS_MAPA, columnas en MAYÚSCULAS ──
+  // ── Incidencias (Tab 3) — lee hoja INCIDENCIAS_MAPA en spreadsheet separado ──
   async function loadIncidencias() {
     try {
-      const rows = await fetchSheet('INCIDENCIAS_MAPA', 'A1:N5000');
+      const rows = await fetchSheetId(SHEET_ID_INC, 'INCIDENCIAS_MAPA', 'A1:N5000');
       incData = rows;
       updateIncidenciasStats(rows);
       renderIncidenciaLista(rows);
