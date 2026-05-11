@@ -634,13 +634,13 @@
   // Tabs que muestran puntos de casilla (Check In y Conteo Rápido)
   const MARKER_TABS = new Set([2, 4]);
 
-  // Colores e infra de pines de incidencias (Tab 3)
+  // Colores e infra de pines de incidencias (Tab 3) — claves en MAYÚSCULAS igual que la hoja
   const INC_COLOR = {
-    amarillo: '#FFC107',
-    naranja:  '#FF6D00',
-    rojo:     '#D32F2F',
-    morado:   '#7B1FA2',
-    negro:    '#212121',
+    AMARILLO: '#FFC107',
+    NARANJA:  '#FF6D00',
+    ROJO:     '#D32F2F',
+    MORADO:   '#7B1FA2',
+    NEGRO:    '#212121',
   };
   let incMarkers = [], incData = [];
 
@@ -793,10 +793,10 @@
     document.getElementById('stats-rojo').textContent     = c.ROJO.toLocaleString();
   }
 
-  // ── Incidencias (Tab 3) ──────────────────────────────────────────────────────
+  // ── Incidencias (Tab 3) — lee hoja INCIDENCIAS_MAPA, columnas en MAYÚSCULAS ──
   async function loadIncidencias() {
     try {
-      const rows = await fetchSheet('Incidencias_Mapa', 'A1:M5000');
+      const rows = await fetchSheet('INCIDENCIAS_MAPA', 'A1:N5000');
       incData = rows;
       updateIncidenciasStats(rows);
       renderIncidenciaLista(rows);
@@ -809,9 +809,9 @@
     incMarkers = [];
     if (currentTab !== 3) return;
     rows.forEach(row => {
-      const lat = parseFloat(row.lat), lng = parseFloat(row.lng);
+      const lat = parseFloat(row.LAT), lng = parseFloat(row.LNG);
       if (!lat || !lng) return;
-      const color = INC_COLOR[row.color] || INC_COLOR.negro;
+      const color = INC_COLOR[row.COLOR] || INC_COLOR.NEGRO;
       const marker = new google.maps.Marker({
         position: { lat, lng },
         icon: {
@@ -820,19 +820,19 @@
           fillColor: color, fillOpacity: 0.9,
           strokeColor: 'white', strokeWeight: 2,
         },
-        title: row.id_incidencia,
+        title: row.ID_INC,
       });
       marker.addListener('click', () => {
         infoWindow.setContent(`
           <div style="min-width:240px;font-family:'IBM Plex Sans',sans-serif;padding:4px">
-            <div style="font-weight:600;color:#7B1FA2;margin-bottom:4px;font-size:13px">${row.id_incidencia}</div>
+            <div style="font-weight:600;color:#7B1FA2;margin-bottom:4px;font-size:13px">${row.ID_INC}</div>
             <table style="font-size:12px;width:100%;border-collapse:collapse">
-              <tr><td style="color:#78716c;padding:2px 6px 2px 0;white-space:nowrap">Tipo</td><td style="font-weight:500">${row.tipo_menu||'—'}</td></tr>
-              <tr><td style="color:#78716c;white-space:nowrap">Gravedad</td><td><b>${row.gravedad||'—'}</b></td></tr>
-              <tr><td style="color:#78716c;white-space:nowrap">Reportante</td><td>${row.usuario_nombre||'—'} (${row.usuario_rol||'—'})</td></tr>
-              <tr><td style="color:#78716c;white-space:nowrap">Sección</td><td>${row.seccion||'—'} · ${row.municipio||'—'}</td></tr>
-              <tr><td style="color:#78716c;white-space:nowrap">Hora</td><td style="font-family:'IBM Plex Mono',monospace">${(row.timestamp||'').slice(11,16)||'—'}</td></tr>
-              <tr><td style="color:#78716c;vertical-align:top;white-space:nowrap">Descripción</td><td>${row.descripcion_corta||'—'}</td></tr>
+              <tr><td style="color:#78716c;padding:2px 6px 2px 0;white-space:nowrap">Tipo</td><td style="font-weight:500">${row.TIPO_MENU||'—'}</td></tr>
+              <tr><td style="color:#78716c;white-space:nowrap">Gravedad</td><td><b>${row.GRAVEDAD||'—'}</b></td></tr>
+              <tr><td style="color:#78716c;white-space:nowrap">Reportante</td><td>${row.USUARIO_NOMBRE||'—'} (${row.USUARIO_ROL||'—'})</td></tr>
+              <tr><td style="color:#78716c;white-space:nowrap">Sección</td><td>${row.SECCION||'—'} · ${row.MUNICIPIO||'—'}</td></tr>
+              <tr><td style="color:#78716c;white-space:nowrap">Hora</td><td style="font-family:'IBM Plex Mono',monospace">${(row.TIMESTAMP||'').slice(11,16)||'—'}</td></tr>
+              <tr><td style="color:#78716c;vertical-align:top;white-space:nowrap">Descripción</td><td>${row.DESCRIPCION_CORTA||'—'}</td></tr>
             </table>
           </div>
         `);
@@ -843,13 +843,13 @@
   }
 
   function updateIncidenciasStats(rows) {
-    const c = { amarillo:0, naranja:0, rojo:0, morado:0 };
-    rows.forEach(r => { if (c[r.color] !== undefined) c[r.color]++; });
+    const c = { AMARILLO:0, NARANJA:0, ROJO:0, MORADO:0 };
+    rows.forEach(r => { if (c[r.COLOR] !== undefined) c[r.COLOR]++; });
     const el = id => document.getElementById(id);
-    if (el('inc-amarillo')) el('inc-amarillo').textContent = c.amarillo;
-    if (el('inc-naranja'))  el('inc-naranja').textContent  = c.naranja;
-    if (el('inc-rojo'))     el('inc-rojo').textContent     = c.rojo;
-    if (el('inc-morado'))   el('inc-morado').textContent   = c.morado;
+    if (el('inc-amarillo')) el('inc-amarillo').textContent = c.AMARILLO;
+    if (el('inc-naranja'))  el('inc-naranja').textContent  = c.NARANJA;
+    if (el('inc-rojo'))     el('inc-rojo').textContent     = c.ROJO;
+    if (el('inc-morado'))   el('inc-morado').textContent   = c.MORADO;
   }
 
   function renderIncidenciaLista(rows) {
@@ -861,8 +861,8 @@
     }
     el.innerHTML = [...rows].reverse().slice(0, 10).map(r => `
       <div class="inc-item">
-        <div class="inc-item-tipo">${r.tipo_menu||'—'} · ${r.municipio||'—'}</div>
-        <div class="inc-item-desc">${(r.descripcion_corta||'').slice(0, 90)}</div>
+        <div class="inc-item-tipo">${r.TIPO_MENU||'—'} · ${r.MUNICIPIO||'—'}</div>
+        <div class="inc-item-desc">${(r.DESCRIPCION_CORTA||'').slice(0, 90)}</div>
       </div>
     `).join('');
   }
