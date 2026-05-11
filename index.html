@@ -236,6 +236,26 @@
     }
     .btn-act:hover { background: var(--accent-hover); }
 
+    /* ── Tab 3: Alertas ──────────────────────────────────────── */
+    #p-alertas {
+      flex: 1; overflow-y: auto;
+      padding: 14px; display: flex; flex-direction: column; gap: 10px;
+    }
+    #p-alertas::-webkit-scrollbar { width: 4px; }
+    #p-alertas::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 2px; }
+    #inc-lista { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex: 1; }
+    .inc-item {
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--sidebar-border);
+      border-radius: 6px; padding: 8px 10px;
+    }
+    .inc-item-tipo {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--sidebar-dim);
+    }
+    .inc-item-desc { font-size: 12px; color: var(--sidebar-text); margin-top: 2px; }
+
     /* ── Empty states (tabs 3 & 4) ──────────────────────────── */
     .empty {
       flex: 1; display: flex; flex-direction: column;
@@ -514,15 +534,33 @@
       </div>
     </div>
 
-    <!-- Panel 3: Incidencias -->
+    <!-- Panel 3: Alertas / Incidencias -->
     <div class="panel" id="panel-3">
-      <div class="empty">
-        <div class="empty-ico">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div id="p-alertas">
+        <div class="kpi-grid">
+          <div class="kpi-mini" style="border-color:#fbbf24">
+            <div class="kpi-mini-lbl">Menores</div>
+            <div class="kpi-mini-val" id="inc-amarillo" style="color:#fbbf24">—</div>
+          </div>
+          <div class="kpi-mini" style="border-color:#fb923c">
+            <div class="kpi-mini-lbl">Medias</div>
+            <div class="kpi-mini-val" id="inc-naranja" style="color:#fb923c">—</div>
+          </div>
+          <div class="kpi-mini" style="border-color:#f87171">
+            <div class="kpi-mini-lbl">Críticas</div>
+            <div class="kpi-mini-val" id="inc-rojo" style="color:#f87171">—</div>
+          </div>
+          <div class="kpi-mini" style="border-color:#c084fc">
+            <div class="kpi-mini-lbl">Jurídicas</div>
+            <div class="kpi-mini-val" id="inc-morado" style="color:#c084fc">—</div>
+          </div>
         </div>
-        <div class="empty-badge">Próximamente</div>
-        <div class="empty-title">Incidencias Electorales</div>
-        <div class="empty-desc">Los reportes enviados vía WhatsApp aparecerán aquí en tiempo real durante la jornada electoral.</div>
+        <div class="flbl">Últimas alertas</div>
+        <div id="inc-lista"></div>
+        <button class="btn-act" onclick="loadIncidencias(true)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Actualizar alertas
+        </button>
       </div>
     </div>
 
@@ -596,22 +634,40 @@
   // Tabs que muestran puntos de casilla (Check In y Conteo Rápido)
   const MARKER_TABS = new Set([2, 4]);
 
+  // Colores e infra de pines de incidencias (Tab 3)
+  const INC_COLOR = {
+    amarillo: '#FFC107',
+    naranja:  '#FF6D00',
+    rojo:     '#D32F2F',
+    morado:   '#7B1FA2',
+    negro:    '#212121',
+  };
+  let incMarkers = [], incData = [];
+
   // ── Tab navigation ───────────────────────────────────────────────────────────
   function switchTab(n) {
-    const wasMarkers = MARKER_TABS.has(currentTab);
-    const isMarkers  = MARKER_TABS.has(n);
+    const wasMarkers  = MARKER_TABS.has(currentTab);
+    const isMarkers   = MARKER_TABS.has(n);
+    const wasAlertas  = currentTab === 3;
+    const isAlertas   = n === 3;
     currentTab = n;
 
     document.querySelectorAll('.tb').forEach((b, i)    => b.classList.toggle('on', i + 1 === n));
     document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('on', i + 1 === n));
 
+    // Casilla markers: solo Tab 2 y 4
     if (wasMarkers && !isMarkers) {
-      // Ocultar marcadores al salir de Check In / Conteo
       allMarkers.forEach(m => m.setMap(null));
       if (clusterer) { clusterer.setMap(null); clusterer = null; }
     } else if (!wasMarkers && isMarkers && allData.length > 0) {
-      // Mostrar marcadores al entrar a Check In / Conteo
       applyFilters();
+    }
+
+    // Incidencia markers: solo Tab 3
+    if (wasAlertas && !isAlertas) {
+      incMarkers.forEach(m => m.setMap(null));
+    } else if (!wasAlertas && isAlertas) {
+      renderIncidenciaMarkers(incData);
     }
   }
 
@@ -737,6 +793,80 @@
     document.getElementById('stats-rojo').textContent     = c.ROJO.toLocaleString();
   }
 
+  // ── Incidencias (Tab 3) ──────────────────────────────────────────────────────
+  async function loadIncidencias() {
+    try {
+      const rows = await fetchSheet('Incidencias_Mapa', 'A1:M5000');
+      incData = rows;
+      updateIncidenciasStats(rows);
+      renderIncidenciaLista(rows);
+      if (currentTab === 3) renderIncidenciaMarkers(rows);
+    } catch(e) { console.error('Incidencias error:', e); }
+  }
+
+  function renderIncidenciaMarkers(rows) {
+    incMarkers.forEach(m => m.setMap(null));
+    incMarkers = [];
+    if (currentTab !== 3) return;
+    rows.forEach(row => {
+      const lat = parseFloat(row.lat), lng = parseFloat(row.lng);
+      if (!lat || !lng) return;
+      const color = INC_COLOR[row.color] || INC_COLOR.negro;
+      const marker = new google.maps.Marker({
+        position: { lat, lng },
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+          fillColor: color, fillOpacity: 0.9,
+          strokeColor: 'white', strokeWeight: 2,
+        },
+        title: row.id_incidencia,
+      });
+      marker.addListener('click', () => {
+        infoWindow.setContent(`
+          <div style="min-width:240px;font-family:'IBM Plex Sans',sans-serif;padding:4px">
+            <div style="font-weight:600;color:#7B1FA2;margin-bottom:4px;font-size:13px">${row.id_incidencia}</div>
+            <table style="font-size:12px;width:100%;border-collapse:collapse">
+              <tr><td style="color:#78716c;padding:2px 6px 2px 0;white-space:nowrap">Tipo</td><td style="font-weight:500">${row.tipo_menu||'—'}</td></tr>
+              <tr><td style="color:#78716c;white-space:nowrap">Gravedad</td><td><b>${row.gravedad||'—'}</b></td></tr>
+              <tr><td style="color:#78716c;white-space:nowrap">Reportante</td><td>${row.usuario_nombre||'—'} (${row.usuario_rol||'—'})</td></tr>
+              <tr><td style="color:#78716c;white-space:nowrap">Sección</td><td>${row.seccion||'—'} · ${row.municipio||'—'}</td></tr>
+              <tr><td style="color:#78716c;white-space:nowrap">Hora</td><td style="font-family:'IBM Plex Mono',monospace">${(row.timestamp||'').slice(11,16)||'—'}</td></tr>
+              <tr><td style="color:#78716c;vertical-align:top;white-space:nowrap">Descripción</td><td>${row.descripcion_corta||'—'}</td></tr>
+            </table>
+          </div>
+        `);
+        infoWindow.open(map, marker);
+      });
+      incMarkers.push(marker);
+    });
+  }
+
+  function updateIncidenciasStats(rows) {
+    const c = { amarillo:0, naranja:0, rojo:0, morado:0 };
+    rows.forEach(r => { if (c[r.color] !== undefined) c[r.color]++; });
+    const el = id => document.getElementById(id);
+    if (el('inc-amarillo')) el('inc-amarillo').textContent = c.amarillo;
+    if (el('inc-naranja'))  el('inc-naranja').textContent  = c.naranja;
+    if (el('inc-rojo'))     el('inc-rojo').textContent     = c.rojo;
+    if (el('inc-morado'))   el('inc-morado').textContent   = c.morado;
+  }
+
+  function renderIncidenciaLista(rows) {
+    const el = document.getElementById('inc-lista');
+    if (!el) return;
+    if (!rows.length) {
+      el.innerHTML = '<div style="text-align:center;padding:24px 0;color:#64748b;font-size:12px">Sin incidencias registradas</div>';
+      return;
+    }
+    el.innerHTML = [...rows].reverse().slice(0, 10).map(r => `
+      <div class="inc-item">
+        <div class="inc-item-tipo">${r.tipo_menu||'—'} · ${r.municipio||'—'}</div>
+        <div class="inc-item-desc">${(r.descripcion_corta||'').slice(0, 90)}</div>
+      </div>
+    `).join('');
+  }
+
   function populateMunicipios(data) {
     const munis = [...new Set(data.map(r => r.municipio).filter(Boolean))].sort();
     const sel   = document.getElementById('sel-municipio');
@@ -853,7 +983,9 @@
 
     toggleLayer('MUNICIPIO', true);
     loadData(false);
+    loadIncidencias();
     setInterval(() => loadData(false), AUTO_REFRESH_MS);
+    setInterval(() => loadIncidencias(), 30000);
   }
 </script>
 
