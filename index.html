@@ -813,19 +813,24 @@
     incMarkers.forEach(m => m.setMap(null));
     incMarkers = [];
     if (currentTab !== 3) return;
+    const SCALE = { AMARILLO:9, NARANJA:11, ROJO:13, MORADO:14, NEGRO:9 };
     rows.forEach(row => {
       const lat = parseFloat(row.LAT), lng = parseFloat(row.LNG);
       if (!lat || !lng) return;
-      const color = INC_COLOR[row.COLOR] || INC_COLOR.NEGRO;
+      const colorKey = row.COLOR || 'NEGRO';
+      const color = INC_COLOR[colorKey] || INC_COLOR.NEGRO;
+      const scale = SCALE[colorKey] || 9;
       const marker = new google.maps.Marker({
         position: { lat, lng },
+        map: map,
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: color, fillOpacity: 0.9,
-          strokeColor: 'white', strokeWeight: 2,
+          scale: scale,
+          fillColor: color, fillOpacity: 0.92,
+          strokeColor: 'white', strokeWeight: 2.5,
         },
         title: row.ID_INC,
+        zIndex: scale * 10,
       });
       marker.addListener('click', () => {
         infoWindow.setContent(`
