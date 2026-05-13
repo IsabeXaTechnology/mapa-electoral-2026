@@ -62,13 +62,7 @@
       text-transform: uppercase;
       white-space: nowrap;
     }
-    #tb-wordmark em {
-      font-style: normal;
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 500;
-      margin-left: 3px;
-    }
+    #tb-wordmark em { font-style: normal; color: var(--accent); font-size: 11px; font-weight: 500; margin-left: 3px; }
     .tb-sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
     #tb-title { font-size: 13px; font-weight: 500; color: var(--text-2); white-space: nowrap; }
     #tb-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
@@ -82,11 +76,7 @@
       cursor: pointer; transition: background var(--tf);
     }
     #btn-refresh:hover { background: var(--accent-hover); }
-    #last-update {
-      font-size: 12px; color: var(--text-3);
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
+    #last-update { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
     /* ── App shell ──────────────────────────────────────────── */
     #app { flex: 1; display: flex; overflow: hidden; }
@@ -103,37 +93,23 @@
     }
 
     /* Tab nav */
-    #tab-nav {
-      display: flex;
-      border-bottom: 1px solid var(--sidebar-border);
-      flex-shrink: 0;
-    }
+    #tab-nav { display: flex; border-bottom: 1px solid var(--sidebar-border); flex-shrink: 0; }
     .tb {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
       padding: 9px 2px 7px;
-      border: none;
-      background: transparent;
+      border: none; background: transparent;
       color: var(--sidebar-dim);
       font-family: "IBM Plex Sans", sans-serif;
-      font-size: 9px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      cursor: pointer;
-      position: relative;
+      font-size: 9px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .05em;
+      cursor: pointer; position: relative;
       transition: color var(--tf), background var(--tf);
     }
     .tb svg { width: 17px; height: 17px; }
     .tb:hover { color: var(--sidebar-text); background: rgba(255,255,255,.04); }
     .tb.on { color: white; background: rgba(30,58,138,.45); }
-    .tb.on::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-      height: 2px; background: var(--accent-blue);
-    }
+    .tb.on::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent-blue); }
 
     /* Tab panels */
     .panel { display: none; flex-direction: column; flex: 1; overflow: hidden; }
@@ -144,203 +120,115 @@
     #p-capas::-webkit-scrollbar { width: 4px; }
     #p-capas::-webkit-scrollbar-track { background: transparent; }
     #p-capas::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 2px; }
-
-    .lg-title {
-      font-size: 9px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .08em;
-      color: var(--sidebar-dim);
-      padding: 10px 16px 5px;
-    }
-    .li {
-      display: flex; align-items: center; gap: 10px;
-      padding: 6px 16px;
-      transition: background var(--tf);
-    }
+    .lg-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--sidebar-dim); padding: 10px 16px 5px; }
+    .li { display: flex; align-items: center; gap: 10px; padding: 6px 16px; transition: background var(--tf); }
     .li:hover { background: rgba(255,255,255,.05); }
     .li-name { flex: 1; font-size: 12px; color: var(--sidebar-text); }
-    .swatch {
-      width: 11px; height: 11px; border-radius: 2px;
-      border: 1px solid rgba(255,255,255,.18); flex-shrink: 0;
-    }
-    /* Toggle */
+    .swatch { width: 11px; height: 11px; border-radius: 2px; border: 1px solid rgba(255,255,255,.18); flex-shrink: 0; }
     .tog { position: relative; width: 30px; height: 17px; flex-shrink: 0; }
     .tog input { opacity: 0; width: 0; height: 0; }
-    .tog-sl {
-      position: absolute; inset: 0;
-      background: rgba(255,255,255,.14); border-radius: 9px;
-      cursor: pointer; transition: background var(--tf);
-    }
-    .tog-sl::before {
-      content: ''; position: absolute;
-      width: 11px; height: 11px; left: 3px; top: 3px;
-      background: white; border-radius: 50%;
-      transition: transform var(--tf);
-    }
+    .tog-sl { position: absolute; inset: 0; background: rgba(255,255,255,.14); border-radius: 9px; cursor: pointer; transition: background var(--tf); }
+    .tog-sl::before { content: ''; position: absolute; width: 11px; height: 11px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform var(--tf); }
     .tog input:checked + .tog-sl { background: var(--accent-blue); }
     .tog input:checked + .tog-sl::before { transform: translateX(13px); }
 
-    /* ── Tab 2 · Check In ───────────────────────────────────── */
-    #p-checkin {
-      flex: 1; overflow-y: auto;
-      padding: 14px; display: flex; flex-direction: column; gap: 12px;
-    }
-    #p-checkin::-webkit-scrollbar { width: 4px; }
-    #p-checkin::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 2px; }
-
+    /* ── Shared sidebar components ──────────────────────────── */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .kpi-mini {
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--sidebar-border);
-      border-radius: 8px; padding: 10px;
-    }
-    .kpi-mini-lbl {
-      font-size: 9px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .05em;
-      color: var(--sidebar-dim); margin-bottom: 3px;
-    }
-    .kpi-mini-val {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 22px; font-weight: 600;
-      font-variant-numeric: tabular-nums; color: white;
-    }
+    .kpi-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .kpi-mini { background: rgba(255,255,255,.05); border: 1px solid var(--sidebar-border); border-radius: 8px; padding: 10px; }
+    .kpi-mini-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--sidebar-dim); margin-bottom: 3px; }
+    .kpi-mini-val { font-family: "IBM Plex Mono", monospace; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; color: white; }
     .kpi-gris  .kpi-mini-val { color: #9ca3af; }
     .kpi-verde .kpi-mini-val { color: var(--success); }
     .kpi-nar   .kpi-mini-val { color: var(--warning); }
     .kpi-rojo  .kpi-mini-val { color: var(--danger); }
-
-    .flbl {
-      font-size: 9px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .06em;
-      color: var(--sidebar-dim); margin-bottom: 4px;
-    }
+    .kpi-mini-sub { font-size: 9px; color: var(--sidebar-dim); margin-top: 2px; }
+    .flbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--sidebar-dim); margin-bottom: 4px; }
     .fsel {
       width: 100%; padding: 7px 28px 7px 10px;
       background: rgba(255,255,255,.07) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 9px center;
       border: 1px solid var(--sidebar-border); border-radius: 6px;
-      color: var(--sidebar-text);
-      font-family: "IBM Plex Sans", sans-serif; font-size: 12px;
-      cursor: pointer; outline: none; appearance: none;
-      transition: border-color var(--tf);
+      color: var(--sidebar-text); font-family: "IBM Plex Sans", sans-serif; font-size: 12px;
+      cursor: pointer; outline: none; appearance: none; transition: border-color var(--tf);
     }
     .fsel:focus { border-color: var(--accent-blue); }
     .fsel option { background: #1a2330; }
-
     .btn-act {
       display: flex; align-items: center; justify-content: center; gap: 6px;
       width: 100%; height: 36px;
       background: var(--accent); color: white;
       border: none; border-radius: 6px;
-      font-family: "IBM Plex Sans", sans-serif;
-      font-size: 13px; font-weight: 500;
+      font-family: "IBM Plex Sans", sans-serif; font-size: 13px; font-weight: 500;
       cursor: pointer; transition: background var(--tf);
     }
     .btn-act:hover { background: var(--accent-hover); }
+    .stats-foot { font-size: 10px; color: var(--sidebar-dim); text-align: center; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+    /* ── Tab 2 · Check In ───────────────────────────────────── */
+    #p-checkin { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+    #p-checkin::-webkit-scrollbar { width: 4px; }
+    #p-checkin::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 2px; }
 
     /* ── Tab 3: Alertas ──────────────────────────────────────── */
-    #p-alertas {
-      flex: 1; overflow-y: auto;
-      padding: 14px; display: flex; flex-direction: column; gap: 10px;
-    }
+    #p-alertas { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
     #p-alertas::-webkit-scrollbar { width: 4px; }
     #p-alertas::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 2px; }
     #inc-lista { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex: 1; }
-    .inc-item {
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--sidebar-border);
-      border-radius: 6px; padding: 8px 10px;
-    }
-    .inc-item-tipo {
-      font-size: 9px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .05em;
-      color: var(--sidebar-dim);
-    }
+    .inc-item { background: rgba(255,255,255,.05); border: 1px solid var(--sidebar-border); border-radius: 6px; padding: 8px 10px; }
+    .inc-item-tipo { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--sidebar-dim); }
     .inc-item-desc { font-size: 12px; color: var(--sidebar-text); margin-top: 2px; }
 
-    /* ── Empty states (tabs 3 & 4) ──────────────────────────── */
-    .empty {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 24px 20px; text-align: center; gap: 10px;
+    /* ── Tab 4 · Conteo Rápido ──────────────────────────────── */
+    #p-conteo { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    #p-conteo::-webkit-scrollbar { width: 4px; }
+    #p-conteo::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 2px; }
+    .crt-nota {
+      font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+      color: #fb923c; background: rgba(251,146,60,.1);
+      border: 1px solid rgba(251,146,60,.3);
+      border-radius: 6px; padding: 6px 10px; text-align: center;
     }
-    .empty-ico {
-      width: 48px; height: 48px;
-      background: rgba(255,255,255,.06); border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--sidebar-dim);
+    .crt-section-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--sidebar-dim); margin-bottom: 2px; }
+    .crt-bar-row { display: flex; align-items: center; gap: 8px; margin: 3px 0; }
+    .crt-bar-name { width: 64px; font-size: 11px; color: var(--sidebar-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .crt-bar-wrap { flex: 1; background: rgba(255,255,255,.1); border-radius: 3px; height: 14px; overflow: hidden; }
+    .crt-bar { height: 100%; background: #60a5fa; border-radius: 3px; transition: width .5s; min-width: 2px; }
+    .crt-bar.nulos { background: #94a3b8; }
+    .crt-bar-val { width: 52px; text-align: right; font-size: 11px; color: var(--sidebar-text); font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+    #crt-error {
+      font-size: 11px; color: var(--danger);
+      background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.3);
+      border-radius: 6px; padding: 8px 10px; text-align: center; display: none;
     }
-    .empty-ico svg { width: 22px; height: 22px; }
-    .empty-badge {
-      display: inline-flex; align-items: center;
-      padding: 3px 10px;
-      background: rgba(30,58,138,.35);
-      border: 1px solid rgba(96,165,250,.3);
-      border-radius: 9999px;
-      font-size: 9px; font-weight: 700; letter-spacing: .05em;
-      color: #93c5fd; text-transform: uppercase;
+    .crt-ultima {
+      background: rgba(255,255,255,.04); border: 1px solid var(--sidebar-border);
+      border-radius: 6px; padding: 8px 10px;
     }
-    .empty-title { font-size: 13px; font-weight: 600; color: var(--sidebar-text); }
-    .empty-desc { font-size: 11px; color: var(--sidebar-dim); line-height: 1.55; }
+    .crt-ultima-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--sidebar-dim); margin-bottom: 3px; }
+    .crt-ultima-val { font-size: 12px; color: var(--sidebar-text); }
+    .crt-ultima-sub { font-size: 10px; color: var(--sidebar-dim); margin-top: 1px; }
 
     /* ── Tab 5 · Estadísticas ───────────────────────────────── */
-    #p-stats {
-      flex: 1; overflow-y: auto;
-      padding: 14px; display: flex; flex-direction: column; gap: 10px;
-    }
+    #p-stats { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
     #p-stats::-webkit-scrollbar { width: 4px; }
     #p-stats::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 2px; }
-
-    .kpi-big {
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--sidebar-border);
-      border-radius: 8px; padding: 14px;
-    }
-    .kpi-big-lbl {
-      font-size: 9px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .06em;
-      color: var(--sidebar-dim); margin-bottom: 5px;
-    }
-    .kpi-big-val {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 30px; font-weight: 600;
-      font-variant-numeric: tabular-nums; color: white; line-height: 1.1;
-    }
+    .kpi-big { background: rgba(255,255,255,.05); border: 1px solid var(--sidebar-border); border-radius: 8px; padding: 14px; }
+    .kpi-big-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--sidebar-dim); margin-bottom: 5px; }
+    .kpi-big-val { font-family: "IBM Plex Mono", monospace; font-size: 30px; font-weight: 600; font-variant-numeric: tabular-nums; color: white; line-height: 1.1; }
     .kpi-big-sub { font-size: 11px; color: var(--sidebar-dim); margin-top: 3px; }
     .kpi-big.nar .kpi-big-val { color: var(--warning); }
     .kpi-big.roj .kpi-big-val { color: var(--danger); }
-    .stats-foot {
-      font-size: 10px; color: var(--sidebar-dim);
-      text-align: center; display: flex;
-      align-items: center; justify-content: center; gap: 4px;
-    }
 
     /* ── Map ────────────────────────────────────────────────── */
     #map { flex: 1; }
 
     /* ── Loading overlay ────────────────────────────────────── */
-    #overlay {
-      position: fixed; inset: 0;
-      background: rgba(13,24,34,.78);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 9999; backdrop-filter: blur(3px);
-    }
-    #overlay-box {
-      background: var(--surface); border-radius: 12px;
-      padding: 32px 40px; text-align: center;
-      box-shadow: 0 16px 48px rgba(28,25,23,.2); max-width: 300px;
-    }
-    #ov-wm {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 18px; font-weight: 600;
-      letter-spacing: .02em; color: var(--text);
-      text-transform: uppercase; margin-bottom: 6px;
-    }
+    #overlay { position: fixed; inset: 0; background: rgba(13,24,34,.78); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(3px); }
+    #overlay-box { background: var(--surface); border-radius: 12px; padding: 32px 40px; text-align: center; box-shadow: 0 16px 48px rgba(28,25,23,.2); max-width: 300px; }
+    #ov-wm { font-family: "IBM Plex Mono", monospace; font-size: 18px; font-weight: 600; letter-spacing: .02em; color: var(--text); text-transform: uppercase; margin-bottom: 6px; }
     #ov-wm em { font-style: normal; color: var(--accent); }
     #overlay-box p { font-size: 13px; color: var(--text-3); }
-    .spin {
-      width: 34px; height: 34px;
-      border: 3px solid var(--border); border-top-color: var(--accent);
-      border-radius: 50%; animation: sp .9s linear infinite; margin: 14px auto 0;
-    }
+    .spin { width: 34px; height: 34px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: sp .9s linear infinite; margin: 14px auto 0; }
     @keyframes sp { to { transform: rotate(360deg); } }
 
     /* ── InfoWindow ─────────────────────────────────────────── */
@@ -351,6 +239,9 @@
     .iw-lbl { color: var(--text-3); white-space: nowrap; }
     .iw-val { font-weight: 500; color: var(--text); }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; }
+    .iw-img { display: block; width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; cursor: pointer; }
+    .iw-ocr { font-size: 10px; color: var(--text-3); background: #f4f3ee; border-radius: 4px; padding: 4px 6px; margin-top: 4px; max-height: 80px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; font-family: "IBM Plex Mono",monospace; }
+    .iw-alerta-badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 10px; font-weight: 700; background: #fef3c7; color: #92400e; margin-bottom: 6px; }
   </style>
 </head>
 <body>
@@ -379,11 +270,7 @@
 
 <!-- App -->
 <div id="app">
-
-  <!-- Sidebar -->
   <div id="sidebar">
-
-    <!-- Tab navigation -->
     <div id="tab-nav">
       <button class="tb on" onclick="switchTab(1)" title="Capas">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
@@ -411,73 +298,20 @@
     <div class="panel on" id="panel-1">
       <div id="p-capas">
         <div class="lg-title">A · Límites administrativos</div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" checked onchange="toggleLayer('MUNICIPIO',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#1565C0"></span>
-          <span class="li-name">Municipios</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('SECCION',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#7B1FA2"></span>
-          <span class="li-name">Secciones electorales</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('DISTRITO_LOCAL',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#E65100"></span>
-          <span class="li-name">Distritos locales</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('DISTRITO_FEDERAL',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#B71C1C"></span>
-          <span class="li-name">Distritos federales</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('CABECERA_MUNICIPAL',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#F9A825"></span>
-          <span class="li-name">Cabeceras municipales</span>
-        </div>
-
+        <div class="li"><label class="tog"><input type="checkbox" checked onchange="toggleLayer('MUNICIPIO',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#1565C0"></span><span class="li-name">Municipios</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('SECCION',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#7B1FA2"></span><span class="li-name">Secciones electorales</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('DISTRITO_LOCAL',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#E65100"></span><span class="li-name">Distritos locales</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('DISTRITO_FEDERAL',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#B71C1C"></span><span class="li-name">Distritos federales</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('CABECERA_MUNICIPAL',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#F9A825"></span><span class="li-name">Cabeceras municipales</span></div>
         <div class="lg-title" style="margin-top:6px">B · Puntos de interés</div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('COLONIA',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#00796B"></span>
-          <span class="li-name">Colonias</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('COLONIA_PUNTUAL',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#00897B"></span>
-          <span class="li-name">Colonias (puntual)</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('CARRETERAS_X_MUNICIPIO',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#546E7A"></span>
-          <span class="li-name">Carreteras</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('LINEA_METRO',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#D32F2F"></span>
-          <span class="li-name">Línea Metro</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('RIOS',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#1976D2"></span>
-          <span class="li-name">Ríos</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('LAGOS',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#1565C0"></span>
-          <span class="li-name">Lagos y presas</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('CASILLA',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#FF6F00"></span>
-          <span class="li-name">Casillas (INE)</span>
-        </div>
-        <div class="li">
-          <label class="tog"><input type="checkbox" onchange="toggleLayer('ESCUELA',this.checked)"><span class="tog-sl"></span></label>
-          <span class="swatch" style="background:#2E7D32"></span>
-          <span class="li-name">Escuelas</span>
-        </div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('COLONIA',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#00796B"></span><span class="li-name">Colonias</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('COLONIA_PUNTUAL',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#00897B"></span><span class="li-name">Colonias (puntual)</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('CARRETERAS_X_MUNICIPIO',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#546E7A"></span><span class="li-name">Carreteras</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('LINEA_METRO',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#D32F2F"></span><span class="li-name">Línea Metro</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('RIOS',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#1976D2"></span><span class="li-name">Ríos</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('LAGOS',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#1565C0"></span><span class="li-name">Lagos y presas</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('CASILLA',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6F00"></span><span class="li-name">Casillas (INE)</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('ESCUELA',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#2E7D32"></span><span class="li-name">Escuelas</span></div>
       </div>
     </div>
 
@@ -485,48 +319,14 @@
     <div class="panel" id="panel-2">
       <div id="p-checkin">
         <div class="kpi-grid">
-          <div class="kpi-mini kpi-gris">
-            <div class="kpi-mini-lbl">Sin check-in</div>
-            <div class="kpi-mini-val" id="cnt-gris">—</div>
-          </div>
-          <div class="kpi-mini kpi-verde">
-            <div class="kpi-mini-lbl">OK</div>
-            <div class="kpi-mini-val" id="cnt-verde">—</div>
-          </div>
-          <div class="kpi-mini kpi-nar">
-            <div class="kpi-mini-lbl">Alerta GPS</div>
-            <div class="kpi-mini-val" id="cnt-naranja">—</div>
-          </div>
-          <div class="kpi-mini kpi-rojo">
-            <div class="kpi-mini-lbl">Alerta Foto</div>
-            <div class="kpi-mini-val" id="cnt-rojo">—</div>
-          </div>
+          <div class="kpi-mini kpi-gris"><div class="kpi-mini-lbl">Sin check-in</div><div class="kpi-mini-val" id="cnt-gris">—</div></div>
+          <div class="kpi-mini kpi-verde"><div class="kpi-mini-lbl">OK</div><div class="kpi-mini-val" id="cnt-verde">—</div></div>
+          <div class="kpi-mini kpi-nar"><div class="kpi-mini-lbl">Alerta GPS</div><div class="kpi-mini-val" id="cnt-naranja">—</div></div>
+          <div class="kpi-mini kpi-rojo"><div class="kpi-mini-lbl">Alerta Foto</div><div class="kpi-mini-val" id="cnt-rojo">—</div></div>
         </div>
-        <div>
-          <div class="flbl">Municipio</div>
-          <select class="fsel" id="sel-municipio" onchange="applyFilters()">
-            <option value="">Todos los municipios</option>
-          </select>
-        </div>
-        <div>
-          <div class="flbl">Tipo de casilla</div>
-          <select class="fsel" id="sel-tipo" onchange="applyFilters()">
-            <option value="">Todos los tipos</option>
-            <option value="B">Básica (B)</option>
-            <option value="C">Contigua (C)</option>
-            <option value="E">Especial (E)</option>
-          </select>
-        </div>
-        <div>
-          <div class="flbl">Estatus</div>
-          <select class="fsel" id="sel-estatus" onchange="applyFilters()">
-            <option value="">Todos los estatus</option>
-            <option value="gris">Sin check-in</option>
-            <option value="VERDE">OK · Dentro de geocerca</option>
-            <option value="NARANJA">Alerta GPS</option>
-            <option value="ROJO">Alerta Foto</option>
-          </select>
-        </div>
+        <div><div class="flbl">Municipio</div><select class="fsel" id="sel-municipio" onchange="applyFilters()"><option value="">Todos los municipios</option></select></div>
+        <div><div class="flbl">Tipo de casilla</div><select class="fsel" id="sel-tipo" onchange="applyFilters()"><option value="">Todos los tipos</option><option value="B">Básica (B)</option><option value="C">Contigua (C)</option><option value="E">Especial (E)</option></select></div>
+        <div><div class="flbl">Estatus</div><select class="fsel" id="sel-estatus" onchange="applyFilters()"><option value="">Todos los estatus</option><option value="gris">Sin check-in</option><option value="VERDE">OK · Dentro de geocerca</option><option value="NARANJA">Alerta GPS</option><option value="ROJO">Alerta Foto</option></select></div>
         <button class="btn-act" onclick="loadData(true)">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           Actualizar datos
@@ -534,26 +334,14 @@
       </div>
     </div>
 
-    <!-- Panel 3: Alertas / Incidencias -->
+    <!-- Panel 3: Alertas -->
     <div class="panel" id="panel-3">
       <div id="p-alertas">
         <div class="kpi-grid">
-          <div class="kpi-mini" style="border-color:#fbbf24">
-            <div class="kpi-mini-lbl">Menores</div>
-            <div class="kpi-mini-val" id="inc-amarillo" style="color:#fbbf24">—</div>
-          </div>
-          <div class="kpi-mini" style="border-color:#fb923c">
-            <div class="kpi-mini-lbl">Medias</div>
-            <div class="kpi-mini-val" id="inc-naranja" style="color:#fb923c">—</div>
-          </div>
-          <div class="kpi-mini" style="border-color:#f87171">
-            <div class="kpi-mini-lbl">Críticas</div>
-            <div class="kpi-mini-val" id="inc-rojo" style="color:#f87171">—</div>
-          </div>
-          <div class="kpi-mini" style="border-color:#c084fc">
-            <div class="kpi-mini-lbl">Jurídicas</div>
-            <div class="kpi-mini-val" id="inc-morado" style="color:#c084fc">—</div>
-          </div>
+          <div class="kpi-mini" style="border-color:#fbbf24"><div class="kpi-mini-lbl">Menores</div><div class="kpi-mini-val" id="inc-amarillo" style="color:#fbbf24">—</div></div>
+          <div class="kpi-mini" style="border-color:#fb923c"><div class="kpi-mini-lbl">Medias</div><div class="kpi-mini-val" id="inc-naranja" style="color:#fb923c">—</div></div>
+          <div class="kpi-mini" style="border-color:#f87171"><div class="kpi-mini-lbl">Críticas</div><div class="kpi-mini-val" id="inc-rojo" style="color:#f87171">—</div></div>
+          <div class="kpi-mini" style="border-color:#c084fc"><div class="kpi-mini-lbl">Jurídicas</div><div class="kpi-mini-val" id="inc-morado" style="color:#c084fc">—</div></div>
         </div>
         <div class="flbl">Últimas alertas</div>
         <div id="inc-lista"></div>
@@ -566,39 +354,81 @@
 
     <!-- Panel 4: Conteo Rápido -->
     <div class="panel" id="panel-4">
-      <div class="empty">
-        <div class="empty-ico">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <div id="p-conteo">
+        <div class="crt-nota">⚠️ No oficial · Solo uso interno del equipo</div>
+        <div id="crt-error">Sin conexión al servidor de conteo</div>
+
+        <!-- KPIs fila 1 -->
+        <div class="kpi-grid-3">
+          <div class="kpi-mini">
+            <div class="kpi-mini-lbl">Total</div>
+            <div class="kpi-mini-val" id="crt-total" style="color:#9ca3af;font-size:18px">—</div>
+          </div>
+          <div class="kpi-mini kpi-verde">
+            <div class="kpi-mini-lbl">Validadas</div>
+            <div class="kpi-mini-val" id="crt-validadas" style="font-size:18px">—</div>
+          </div>
+          <div class="kpi-mini kpi-nar">
+            <div class="kpi-mini-lbl">Alertas</div>
+            <div class="kpi-mini-val" id="crt-alertas" style="font-size:18px">—</div>
+          </div>
         </div>
-        <div class="empty-badge">Próximamente</div>
-        <div class="empty-title">Conteo Rápido Interno</div>
-        <div class="empty-desc">Las fotografías de sábanas electorales se verificarán aquí al cierre de casillas.</div>
+        <!-- KPIs fila 2 -->
+        <div class="kpi-grid-3">
+          <div class="kpi-mini kpi-gris">
+            <div class="kpi-mini-lbl">Sin subir</div>
+            <div class="kpi-mini-val" id="crt-pendientes" style="font-size:18px">—</div>
+          </div>
+          <div class="kpi-mini">
+            <div class="kpi-mini-lbl">Avance</div>
+            <div class="kpi-mini-val" id="crt-avance" style="color:#60a5fa;font-size:18px">—%</div>
+          </div>
+          <div class="kpi-mini">
+            <div class="kpi-mini-lbl">Total Votos</div>
+            <div class="kpi-mini-val" id="crt-votos" style="color:#c084fc;font-size:16px">—</div>
+          </div>
+        </div>
+
+        <!-- Última captura -->
+        <div class="crt-ultima" id="crt-ultima-box" style="display:none">
+          <div class="crt-ultima-lbl">Última captura recibida</div>
+          <div class="crt-ultima-val" id="crt-ultima-val">—</div>
+          <div class="crt-ultima-sub" id="crt-ultima-sub"></div>
+        </div>
+
+        <!-- Conteo acumulado por partido -->
+        <div class="crt-section-lbl">Conteo acumulado por partido</div>
+        <div id="crt-partidos">
+          <div style="text-align:center;padding:12px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
+        </div>
+
+        <!-- Votos nulos / CNR -->
+        <div id="crt-especiales" style="display:none">
+          <div class="crt-bar-row">
+            <div class="crt-bar-name" style="color:#94a3b8">Nulos</div>
+            <div class="crt-bar-wrap"><div class="crt-bar nulos" id="crt-bar-nulos" style="width:0%"></div></div>
+            <div class="crt-bar-val" id="crt-val-nulos">0</div>
+          </div>
+        </div>
+
+        <button class="btn-act" onclick="loadConteo()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Actualizar conteo
+        </button>
+        <div class="stats-foot" id="crt-update-time">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Actualización automática cada 30s
+        </div>
       </div>
     </div>
 
     <!-- Panel 5: Estadísticas -->
     <div class="panel" id="panel-5">
       <div id="p-stats">
-        <div class="kpi-big">
-          <div class="kpi-big-lbl">Total casillas</div>
-          <div class="kpi-big-val">3,174</div>
-          <div class="kpi-big-sub">Nuevo León · Jornada 2026</div>
-        </div>
-        <div class="kpi-big">
-          <div class="kpi-big-lbl">Check-in completado</div>
-          <div class="kpi-big-val" id="stats-pct">—%</div>
-          <div class="kpi-big-sub" id="stats-pct-sub">casillas con reporte</div>
-        </div>
-        <div class="kpi-big nar">
-          <div class="kpi-big-lbl">Alertas GPS</div>
-          <div class="kpi-big-val" id="stats-naranja">—</div>
-          <div class="kpi-big-sub">fuera de geocerca</div>
-        </div>
-        <div class="kpi-big roj">
-          <div class="kpi-big-lbl">Alertas Foto</div>
-          <div class="kpi-big-val" id="stats-rojo">—</div>
-          <div class="kpi-big-sub">inconsistencia de imagen</div>
-        </div>
+        <div class="kpi-big"><div class="kpi-big-lbl">Total casillas</div><div class="kpi-big-val">3,174</div><div class="kpi-big-sub">Nuevo León · Jornada 2026</div></div>
+        <div class="kpi-big"><div class="kpi-big-lbl">Check-in completado</div><div class="kpi-big-val" id="stats-pct">—%</div><div class="kpi-big-sub" id="stats-pct-sub">casillas con reporte</div></div>
+        <div class="kpi-big nar"><div class="kpi-big-lbl">Alertas GPS</div><div class="kpi-big-val" id="stats-naranja">—</div><div class="kpi-big-sub">fuera de geocerca</div></div>
+        <div class="kpi-big roj"><div class="kpi-big-lbl">Alertas Foto</div><div class="kpi-big-val" id="stats-rojo">—</div><div class="kpi-big-sub">inconsistencia de imagen</div></div>
         <div class="stats-foot">
           <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           Actualización automática cada 2 min
@@ -609,67 +439,44 @@
   </div><!-- /sidebar -->
 
   <div id="map"></div>
-
 </div><!-- /app -->
 
 <script>
   const SHEET_ID        = '1XBmDBMBSWMZwuXWbrUiKNVbwxOh3FJHdEqU3LsWAdqs';
   const SHEET_ID_INC    = '1UsQ_lPNK-obsFUZVgiguTlfAdPQeqT_CYdGe5pcOmww';
   const API_KEY         = 'AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI';
+  const CRT_API         = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/crt-dashboard';
   const AUTO_REFRESH_MS = 120000;
 
-  const COLOR   = { gris:'#9E9E9E', VERDE:'#43A047', NARANJA:'#FB8C00', ROJO:'#E53935' };
+  const COLOR    = { gris:'#9E9E9E', VERDE:'#43A047', NARANJA:'#FB8C00', ROJO:'#E53935' };
   const BADGE_BG = { gris:'#9E9E9E', VERDE:'#43A047', NARANJA:'#FB8C00', ROJO:'#E53935' };
-  const LABEL   = {
-    gris:   '⚫ Sin check-in',
-    VERDE:  '🟢 Dentro de geocerca',
-    NARANJA:'🟠 Fuera de geocerca',
-    ROJO:   '🔴 Inconsistencia de foto',
-  };
+  const LABEL    = { gris:'⚫ Sin check-in', VERDE:'🟢 Dentro de geocerca', NARANJA:'🟠 Fuera de geocerca', ROJO:'🔴 Inconsistencia de foto' };
+
+  const CRT_COLOR = { VALIDADA:'#43A047', ADVERTENCIA:'#FB8C00', PENDIENTE:'#9E9E9E' };
+  const CRT_LABEL = { VALIDADA:'✅ Validada', ADVERTENCIA:'⚠️ Con advertencia', PENDIENTE:'⏳ Sin captura' };
 
   let map, clusterer, infoWindow;
   let allMarkers = [], allData = [];
   let GEO_LAYERS = {};
   let currentTab = 1;
-
-  // Tabs que muestran puntos de casilla (Check In y Conteo Rápido)
-  const MARKER_TABS = new Set([2, 4]);
-
-  // Colores e infra de pines de incidencias (Tab 3) — claves en MAYÚSCULAS igual que la hoja
-  const INC_COLOR = {
-    AMARILLO: '#FFC107',
-    NARANJA:  '#FF6D00',
-    ROJO:     '#D32F2F',
-    MORADO:   '#7B1FA2',
-    NEGRO:    '#212121',
-  };
+  let crtData = null;
+  let crtMarkers = [];
   let incMarkers = [], incData = [];
 
   // ── Tab navigation ───────────────────────────────────────────────────────────
   function switchTab(n) {
-    const wasMarkers  = MARKER_TABS.has(currentTab);
-    const isMarkers   = MARKER_TABS.has(n);
-    const wasAlertas  = currentTab === 3;
-    const isAlertas   = n === 3;
+    const prev = currentTab;
     currentTab = n;
-
     document.querySelectorAll('.tb').forEach((b, i)    => b.classList.toggle('on', i + 1 === n));
     document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('on', i + 1 === n));
 
-    // Casilla markers: solo Tab 2 y 4
-    if (wasMarkers && !isMarkers) {
-      allMarkers.forEach(m => m.setMap(null));
-      if (clusterer) { clusterer.setMap(null); clusterer = null; }
-    } else if (!wasMarkers && isMarkers && allData.length > 0) {
-      applyFilters();
-    }
+    if (prev === 2) { allMarkers.forEach(m => m.setMap(null)); if (clusterer) { clusterer.setMap(null); clusterer = null; } }
+    else if (prev === 3) { incMarkers.forEach(m => m.setMap(null)); }
+    else if (prev === 4) { crtMarkers.forEach(m => m.setMap(null)); }
 
-    // Incidencia markers: solo Tab 3
-    if (wasAlertas && !isAlertas) {
-      incMarkers.forEach(m => m.setMap(null));
-    } else if (!wasAlertas && isAlertas) {
-      renderIncidenciaMarkers(incData);
-    }
+    if (n === 2 && allData.length > 0) { applyFilters(); }
+    else if (n === 3) { renderIncidenciaMarkers(incData); }
+    else if (n === 4) { if (crtData) renderConteoMarkers(crtData.casillas || []); else loadConteo(); }
   }
 
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
@@ -683,14 +490,12 @@
         L.data.addListener('click', ev => {
           const p = {};
           ev.feature.forEachProperty((v, k) => p[k] = v);
-          infoWindow.setContent(`<div style="min-width:160px;padding:4px">${L.infoFn(p)}</div>`);
+          infoWindow.setContent('<div style="min-width:160px;padding:4px">' + L.infoFn(p) + '</div>');
           infoWindow.setPosition(ev.latLng);
           infoWindow.open(map);
         });
         const BASE = 'https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/';
-        L.data.loadGeoJson(`${BASE}${name}.geojson`, {}, features => {
-          console.log(`${name}: ${features.length} features`);
-        });
+        L.data.loadGeoJson(BASE + name + '.geojson', {}, features => { console.log(name + ': ' + features.length + ' features'); });
       }
       L.data.setMap(map);
     } else {
@@ -698,88 +503,38 @@
     }
   }
 
-  // ── Casillas utilities ───────────────────────────────────────────────────────
+  // ── Check In markers ─────────────────────────────────────────────────────────
   function estatusKey(raw) {
     if (!raw) return 'gris';
     const u = raw.toUpperCase();
-    if (u === 'VERDE')   return 'VERDE';
+    if (u === 'VERDE') return 'VERDE';
     if (u === 'NARANJA') return 'NARANJA';
-    if (u === 'ROJO')    return 'ROJO';
+    if (u === 'ROJO') return 'ROJO';
     return 'gris';
   }
 
-  function makeIcon(key) {
-    return {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillColor: COLOR[key], fillOpacity: 0.92,
-      strokeColor: 'white', strokeWeight: 1.8,
-      scale: 8,
-    };
-  }
-
-  async function fetchSheetId(sheetId, name, range) {
-    const r = range || 'A1:H2000';
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`
-              + `/values/${encodeURIComponent(name)}!${r}?key=${API_KEY}`;
-    const res  = await fetch(url);
-    const json = await res.json();
-    if (json.error) throw new Error(json.error.message);
-    const rows = json.values || [];
-    if (rows.length < 2) return [];
-    const h = rows[0];
-    return rows.slice(1).map(r => {
-      const o = {};
-      h.forEach((k, i) => o[k] = (r[i] || '').trim());
-      return o;
-    });
-  }
-
-  async function fetchSheet(name, range) {
-    return fetchSheetId(SHEET_ID, name, range);
+  function makeIcon(color, scale) {
+    return { path: google.maps.SymbolPath.CIRCLE, fillColor: color, fillOpacity: 0.92, strokeColor: 'white', strokeWeight: 1.8, scale: scale || 8 };
   }
 
   function renderMarkers(data) {
     allMarkers.forEach(m => m.setMap(null));
     allMarkers = [];
     if (clusterer) { clusterer.setMap(null); clusterer = null; }
-
-    // Solo renderizar puntos en Tab 2 (Check In) y Tab 4 (Conteo Rápido)
-    if (!MARKER_TABS.has(currentTab)) return;
-
+    if (currentTab !== 2) return;
     data.forEach(row => {
-      const lat = parseFloat(row.latitud);
-      const lng = parseFloat(row.longitud);
+      const lat = parseFloat(row.latitud), lng = parseFloat(row.longitud);
       if (!lat || !lng) return;
-      const eKey   = estatusKey(row.estatus);
-      const marker = new google.maps.Marker({
-        position: { lat, lng },
-        icon: makeIcon(eKey),
-        title: row.id_casilla,
-      });
+      const eKey = estatusKey(row.estatus);
+      const marker = new google.maps.Marker({ position: { lat, lng }, icon: makeIcon(COLOR[eKey]), title: row.id_casilla });
       marker.addListener('click', () => {
         const k = estatusKey(row.estatus);
-        infoWindow.setContent(`
-          <div style="min-width:220px;padding:4px 2px;font-family:'IBM Plex Sans',sans-serif">
-            <div class="iw-title">${row.id_casilla}</div>
-            <div class="iw-sub">${row.nombre_casilla}</div>
-            <table class="iw-table">
-              <tr><td class="iw-lbl">Municipio</td><td class="iw-val">${row.municipio}</td></tr>
-              <tr><td class="iw-lbl">Sección</td>  <td class="iw-val">${row.seccion}</td></tr>
-              <tr><td class="iw-lbl">Tipo</td>     <td class="iw-val">${row.tipo_casilla}</td></tr>
-              <tr><td class="iw-lbl">Estatus</td>  <td><span class="badge" style="background:${BADGE_BG[k]}">${LABEL[k]}</span></td></tr>
-              <tr><td class="iw-lbl">Coords</td>   <td class="iw-val" style="font-size:11px;font-family:'IBM Plex Mono',monospace">${row.latitud}, ${row.longitud}</td></tr>
-            </table>
-          </div>
-        `);
+        infoWindow.setContent('<div style="min-width:220px;padding:4px 2px;font-family:\'IBM Plex Sans\',sans-serif"><div class="iw-title">' + row.id_casilla + '</div><div class="iw-sub">' + row.nombre_casilla + '</div><table class="iw-table"><tr><td class="iw-lbl">Municipio</td><td class="iw-val">' + row.municipio + '</td></tr><tr><td class="iw-lbl">Sección</td><td class="iw-val">' + row.seccion + '</td></tr><tr><td class="iw-lbl">Tipo</td><td class="iw-val">' + row.tipo_casilla + '</td></tr><tr><td class="iw-lbl">Estatus</td><td><span class="badge" style="background:' + BADGE_BG[k] + '">' + LABEL[k] + '</span></td></tr><tr><td class="iw-lbl">Coords</td><td class="iw-val" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace">' + row.latitud + ', ' + row.longitud + '</td></tr></table></div>');
         infoWindow.open(map, marker);
       });
       allMarkers.push(marker);
     });
-    clusterer = new markerClusterer.MarkerClusterer({
-      map,
-      markers: allMarkers,
-      algorithm: new markerClusterer.SuperClusterAlgorithm({ maxZoom: 15, radius: 80 }),
-    });
+    clusterer = new markerClusterer.MarkerClusterer({ map, markers: allMarkers, algorithm: new markerClusterer.SuperClusterAlgorithm({ maxZoom: 15, radius: 80 }) });
   }
 
   function updateStats(data) {
@@ -789,16 +544,15 @@
     document.getElementById('cnt-verde').textContent   = c.VERDE.toLocaleString();
     document.getElementById('cnt-naranja').textContent = c.NARANJA.toLocaleString();
     document.getElementById('cnt-rojo').textContent    = c.ROJO.toLocaleString();
-    const total   = data.length;
-    const checked = c.VERDE + c.NARANJA + c.ROJO;
-    const pct     = total > 0 ? Math.round(checked / total * 100) : 0;
+    const total = data.length, checked = c.VERDE + c.NARANJA + c.ROJO;
+    const pct = total > 0 ? Math.round(checked / total * 100) : 0;
     document.getElementById('stats-pct').textContent     = pct + '%';
-    document.getElementById('stats-pct-sub').textContent = `${checked.toLocaleString()} de ${total.toLocaleString()} casillas`;
+    document.getElementById('stats-pct-sub').textContent = checked.toLocaleString() + ' de ' + total.toLocaleString() + ' casillas';
     document.getElementById('stats-naranja').textContent  = c.NARANJA.toLocaleString();
     document.getElementById('stats-rojo').textContent     = c.ROJO.toLocaleString();
   }
 
-  // ── Incidencias (Tab 3) — lee hoja INCIDENCIAS_MAPA en spreadsheet separado ──
+  // ── Incidencias (Tab 3) ──────────────────────────────────────────────────────
   async function loadIncidencias() {
     try {
       const rows = await fetchSheetId(SHEET_ID_INC, 'INCIDENCIAS_MAPA', 'A1:N5000');
@@ -814,38 +568,16 @@
     incMarkers = [];
     if (currentTab !== 3) return;
     const SCALE = { AMARILLO:9, NARANJA:11, ROJO:13, MORADO:14, NEGRO:9 };
+    const INC_COLOR = { AMARILLO:'#FFC107', NARANJA:'#FF6D00', ROJO:'#D32F2F', MORADO:'#7B1FA2', NEGRO:'#212121' };
     rows.forEach(row => {
       const lat = parseFloat(row.LAT), lng = parseFloat(row.LNG);
       if (!lat || !lng) return;
       const colorKey = row.COLOR || 'NEGRO';
       const color = INC_COLOR[colorKey] || INC_COLOR.NEGRO;
       const scale = SCALE[colorKey] || 9;
-      const marker = new google.maps.Marker({
-        position: { lat, lng },
-        map: map,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: scale,
-          fillColor: color, fillOpacity: 0.92,
-          strokeColor: 'white', strokeWeight: 2.5,
-        },
-        title: row.ID_INC,
-        zIndex: scale * 10,
-      });
+      const marker = new google.maps.Marker({ position: { lat, lng }, map: map, icon: { path: google.maps.SymbolPath.CIRCLE, scale: scale, fillColor: color, fillOpacity: 0.92, strokeColor: 'white', strokeWeight: 2.5 }, title: row.ID_INC, zIndex: scale * 10 });
       marker.addListener('click', () => {
-        infoWindow.setContent(`
-          <div style="min-width:240px;font-family:'IBM Plex Sans',sans-serif;padding:4px">
-            <div style="font-weight:600;color:#7B1FA2;margin-bottom:4px;font-size:13px">${row.ID_INC}</div>
-            <table style="font-size:12px;width:100%;border-collapse:collapse">
-              <tr><td style="color:#78716c;padding:2px 6px 2px 0;white-space:nowrap">Tipo</td><td style="font-weight:500">${row.TIPO_MENU||'—'}</td></tr>
-              <tr><td style="color:#78716c;white-space:nowrap">Gravedad</td><td><b>${row.GRAVEDAD||'—'}</b></td></tr>
-              <tr><td style="color:#78716c;white-space:nowrap">Reportante</td><td>${row.USUARIO_NOMBRE||'—'} (${row.USUARIO_ROL||'—'})</td></tr>
-              <tr><td style="color:#78716c;white-space:nowrap">Sección</td><td>${row.SECCION||'—'} · ${row.MUNICIPIO||'—'}</td></tr>
-              <tr><td style="color:#78716c;white-space:nowrap">Hora</td><td style="font-family:'IBM Plex Mono',monospace">${(row.TIMESTAMP||'').slice(11,16)||'—'}</td></tr>
-              <tr><td style="color:#78716c;vertical-align:top;white-space:nowrap">Descripción</td><td>${row.DESCRIPCION_CORTA||'—'}</td></tr>
-            </table>
-          </div>
-        `);
+        infoWindow.setContent('<div style="min-width:240px;font-family:\'IBM Plex Sans\',sans-serif;padding:4px"><div style="font-weight:600;color:#7B1FA2;margin-bottom:4px;font-size:13px">' + row.ID_INC + '</div><table style="font-size:12px;width:100%;border-collapse:collapse"><tr><td style="color:#78716c;padding:2px 6px 2px 0;white-space:nowrap">Tipo</td><td style="font-weight:500">' + (row.TIPO_MENU||'—') + '</td></tr><tr><td style="color:#78716c;white-space:nowrap">Gravedad</td><td><b>' + (row.GRAVEDAD||'—') + '</b></td></tr><tr><td style="color:#78716c;white-space:nowrap">Reportante</td><td>' + (row.USUARIO_NOMBRE||'—') + ' (' + (row.USUARIO_ROL||'—') + ')</td></tr><tr><td style="color:#78716c;white-space:nowrap">Sección</td><td>' + (row.SECCION||'—') + ' · ' + (row.MUNICIPIO||'—') + '</td></tr><tr><td style="color:#78716c;white-space:nowrap">Hora</td><td style="font-family:\'IBM Plex Mono\',monospace">' + ((row.TIMESTAMP||'').slice(11,16)||'—') + '</td></tr><tr><td style="color:#78716c;vertical-align:top;white-space:nowrap">Descripción</td><td>' + (row.DESCRIPCION_CORTA||'—') + '</td></tr></table></div>');
         infoWindow.open(map, marker);
       });
       incMarkers.push(marker);
@@ -865,28 +597,163 @@
   function renderIncidenciaLista(rows) {
     const el = document.getElementById('inc-lista');
     if (!el) return;
-    if (!rows.length) {
-      el.innerHTML = '<div style="text-align:center;padding:24px 0;color:#64748b;font-size:12px">Sin incidencias registradas</div>';
-      return;
-    }
-    el.innerHTML = [...rows].reverse().slice(0, 10).map(r => `
-      <div class="inc-item">
-        <div class="inc-item-tipo">${r.TIPO_MENU||'—'} · ${r.MUNICIPIO||'—'}</div>
-        <div class="inc-item-desc">${(r.DESCRIPCION_CORTA||'').slice(0, 90)}</div>
-      </div>
-    `).join('');
+    if (!rows.length) { el.innerHTML = '<div style="text-align:center;padding:24px 0;color:#64748b;font-size:12px">Sin incidencias registradas</div>'; return; }
+    el.innerHTML = [...rows].reverse().slice(0, 10).map(r => '<div class="inc-item"><div class="inc-item-tipo">' + (r.TIPO_MENU||'—') + ' · ' + (r.MUNICIPIO||'—') + '</div><div class="inc-item-desc">' + (r.DESCRIPCION_CORTA||'').slice(0, 90) + '</div></div>').join('');
   }
+
+  // ── Conteo Rápido (Tab 4) ────────────────────────────────────────────────────
+  async function loadConteo() {
+    try {
+      const res = await fetch(CRT_API);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const d = await res.json();
+      crtData = d;
+      document.getElementById('crt-error').style.display = 'none';
+      renderConteoPanel(d);
+      if (currentTab === 4) renderConteoMarkers(d.casillas || []);
+    } catch(e) {
+      console.error('Conteo error:', e);
+      document.getElementById('crt-error').style.display = 'block';
+      document.getElementById('crt-update-time').textContent = 'Error · ' + new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+    }
+  }
+
+  function renderConteoPanel(d) {
+    const kpis = d.kpis || {};
+    const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+    setText('crt-total',     (kpis.total_casillas   || 0).toLocaleString());
+    setText('crt-validadas', (kpis.casillas_validadas|| 0).toLocaleString());
+    setText('crt-alertas',   (kpis.casillas_advertencia || 0).toLocaleString());
+    setText('crt-pendientes',(kpis.casillas_pendientes  || 0).toLocaleString());
+    setText('crt-avance',    (kpis.porcentaje_avance    || 0) + '%');
+    setText('crt-votos',     (kpis.total_votos          || 0).toLocaleString());
+
+    // Última captura
+    const uc = kpis.ultima_captura;
+    const ucBox = document.getElementById('crt-ultima-box');
+    if (uc && uc.timestamp) {
+      ucBox.style.display = 'block';
+      const t = new Date(uc.timestamp);
+      setText('crt-ultima-val', t.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', second:'2-digit' }));
+      setText('crt-ultima-sub', (uc.nombre_persona || '') + (uc.id_casilla ? ' · ' + uc.id_casilla : ''));
+    } else {
+      ucBox.style.display = 'none';
+    }
+
+    // Resultados por partido
+    const partidos = d.totales_por_partido || [];
+    const maxV = partidos.length > 0 ? Math.max(partidos[0].votos, 1) : 1;
+    document.getElementById('crt-partidos').innerHTML = partidos.length === 0
+      ? '<div style="text-align:center;padding:10px 0;color:#64748b;font-size:11px">Sin resultados aún</div>'
+      : partidos.map(p => '<div class="crt-bar-row"><div class="crt-bar-name" title="' + p.partido + '">' + p.partido + '</div><div class="crt-bar-wrap"><div class="crt-bar" style="width:' + Math.round(p.votos / maxV * 100) + '%"></div></div><div class="crt-bar-val">' + p.votos.toLocaleString() + '</div></div>').join('');
+
+    // Votos nulos
+    const votos_nulos = kpis.votos_nulos || 0;
+    const espEl = document.getElementById('crt-especiales');
+    if (votos_nulos > 0) {
+      espEl.style.display = 'block';
+      const pctNulos = maxV > 0 ? Math.round(votos_nulos / maxV * 100) : 0;
+      const barEl = document.getElementById('crt-bar-nulos');
+      if (barEl) barEl.style.width = pctNulos + '%';
+      setText('crt-val-nulos', votos_nulos.toLocaleString());
+    } else {
+      espEl.style.display = 'none';
+    }
+
+    const now = new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+    setText('crt-update-time', 'Actualizado ' + now + ' · cada 30s');
+  }
+
+  function buildAdvertenciaIW(c) {
+    const adv = c.advertencia_detalle || {};
+    const hora = adv.timestamp ? new Date(adv.timestamp).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' }) : '—';
+
+    // Parse OCR for display
+    let ocrHtml = '';
+    if (adv.ocr_raw_json) {
+      try {
+        const ocr = typeof adv.ocr_raw_json === 'string' ? JSON.parse(adv.ocr_raw_json) : adv.ocr_raw_json;
+        const resultados = ocr.election_results || [];
+        if (resultados.length > 0) {
+          ocrHtml = '<div style="margin-top:6px"><div class="iw-lbl" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">OCR Detectado</div>' +
+            resultados.slice(0, 8).map(r => '<div style="display:flex;justify-content:space-between;font-size:11px;margin:1px 0"><span style="color:#78716c">' + (r.label_as_seen||r.normalized_party||'') + '</span><span style="font-weight:600;font-family:\'IBM Plex Mono\',monospace">' + (r.votos !== undefined ? r.votos : '?') + '</span></div>').join('') +
+            '</div>';
+        }
+      } catch(e) {}
+    }
+
+    const imgTag = adv.image_url ? '<a href="' + adv.image_url + '" target="_blank"><img src="' + adv.image_url + '" class="iw-img" alt="Acta" onerror="this.style.display=\'none\'"></a>' : '';
+    const advertencias = adv.advertencias || '';
+    const tipo = (adv.status || '').replace(/_/g, ' ').toUpperCase();
+
+    return '<div style="min-width:260px;max-width:300px;padding:4px 2px;font-family:\'IBM Plex Sans\',sans-serif">' +
+      '<div class="iw-title">' + c.id_casilla + '</div>' +
+      '<div class="iw-sub">Casilla ' + (c.casilla_numero||'') + ' ' + (c.casilla_tipo||'') + ' · Sec. ' + (c.seccion||'') + '</div>' +
+      '<div class="iw-alerta-badge">⚠️ Con advertencia</div>' +
+      imgTag +
+      '<table class="iw-table">' +
+      '<tr><td class="iw-lbl">Municipio</td><td class="iw-val">' + (c.municipio||'—') + '</td></tr>' +
+      '<tr><td class="iw-lbl">Tipo inconsistencia</td><td class="iw-val" style="font-size:11px">' + (tipo||'—') + '</td></tr>' +
+      (advertencias ? '<tr><td class="iw-lbl" style="vertical-align:top">Motivo</td><td class="iw-val" style="font-size:11px">' + advertencias + '</td></tr>' : '') +
+      '<tr><td class="iw-lbl">Subido por</td><td class="iw-val">' + (adv.nombre_persona||'—') + '</td></tr>' +
+      '<tr><td class="iw-lbl">Hora</td><td class="iw-val">' + hora + '</td></tr>' +
+      '<tr><td class="iw-lbl">Estatus revisión</td><td class="iw-val">' + (adv.estatus_revision||'PENDIENTE') + '</td></tr>' +
+      '</table>' +
+      ocrHtml +
+      '</div>';
+  }
+
+  function renderConteoMarkers(casillas) {
+    crtMarkers.forEach(m => m.setMap(null));
+    crtMarkers = [];
+    if (currentTab !== 4) return;
+    casillas.forEach(c => {
+      const lat = parseFloat(c.lat), lng = parseFloat(c.lng);
+      if (!lat || !lng) return;
+      const color = CRT_COLOR[c.estatus] || CRT_COLOR.PENDIENTE;
+      const scale = c.estatus === 'VALIDADA' ? 8 : c.estatus === 'ADVERTENCIA' ? 10 : 6;
+      const marker = new google.maps.Marker({
+        position: { lat, lng },
+        icon: makeIcon(color, scale),
+        title: c.id_casilla,
+        zIndex: c.estatus === 'ADVERTENCIA' ? 20 : c.estatus === 'VALIDADA' ? 10 : 1,
+      });
+      marker.addListener('click', () => {
+        let content;
+        if (c.estatus === 'ADVERTENCIA' && c.advertencia_detalle) {
+          content = buildAdvertenciaIW(c);
+        } else {
+          content = '<div style="min-width:220px;padding:4px 2px;font-family:\'IBM Plex Sans\',sans-serif"><div class="iw-title">' + c.id_casilla + '</div><div class="iw-sub">Casilla ' + (c.casilla_numero||'') + ' ' + (c.casilla_tipo||'') + ' · Sec. ' + (c.seccion||'') + '</div><table class="iw-table"><tr><td class="iw-lbl">Municipio</td><td class="iw-val">' + (c.municipio||'—') + '</td></tr><tr><td class="iw-lbl">Representante</td><td class="iw-val">' + (c.representante||'—') + '</td></tr><tr><td class="iw-lbl">Estatus</td><td class="iw-val">' + (CRT_LABEL[c.estatus]||c.estatus||'—') + '</td></tr>' + (c.id_captura_validada ? '<tr><td class="iw-lbl">Captura ID</td><td class="iw-val" style="font-size:10px;font-family:\'IBM Plex Mono\',monospace">' + c.id_captura_validada + '</td></tr>' : '') + '</table></div>';
+        }
+        infoWindow.setContent(content);
+        infoWindow.open(map, marker);
+      });
+      crtMarkers.push(marker);
+    });
+  }
+
+  // ── Check In data ────────────────────────────────────────────────────────────
+  async function fetchSheetId(sheetId, name, range) {
+    const r = range || 'A1:H2000';
+    const url = 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + encodeURIComponent(name) + '!' + r + '?key=' + API_KEY;
+    const res  = await fetch(url);
+    const json = await res.json();
+    if (json.error) throw new Error(json.error.message);
+    const rows = json.values || [];
+    if (rows.length < 2) return [];
+    const h = rows[0];
+    return rows.slice(1).map(r => { const o = {}; h.forEach((k, i) => o[k] = (r[i] || '').trim()); return o; });
+  }
+
+  async function fetchSheet(name, range) { return fetchSheetId(SHEET_ID, name, range); }
 
   function populateMunicipios(data) {
     const munis = [...new Set(data.map(r => r.municipio).filter(Boolean))].sort();
-    const sel   = document.getElementById('sel-municipio');
-    const prev  = sel.value;
+    const sel = document.getElementById('sel-municipio');
+    const prev = sel.value;
     sel.innerHTML = '<option value="">Todos los municipios</option>';
-    munis.forEach(m => {
-      const o = document.createElement('option');
-      o.value = m; o.textContent = m;
-      sel.appendChild(o);
-    });
+    munis.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = m; sel.appendChild(o); });
     sel.value = prev;
   }
 
@@ -904,10 +771,7 @@
     updateStats(filtered);
     if (mun && filtered.length > 0) {
       const bounds = new google.maps.LatLngBounds();
-      filtered.forEach(r => {
-        const lat = parseFloat(r.latitud), lng = parseFloat(r.longitud);
-        if (lat && lng) bounds.extend({ lat, lng });
-      });
+      filtered.forEach(r => { const lat = parseFloat(r.latitud), lng = parseFloat(r.longitud); if (lat && lng) bounds.extend({ lat, lng }); });
       map.fitBounds(bounds);
     }
   }
@@ -926,18 +790,13 @@
         const sec = r.seccion;
         if (!sec) return;
         const key = estatusKey(r.estatus);
-        if (!estatusMap[sec] || PRIORIDAD[key] > PRIORIDAD[estatusKey(estatusMap[sec])]) {
-          estatusMap[sec] = r.estatus;
-        }
+        if (!estatusMap[sec] || PRIORIDAD[key] > PRIORIDAD[estatusKey(estatusMap[sec])]) { estatusMap[sec] = r.estatus; }
       });
-      allData = [...resA, ...resB].map(c => ({
-        ...c,
-        estatus: estatusMap[c.seccion] || c.estatus || 'operando'
-      }));
+      allData = [...resA, ...resB].map(c => ({ ...c, estatus: estatusMap[c.seccion] || c.estatus || 'operando' }));
       populateMunicipios(allData);
       applyFilters();
       const now = new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
-      document.getElementById('last-update').textContent = `Actualizado ${now}`;
+      document.getElementById('last-update').textContent = 'Actualizado ' + now;
     } catch(e) {
       console.error('Error:', e);
       document.getElementById('last-update').textContent = '⚠ Error al cargar';
@@ -946,36 +805,24 @@
   }
 
   function initMap() {
-    const poly = (stroke, fill, fillOp = 0.12) => () => ({
-      strokeColor: stroke, strokeOpacity: 1, strokeWeight: 2,
-      fillColor: fill, fillOpacity: fillOp,
-    });
-    const line = (stroke, w = 2) => () => ({
-      strokeColor: stroke, strokeOpacity: 1, strokeWeight: w,
-      fillColor: '#000000', fillOpacity: 0,
-    });
-    const pt = (color) => () => ({
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE, scale: 5,
-        fillColor: color, fillOpacity: 1,
-        strokeColor: '#fff', strokeWeight: 1.5,
-      },
-    });
+    const poly = (stroke, fill, fillOp = 0.12) => () => ({ strokeColor: stroke, strokeOpacity: 1, strokeWeight: 2, fillColor: fill, fillOpacity: fillOp });
+    const line = (stroke, w = 2) => () => ({ strokeColor: stroke, strokeOpacity: 1, strokeWeight: w, fillColor: '#000000', fillOpacity: 0 });
+    const pt   = (color) => () => ({ icon: { path: google.maps.SymbolPath.CIRCLE, scale: 5, fillColor: color, fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1.5 } });
 
     GEO_LAYERS = {
-      MUNICIPIO:             { data:null, styleFn: poly('#1565C0','#1565C0',0.10), infoFn: p=>`<b>${p.MUNICIPIO||p.NOMBRE||'Municipio'}</b>` },
-      SECCION:               { data:null, styleFn: poly('#7B1FA2','#7B1FA2',0.08), infoFn: p=>`<b>Sección ${p.SECCION}</b><br>${p.MUNICIPIO||''}` },
-      DISTRITO_LOCAL:        { data:null, styleFn: poly('#E65100','#E65100',0.10), infoFn: p=>`<b>Distrito Local ${p.DISTRITO_L}</b><br>${p.MUNICIPIO||''}` },
-      DISTRITO_FEDERAL:      { data:null, styleFn: poly('#B71C1C','#B71C1C',0.10), infoFn: p=>`<b>Distrito Federal ${p.DISTRITO_F}</b>` },
-      CABECERA_MUNICIPAL:    { data:null, styleFn: pt('#FFD600'),                  infoFn: p=>`<b>${p.MUNICIPIO||p.NOMBRE||'Cabecera'}</b>` },
-      COLONIA:               { data:null, styleFn: poly('#00796B','#00796B',0.10), infoFn: p=>`<b>${p.NOMBRE}</b><br>${p.MUNICIPIO||''} · CP ${p.CP||'—'}` },
-      COLONIA_PUNTUAL:       { data:null, styleFn: pt('#00897B'),                  infoFn: p=>`<b>${p.NOMBRE}</b><br>${p.MUNICIPIO||''}` },
-      CARRETERAS_X_MUNICIPIO:{ data:null, styleFn: line('#546E7A',2),              infoFn: p=>`<b>${p.NOMBRE||'Carretera'}</b>` },
-      LINEA_METRO:           { data:null, styleFn: line('#D32F2F',4),              infoFn: p=>`<b>${p.NOMBRE||'Línea Metro'}</b>` },
-      RIOS:                  { data:null, styleFn: line('#1976D2',2),              infoFn: p=>`<b>${p.NOMBRE||'Río'}</b>` },
-      LAGOS:                 { data:null, styleFn: poly('#1565C0','#1565C0',0.30), infoFn: p=>`<b>${p.NOMBRE||'Lago/Presa'}</b>` },
-      CASILLA:               { data:null, styleFn: pt('#FF6F00'),                  infoFn: p=>`<b>Casilla ${p.SECCION||''}</b><br>${p.MUNICIPIO||''} · ${p.TIPO_CAS||''}` },
-      ESCUELA:               { data:null, styleFn: pt('#2E7D32'),                  infoFn: p=>`<b>${p.NOMBRE||'Escuela'}</b><br>${p.MUNICIPIO||''} · ${p.NIVEL||''}` },
+      MUNICIPIO:             { data:null, styleFn: poly('#1565C0','#1565C0',0.10), infoFn: p => '<b>' + (p.MUNICIPIO||p.NOMBRE||'Municipio') + '</b>' },
+      SECCION:               { data:null, styleFn: poly('#7B1FA2','#7B1FA2',0.08), infoFn: p => '<b>Sección ' + p.SECCION + '</b><br>' + (p.MUNICIPIO||'') },
+      DISTRITO_LOCAL:        { data:null, styleFn: poly('#E65100','#E65100',0.10), infoFn: p => '<b>Distrito Local ' + p.DISTRITO_L + '</b><br>' + (p.MUNICIPIO||'') },
+      DISTRITO_FEDERAL:      { data:null, styleFn: poly('#B71C1C','#B71C1C',0.10), infoFn: p => '<b>Distrito Federal ' + p.DISTRITO_F + '</b>' },
+      CABECERA_MUNICIPAL:    { data:null, styleFn: pt('#FFD600'),                  infoFn: p => '<b>' + (p.MUNICIPIO||p.NOMBRE||'Cabecera') + '</b>' },
+      COLONIA:               { data:null, styleFn: poly('#00796B','#00796B',0.10), infoFn: p => '<b>' + p.NOMBRE + '</b><br>' + (p.MUNICIPIO||'') + ' · CP ' + (p.CP||'—') },
+      COLONIA_PUNTUAL:       { data:null, styleFn: pt('#00897B'),                  infoFn: p => '<b>' + p.NOMBRE + '</b><br>' + (p.MUNICIPIO||'') },
+      CARRETERAS_X_MUNICIPIO:{ data:null, styleFn: line('#546E7A',2),              infoFn: p => '<b>' + (p.NOMBRE||'Carretera') + '</b>' },
+      LINEA_METRO:           { data:null, styleFn: line('#D32F2F',4),              infoFn: p => '<b>' + (p.NOMBRE||'Línea Metro') + '</b>' },
+      RIOS:                  { data:null, styleFn: line('#1976D2',2),              infoFn: p => '<b>' + (p.NOMBRE||'Río') + '</b>' },
+      LAGOS:                 { data:null, styleFn: poly('#1565C0','#1565C0',0.30), infoFn: p => '<b>' + (p.NOMBRE||'Lago/Presa') + '</b>' },
+      CASILLA:               { data:null, styleFn: pt('#FF6F00'),                  infoFn: p => '<b>Casilla ' + (p.SECCION||'') + '</b><br>' + (p.MUNICIPIO||'') + ' · ' + (p.TIPO_CAS||'') },
+      ESCUELA:               { data:null, styleFn: pt('#2E7D32'),                  infoFn: p => '<b>' + (p.NOMBRE||'Escuela') + '</b><br>' + (p.MUNICIPIO||'') + ' · ' + (p.NIVEL||'') },
     };
 
     map = new google.maps.Map(document.getElementById('map'), {
@@ -984,25 +831,22 @@
       mapTypeControl: true,
       fullscreenControl: true,
       streetViewControl: false,
-      styles: [
-        { featureType:'poi',     stylers:[{ visibility:'off' }] },
-        { featureType:'transit', stylers:[{ visibility:'off' }] },
-      ],
+      styles: [{ featureType:'poi', stylers:[{ visibility:'off' }] }, { featureType:'transit', stylers:[{ visibility:'off' }] }],
     });
-    infoWindow = new google.maps.InfoWindow({ maxWidth: 300 });
+    infoWindow = new google.maps.InfoWindow({ maxWidth: 320 });
 
     toggleLayer('MUNICIPIO', true);
     loadData(false);
     loadIncidencias();
+    loadConteo();
+
     setInterval(() => loadData(false), AUTO_REFRESH_MS);
     setInterval(() => loadIncidencias(), 30000);
+    setInterval(() => loadConteo(), 30000);
   }
 </script>
 
 <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async"
-  async defer>
-</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async" async defer></script>
 </body>
 </html>
