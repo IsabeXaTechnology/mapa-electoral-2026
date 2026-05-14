@@ -688,7 +688,8 @@
     const espEl = document.getElementById('crt-especiales');
     if (votos_nulos > 0) {
       espEl.style.display = 'block';
-      const pctNulos = maxV > 0 ? Math.round(votos_nulos / maxV * 100) : 0;
+      const totalRef = kpis.total_votos || votos_nulos;
+      const pctNulos = totalRef > 0 ? Math.min(Math.round(votos_nulos / totalRef * 100), 100) : 0;
       const barEl = document.getElementById('crt-bar-nulos');
       if (barEl) barEl.style.width = pctNulos + '%';
       setText('crt-val-nulos', votos_nulos.toLocaleString());
