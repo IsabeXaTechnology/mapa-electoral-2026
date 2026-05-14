@@ -398,8 +398,17 @@
 
         <!-- Conteo acumulado por partido -->
         <div class="crt-section-lbl">Conteo acumulado por partido</div>
-        <div id="crt-partidos">
-          <div style="text-align:center;padding:12px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
+        <div class="crt-section-lbl" style="font-size:11px;color:#475569;margin-top:8px">🏛 PRESIDENCIA</div>
+        <div id="crt-partidos-pres">
+          <div style="text-align:center;padding:6px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
+        </div>
+        <div class="crt-section-lbl" style="font-size:11px;color:#475569;margin-top:10px">🏛 SENADURÍAS</div>
+        <div id="crt-partidos-sen">
+          <div style="text-align:center;padding:6px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
+        </div>
+        <div class="crt-section-lbl" style="font-size:11px;color:#475569;margin-top:10px">🏛 DIPUTACIONES FEDERALES</div>
+        <div id="crt-partidos-dip">
+          <div style="text-align:center;padding:6px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
         </div>
 
         <!-- Votos nulos / CNR -->
@@ -641,12 +650,19 @@
       ucBox.style.display = 'none';
     }
 
-    // Resultados por partido
-    const partidos = d.totales_por_partido || [];
-    const maxV = partidos.length > 0 ? Math.max(partidos[0].votos, 1) : 1;
-    document.getElementById('crt-partidos').innerHTML = partidos.length === 0
-      ? '<div style="text-align:center;padding:10px 0;color:#64748b;font-size:11px">Sin resultados aún</div>'
-      : partidos.map(p => '<div class="crt-bar-row"><div class="crt-bar-name" title="' + p.partido + '">' + p.partido + '</div><div class="crt-bar-wrap"><div class="crt-bar" style="width:' + Math.round(p.votos / maxV * 100) + '%"></div></div><div class="crt-bar-val">' + p.votos.toLocaleString() + '</div></div>').join('');
+    // Resultados por partido (3 elecciones)
+    const totales = d.totales || {};
+    const renderPartidos = (lista, containerId) => {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const maxV = lista.length > 0 ? Math.max(...lista.map(p => p.votos), 1) : 1;
+      el.innerHTML = lista.length === 0
+        ? '<div style="text-align:center;padding:10px 0;color:#64748b;font-size:11px">Sin resultados aún</div>'
+        : lista.map(p => '<div class="crt-bar-row"><div class="crt-bar-name" title="' + p.partido + '">' + p.partido + '</div><div class="crt-bar-wrap"><div class="crt-bar" style="width:' + Math.round(p.votos / maxV * 100) + '%"></div></div><div class="crt-bar-val">' + p.votos.toLocaleString() + '</div></div>').join('');
+    };
+    renderPartidos(totales.presidencia || [], 'crt-partidos-pres');
+    renderPartidos(totales.senaduria || [], 'crt-partidos-sen');
+    renderPartidos(totales.diputacion_federal || [], 'crt-partidos-dip');
 
     // Votos nulos
     const votos_nulos = kpis.votos_nulos || 0;
