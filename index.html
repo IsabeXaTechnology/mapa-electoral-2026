@@ -389,6 +389,25 @@
           </div>
         </div>
 
+        <!-- Leyenda mapa Conteo -->
+        <div>
+          <div class="flbl">Estado en mapa</div>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:3px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <div style="width:12px;height:12px;border-radius:50%;background:#43A047;flex-shrink:0;border:1.5px solid rgba(255,255,255,.25)"></div>
+              <span style="font-size:12px;color:var(--sidebar-text)">Validada — conteo registrado</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px">
+              <div style="width:14px;height:14px;border-radius:50%;background:#FB8C00;flex-shrink:0;border:1.5px solid rgba(255,255,255,.25)"></div>
+              <span style="font-size:12px;color:var(--sidebar-text)">Advertencia — revisar datos</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px">
+              <div style="width:9px;height:9px;border-radius:50%;background:#9E9E9E;flex-shrink:0;border:1.5px solid rgba(255,255,255,.25)"></div>
+              <span style="font-size:12px;color:var(--sidebar-text)">Sin captura — pendiente</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Última captura -->
         <div class="crt-ultima" id="crt-ultima-box" style="display:none">
           <div class="crt-ultima-lbl">Última captura recibida</div>
@@ -866,3 +885,4 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async" async defer></script>
 </body>
 </html>
+
