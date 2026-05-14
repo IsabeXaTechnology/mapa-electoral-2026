@@ -389,6 +389,25 @@
           </div>
         </div>
 
+        <!-- Leyenda mapa Conteo -->
+        <div>
+          <div class="flbl">Estado en mapa</div>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:3px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <div style="width:12px;height:12px;border-radius:50%;background:#43A047;flex-shrink:0;border:1.5px solid rgba(255,255,255,.25)"></div>
+              <span style="font-size:12px;color:var(--sidebar-text)">Validada — conteo registrado</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px">
+              <div style="width:14px;height:14px;border-radius:50%;background:#FB8C00;flex-shrink:0;border:1.5px solid rgba(255,255,255,.25)"></div>
+              <span style="font-size:12px;color:var(--sidebar-text)">Advertencia — revisar datos</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px">
+              <div style="width:9px;height:9px;border-radius:50%;background:#9E9E9E;flex-shrink:0;border:1.5px solid rgba(255,255,255,.25)"></div>
+              <span style="font-size:12px;color:var(--sidebar-text)">Sin captura — pendiente</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Última captura -->
         <div class="crt-ultima" id="crt-ultima-box" style="display:none">
           <div class="crt-ultima-lbl">Última captura recibida</div>
@@ -398,8 +417,17 @@
 
         <!-- Conteo acumulado por partido -->
         <div class="crt-section-lbl">Conteo acumulado por partido</div>
-        <div id="crt-partidos">
-          <div style="text-align:center;padding:12px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
+        <div class="crt-section-lbl" style="font-size:11px;color:#475569;margin-top:8px">🏛 PRESIDENCIA</div>
+        <div id="crt-partidos-pres">
+          <div style="text-align:center;padding:6px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
+        </div>
+        <div class="crt-section-lbl" style="font-size:11px;color:#475569;margin-top:10px">🏛 SENADURÍAS</div>
+        <div id="crt-partidos-sen">
+          <div style="text-align:center;padding:6px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
+        </div>
+        <div class="crt-section-lbl" style="font-size:11px;color:#475569;margin-top:10px">🏛 DIPUTACIONES FEDERALES</div>
+        <div id="crt-partidos-dip">
+          <div style="text-align:center;padding:6px 0;color:#64748b;font-size:11px">Sin resultados aún</div>
         </div>
 
         <!-- Votos nulos / CNR -->
@@ -641,12 +669,19 @@
       ucBox.style.display = 'none';
     }
 
-    // Resultados por partido
-    const partidos = d.totales_por_partido || [];
-    const maxV = partidos.length > 0 ? Math.max(partidos[0].votos, 1) : 1;
-    document.getElementById('crt-partidos').innerHTML = partidos.length === 0
-      ? '<div style="text-align:center;padding:10px 0;color:#64748b;font-size:11px">Sin resultados aún</div>'
-      : partidos.map(p => '<div class="crt-bar-row"><div class="crt-bar-name" title="' + p.partido + '">' + p.partido + '</div><div class="crt-bar-wrap"><div class="crt-bar" style="width:' + Math.round(p.votos / maxV * 100) + '%"></div></div><div class="crt-bar-val">' + p.votos.toLocaleString() + '</div></div>').join('');
+    // Resultados por partido (3 elecciones)
+    const totales = d.totales || {};
+    const renderPartidos = (lista, containerId) => {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const maxV = lista.length > 0 ? Math.max(...lista.map(p => p.votos), 1) : 1;
+      el.innerHTML = lista.length === 0
+        ? '<div style="text-align:center;padding:10px 0;color:#64748b;font-size:11px">Sin resultados aún</div>'
+        : lista.map(p => '<div class="crt-bar-row"><div class="crt-bar-name" title="' + p.partido + '">' + p.partido + '</div><div class="crt-bar-wrap"><div class="crt-bar" style="width:' + Math.round(p.votos / maxV * 100) + '%"></div></div><div class="crt-bar-val">' + p.votos.toLocaleString() + '</div></div>').join('');
+    };
+    renderPartidos(totales.presidencia || [], 'crt-partidos-pres');
+    renderPartidos(totales.senaduria || [], 'crt-partidos-sen');
+    renderPartidos(totales.diputacion_federal || [], 'crt-partidos-dip');
 
     // Votos nulos
     const votos_nulos = kpis.votos_nulos || 0;
@@ -851,3 +886,4 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async" async defer></script>
 </body>
 </html>
+
