@@ -337,6 +337,24 @@
     <!-- Panel 3: Alertas -->
     <div class="panel" id="panel-3">
       <div id="p-alertas">
+        <!-- SOS Emergencias KPI -->
+        <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:10px">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#f87171;margin-bottom:7px">🚨 Emergencia SOS</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="flex:1">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:#f87171;line-height:1" id="sos-total">—</div>
+              <div style="font-size:9px;color:#94a3b8;margin-top:2px">emergencias registradas</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:9px;color:#94a3b8">Riesgo físico</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:#fb923c" id="sos-riesgo">—</div>
+            </div>
+          </div>
+          <div id="sos-ultima" style="margin-top:8px;font-size:10px;color:#94a3b8;border-top:1px solid rgba(255,255,255,.08);padding-top:6px">—</div>
+        </div>
+        <div class="flbl">Últimas emergencias</div>
+        <div id="sos-lista" style="display:flex;flex-direction:column;gap:4px"></div>
+        <div style="border-top:1px solid var(--sidebar-border);margin:2px 0 2px;padding-top:2px"></div>
         <div class="kpi-grid">
           <div class="kpi-mini" style="border-color:#fbbf24"><div class="kpi-mini-lbl">Menores</div><div class="kpi-mini-val" id="inc-amarillo" style="color:#fbbf24">—</div></div>
           <div class="kpi-mini" style="border-color:#fb923c"><div class="kpi-mini-lbl">Medias</div><div class="kpi-mini-val" id="inc-naranja" style="color:#fb923c">—</div></div>
@@ -345,7 +363,7 @@
         </div>
         <div class="flbl">Últimas alertas</div>
         <div id="inc-lista"></div>
-        <button class="btn-act" onclick="loadIncidencias(true)">
+        <button class="btn-act" onclick="loadIncidencias(true);loadEmergencias()">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           Actualizar alertas
         </button>
@@ -369,7 +387,7 @@
             <div class="kpi-mini-val" id="crt-validadas" style="font-size:18px">—</div>
           </div>
           <div class="kpi-mini kpi-nar">
-            <div class="kpi-mini-lbl">Alertas</div>
+            <div class="kpi-mini-lbl">Advertencias</div>
             <div class="kpi-mini-val" id="crt-alertas" style="font-size:18px">—</div>
           </div>
         </div>
@@ -490,6 +508,7 @@
   let crtData = null;
   let crtMarkers = [];
   let incMarkers = [], incData = [];
+  let sosData = [], sosMarkers = [];
 
   // ── Tab navigation ───────────────────────────────────────────────────────────
   function switchTab(n) {
@@ -499,11 +518,11 @@
     document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('on', i + 1 === n));
 
     if (prev === 2) { allMarkers.forEach(m => m.setMap(null)); if (clusterer) { clusterer.setMap(null); clusterer = null; } }
-    else if (prev === 3) { incMarkers.forEach(m => m.setMap(null)); }
+    else if (prev === 3) { incMarkers.forEach(m => m.setMap(null)); sosMarkers.forEach(m => m.setMap(null)); }
     else if (prev === 4) { crtMarkers.forEach(m => m.setMap(null)); }
 
     if (n === 2 && allData.length > 0) { applyFilters(); }
-    else if (n === 3) { renderIncidenciaMarkers(incData); }
+    else if (n === 3) { renderIncidenciaMarkers(incData); renderSosMarkers(sosData); }
     else if (n === 4) { if (crtData) renderConteoMarkers(crtData.casillas || []); else loadConteo(); }
   }
 
@@ -628,6 +647,101 @@
     if (!rows.length) { el.innerHTML = '<div style="text-align:center;padding:24px 0;color:#64748b;font-size:12px">Sin incidencias registradas</div>'; return; }
     el.innerHTML = [...rows].reverse().slice(0, 10).map(r => '<div class="inc-item"><div class="inc-item-tipo">' + (r.TIPO_MENU||'—') + ' · ' + (r.MUNICIPIO||'—') + '</div><div class="inc-item-desc">' + (r.DESCRIPCION_CORTA||'').slice(0, 90) + '</div></div>').join('');
   }
+
+  // ── Emergencias SOS (Tab 3) ──────────────────────────────────────────────────
+  async function loadEmergencias() {
+    try {
+      const rows = await fetchSheet('Emergencias', 'A1:S5000');
+      sosData = rows.filter(r => r.latitud && r.longitud && parseFloat(r.latitud) && parseFloat(r.longitud));
+      renderSosStats(rows);
+      renderSosLista(rows);
+      if (currentTab === 3) renderSosMarkers(sosData);
+    } catch(e) { console.error('SOS error:', e); }
+  }
+
+  function renderSosStats(rows) {
+    const total = rows.length;
+    const conRiesgo = rows.filter(r => r.riesgo_fisico === 'SÍ').length;
+    const el = id => document.getElementById(id);
+    if (el('sos-total'))  el('sos-total').textContent  = total || '0';
+    if (el('sos-riesgo')) el('sos-riesgo').textContent = conRiesgo || '0';
+    if (el('sos-ultima')) {
+      if (rows.length > 0) {
+        const last = rows[rows.length - 1];
+        el('sos-ultima').textContent = 'Última: ' + (last.id_emergencia||'') + ' · ' + (last.municipio||'') + ' · ' + (last.hora||'');
+      } else {
+        el('sos-ultima').textContent = 'Sin emergencias registradas';
+      }
+    }
+  }
+
+  function renderSosLista(rows) {
+    const el = document.getElementById('sos-lista');
+    if (!el) return;
+    if (!rows.length) {
+      el.innerHTML = '<div style="text-align:center;padding:12px 0;color:#64748b;font-size:11px">Sin emergencias SOS</div>';
+      return;
+    }
+    el.innerHTML = [...rows].reverse().slice(0, 5).map(r =>
+      '<div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.22);border-radius:6px;padding:8px 10px">' +
+      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#f87171">' +
+        (r.tipo_emergencia||'EMERGENCIA_REAL') + ' · ' + (r.municipio||'—') +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--sidebar-text);margin-top:2px">' +
+        (r.resumen_ia||r.descripcion_original||'').slice(0, 80) +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--sidebar-dim);margin-top:2px">' +
+        (r.fecha||'') + ' ' + (r.hora||'') + ' · ' + (r.usuario||'—') +
+      '</div></div>'
+    ).join('');
+  }
+
+  function renderSosMarkers(rows) {
+    sosMarkers.forEach(m => m.setMap(null));
+    sosMarkers = [];
+    if (currentTab !== 3) return;
+    rows.forEach(row => {
+      const lat = parseFloat(row.latitud), lng = parseFloat(row.longitud);
+      if (!lat || !lng) return;
+      const marker = new google.maps.Marker({
+        position: { lat, lng },
+        map: map,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 13,
+          fillColor: '#EF4444',
+          fillOpacity: 0.92,
+          strokeColor: 'white',
+          strokeWeight: 3
+        },
+        title: row.id_emergencia,
+        zIndex: 9999
+      });
+      marker.addListener('click', () => {
+        const html =
+          '<div style="min-width:260px;max-width:310px;font-family:'IBM Plex Sans',sans-serif;padding:4px 2px">' +
+          '<div style="background:#EF4444;color:white;padding:5px 10px;border-radius:6px;margin-bottom:8px;font-weight:700;font-size:12px">🚨 EMERGENCIA SOS</div>' +
+          '<div style="font-weight:600;font-size:13px;color:#1c1917;margin-bottom:5px">' + (row.id_emergencia||'—') + '</div>' +
+          '<table style="font-size:12px;width:100%;border-collapse:collapse">' +
+          '<tr><td style="color:#78716c;padding:2px 8px 2px 0;white-space:nowrap">Usuario</td><td style="font-weight:500">' + (row.usuario||'—') + ' <span style="color:#78716c;font-size:10px">(' + (row.rol||'—') + ')</span></td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap">Municipio</td><td>' + (row.municipio||'—') + ' · Sec. ' + (row.seccion||'—') + '</td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap">Casilla</td><td>' + (row.casilla||'—') + '</td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap">Tipo</td><td style="font-weight:600;color:#EF4444">' + (row.tipo_emergencia||'—') + '</td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap;vertical-align:top">Resumen IA</td><td style="font-size:11px;color:#44403c">' + (row.resumen_ia||row.descripcion_original||'—') + '</td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap">Riesgo físico</td><td style="font-weight:600;color:' + (row.riesgo_fisico==='SÍ'?'#EF4444':'#4ade80') + '">' + (row.riesgo_fisico||'—') + '</td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap">Abogado</td><td>' + (row.requiere_abogado||'—') + '</td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap">Autoridad</td><td>' + (row.requiere_autoridad||'—') + '</td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap">Fecha / Hora</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px">' + (row.fecha||'') + ' ' + (row.hora||'') + '</td></tr>' +
+          '<tr><td style="color:#78716c;white-space:nowrap">Estatus</td><td>' + (row.estatus||'RECIBIDA') + '</td></tr>' +
+          (row.latitud && row.longitud ? '<tr><td style="color:#78716c;white-space:nowrap">GPS</td><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#64748b">' + parseFloat(row.latitud).toFixed(6) + ', ' + parseFloat(row.longitud).toFixed(6) + '</td></tr>' : '') +
+          '</table></div>';
+        infoWindow.setContent(html);
+        infoWindow.open(map, marker);
+      });
+      sosMarkers.push(marker);
+    });
+  }
+
 
   // ── Conteo Rápido (Tab 4) ────────────────────────────────────────────────────
   async function loadConteo() {
@@ -876,10 +990,12 @@
     loadData(false);
     loadIncidencias();
     loadConteo();
+    loadEmergencias();
 
     setInterval(() => loadData(false), AUTO_REFRESH_MS);
     setInterval(() => loadIncidencias(), 30000);
     setInterval(() => loadConteo(), 30000);
+    setInterval(() => loadEmergencias(), 60000);
   }
 
 </script>
@@ -888,4 +1004,5 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async" async defer></script>
 </body>
 </html>
+
 
