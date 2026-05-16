@@ -132,6 +132,13 @@
     .tog input:checked + .tog-sl { background: var(--accent-blue); }
     .tog input:checked + .tog-sl::before { transform: translateX(13px); }
 
+    /* ── Electoral analysis accordion ───────────────────────── */
+    .elec-group { border-top: 1px solid rgba(255,255,255,0.06); }
+    .elec-header { padding: 7px 16px; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--sidebar-dim); display: flex; align-items: center; gap: 6px; user-select: none; }
+    .elec-header:hover { background: rgba(255,255,255,0.05); }
+    .elec-arrow { font-size: 9px; width: 10px; flex-shrink: 0; }
+    .elec-body .li { padding-left: 22px; }
+
     /* ── Shared sidebar components ──────────────────────────── */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .kpi-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
@@ -312,6 +319,70 @@
         <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('LAGOS',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#1565C0"></span><span class="li-name">Lagos y presas</span></div>
         <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('CASILLA',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6F00"></span><span class="li-name">Casillas (INE)</span></div>
         <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('ESCUELA',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#2E7D32"></span><span class="li-name">Escuelas</span></div>
+
+        <!-- C · Análisis Electoral 2024 -->
+        <div class="lg-title" style="margin-top:10px">C · Análisis Electoral 2024</div>
+
+        <div class="elec-group">
+          <div class="elec-header" onclick="toggleElecGroup('ayun')"><span class="elec-arrow" id="arrow-ayun">▶</span>&nbsp;Ayuntamientos</div>
+          <div class="elec-body" id="body-ayun" style="display:none">
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','calor_mc',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#E65100"></span><span class="li-name">Mapa de Calor MC</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','lugar1',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 1 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','lugar2',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 2 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','lugar3',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 3 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','lugar4',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 4 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','calor_margen',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#1565C0,#FFCCBC,#BF360C)"></span><span class="li-name">Mapa de Calor por votación</span></div>
+          </div>
+        </div>
+
+        <div class="elec-group">
+          <div class="elec-header" onclick="toggleElecGroup('dip_loc')"><span class="elec-arrow" id="arrow-dip_loc">▶</span>&nbsp;Diputaciones Locales</div>
+          <div class="elec-body" id="body-dip_loc" style="display:none">
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','calor_mc',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#E65100"></span><span class="li-name">Mapa de Calor MC</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','lugar1',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 1 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','lugar2',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 2 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','lugar3',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 3 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','lugar4',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 4 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','calor_margen',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#1565C0,#FFCCBC,#BF360C)"></span><span class="li-name">Mapa de Calor por votación</span></div>
+          </div>
+        </div>
+
+        <div class="elec-group">
+          <div class="elec-header" onclick="toggleElecGroup('dip_fed')"><span class="elec-arrow" id="arrow-dip_fed">▶</span>&nbsp;Diputaciones Federales</div>
+          <div class="elec-body" id="body-dip_fed" style="display:none">
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','calor_mc',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#E65100"></span><span class="li-name">Mapa de Calor MC</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','lugar1',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 1 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','lugar2',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 2 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','lugar3',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 3 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','lugar4',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 4 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','calor_margen',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#1565C0,#FFCCBC,#BF360C)"></span><span class="li-name">Mapa de Calor por votación</span></div>
+          </div>
+        </div>
+
+        <div class="elec-group">
+          <div class="elec-header" onclick="toggleElecGroup('senadores')"><span class="elec-arrow" id="arrow-senadores">▶</span>&nbsp;Senaduría</div>
+          <div class="elec-body" id="body-senadores" style="display:none">
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','calor_mc',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#E65100"></span><span class="li-name">Mapa de Calor MC</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','lugar1',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 1 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','lugar2',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 2 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','lugar3',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 3 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','lugar4',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 4 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','calor_margen',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#1565C0,#FFCCBC,#BF360C)"></span><span class="li-name">Mapa de Calor por votación</span></div>
+          </div>
+        </div>
+
+        <div class="elec-group">
+          <div class="elec-header" onclick="toggleElecGroup('presidente')"><span class="elec-arrow" id="arrow-presidente">▶</span>&nbsp;Presidencia</div>
+          <div class="elec-body" id="body-presidente" style="display:none">
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','calor_mc',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#E65100"></span><span class="li-name">Mapa de Calor MC</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','lugar1',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 1 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','lugar2',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 2 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','lugar3',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 3 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','lugar4',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#1565C0)"></span><span class="li-name">Resultados 4 Lugar</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','calor_margen',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#1565C0,#FFCCBC,#BF360C)"></span><span class="li-name">Mapa de Calor por votación</span></div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -337,21 +408,6 @@
     <!-- Panel 3: Alertas -->
     <div class="panel" id="panel-3">
       <div id="p-alertas">
-        <!-- SOS Emergencias KPI -->
-        <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:10px">
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#f87171;margin-bottom:7px">🚨 Emergencia SOS</div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="flex:1">
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:#f87171;line-height:1" id="sos-total">—</div>
-              <div style="font-size:9px;color:#94a3b8;margin-top:2px">emergencias registradas</div>
-            </div>
-            <div style="text-align:right">
-              <div style="font-size:9px;color:#94a3b8">Riesgo físico</div>
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:#fb923c" id="sos-riesgo">—</div>
-            </div>
-          </div>
-          <div id="sos-ultima" style="margin-top:8px;font-size:10px;color:#94a3b8;border-top:1px solid rgba(255,255,255,.08);padding-top:6px">—</div>
-        </div>
         <div class="kpi-grid">
           <div class="kpi-mini" style="border-color:#fbbf24"><div class="kpi-mini-lbl">Menores</div><div class="kpi-mini-val" id="inc-amarillo" style="color:#fbbf24">—</div></div>
           <div class="kpi-mini" style="border-color:#fb923c"><div class="kpi-mini-lbl">Medias</div><div class="kpi-mini-val" id="inc-naranja" style="color:#fb923c">—</div></div>
@@ -360,7 +416,7 @@
         </div>
         <div class="flbl">Últimas alertas</div>
         <div id="inc-lista"></div>
-        <button class="btn-act" onclick="loadIncidencias(true);loadEmergencias()">
+        <button class="btn-act" onclick="loadIncidencias(true)">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           Actualizar alertas
         </button>
@@ -384,7 +440,7 @@
             <div class="kpi-mini-val" id="crt-validadas" style="font-size:18px">—</div>
           </div>
           <div class="kpi-mini kpi-nar">
-            <div class="kpi-mini-lbl">Advertencias</div>
+            <div class="kpi-mini-lbl">Alertas</div>
             <div class="kpi-mini-val" id="crt-alertas" style="font-size:18px">—</div>
           </div>
         </div>
@@ -505,7 +561,6 @@
   let crtData = null;
   let crtMarkers = [];
   let incMarkers = [], incData = [];
-  let sosData = [], sosMarkers = [];
 
   // ── Tab navigation ───────────────────────────────────────────────────────────
   function switchTab(n) {
@@ -515,11 +570,11 @@
     document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('on', i + 1 === n));
 
     if (prev === 2) { allMarkers.forEach(m => m.setMap(null)); if (clusterer) { clusterer.setMap(null); clusterer = null; } }
-    else if (prev === 3) { incMarkers.forEach(m => m.setMap(null)); sosMarkers.forEach(m => m.setMap(null)); }
+    else if (prev === 3) { incMarkers.forEach(m => m.setMap(null)); }
     else if (prev === 4) { crtMarkers.forEach(m => m.setMap(null)); }
 
     if (n === 2 && allData.length > 0) { applyFilters(); }
-    else if (n === 3) { renderIncidenciaMarkers(incData); renderSosMarkers(sosData); }
+    else if (n === 3) { renderIncidenciaMarkers(incData); }
     else if (n === 4) { if (crtData) renderConteoMarkers(crtData.casillas || []); else loadConteo(); }
   }
 
@@ -644,101 +699,6 @@
     if (!rows.length) { el.innerHTML = '<div style="text-align:center;padding:24px 0;color:#64748b;font-size:12px">Sin incidencias registradas</div>'; return; }
     el.innerHTML = [...rows].reverse().slice(0, 10).map(r => '<div class="inc-item"><div class="inc-item-tipo">' + (r.TIPO_MENU||'—') + ' · ' + (r.MUNICIPIO||'—') + '</div><div class="inc-item-desc">' + (r.DESCRIPCION_CORTA||'').slice(0, 90) + '</div></div>').join('');
   }
-
-  // ── Emergencias SOS (Tab 3) ──────────────────────────────────────────────────
-  async function loadEmergencias() {
-    try {
-      const rows = await fetchSheet('Emergencias', 'A1:S5000');
-      sosData = rows.filter(r => r.latitud && r.longitud && parseFloat(r.latitud) && parseFloat(r.longitud));
-      renderSosStats(rows);
-      renderSosLista(rows);
-      if (currentTab === 3) renderSosMarkers(sosData);
-    } catch(e) { console.error('SOS error:', e); }
-  }
-
-  function renderSosStats(rows) {
-    const total = rows.length;
-    const conRiesgo = rows.filter(r => r.riesgo_fisico === 'SÍ').length;
-    const el = id => document.getElementById(id);
-    if (el('sos-total'))  el('sos-total').textContent  = total || '0';
-    if (el('sos-riesgo')) el('sos-riesgo').textContent = conRiesgo || '0';
-    if (el('sos-ultima')) {
-      if (rows.length > 0) {
-        const last = rows[rows.length - 1];
-        el('sos-ultima').textContent = 'Última: ' + (last.id_emergencia||'') + ' · ' + (last.municipio||'') + ' · ' + (last.hora||'');
-      } else {
-        el('sos-ultima').textContent = 'Sin emergencias registradas';
-      }
-    }
-  }
-
-  function renderSosLista(rows) {
-    const el = document.getElementById('sos-lista');
-    if (!el) return;
-    if (!rows.length) {
-      el.innerHTML = '<div style="text-align:center;padding:12px 0;color:#64748b;font-size:11px">Sin emergencias SOS</div>';
-      return;
-    }
-    el.innerHTML = [...rows].reverse().slice(0, 5).map(r =>
-      '<div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.22);border-radius:6px;padding:8px 10px">' +
-      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#f87171">' +
-        (r.tipo_emergencia||'EMERGENCIA_REAL') + ' · ' + (r.municipio||'—') +
-      '</div>' +
-      '<div style="font-size:12px;color:var(--sidebar-text);margin-top:2px">' +
-        (r.resumen_ia||r.descripcion_original||'').slice(0, 80) +
-      '</div>' +
-      '<div style="font-size:10px;color:var(--sidebar-dim);margin-top:2px">' +
-        (r.fecha||'') + ' ' + (r.hora||'') + ' · ' + (r.usuario||'—') +
-      '</div></div>'
-    ).join('');
-  }
-
-  function renderSosMarkers(rows) {
-    sosMarkers.forEach(m => m.setMap(null));
-    sosMarkers = [];
-    if (currentTab !== 3) return;
-    rows.forEach(row => {
-      const lat = parseFloat(row.latitud), lng = parseFloat(row.longitud);
-      if (!lat || !lng) return;
-      const marker = new google.maps.Marker({
-        position: { lat, lng },
-        map: map,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 13,
-          fillColor: '#EF4444',
-          fillOpacity: 0.92,
-          strokeColor: 'white',
-          strokeWeight: 3
-        },
-        title: row.id_emergencia,
-        zIndex: 9999
-      });
-      marker.addListener('click', () => {
-        const html =
-          '<div style="min-width:260px;max-width:310px;font-family:\'IBM Plex Sans\',sans-serif;padding:4px 2px">' +
-          '<div style="background:#EF4444;color:white;padding:5px 10px;border-radius:6px;margin-bottom:8px;font-weight:700;font-size:12px">🚨 EMERGENCIA SOS</div>' +
-          '<div style="font-weight:600;font-size:13px;color:#1c1917;margin-bottom:5px">' + (row.id_emergencia||'—') + '</div>' +
-          '<table style="font-size:12px;width:100%;border-collapse:collapse">' +
-          '<tr><td style="color:#78716c;padding:2px 8px 2px 0;white-space:nowrap">Usuario</td><td style="font-weight:500">' + (row.usuario||'—') + ' <span style="color:#78716c;font-size:10px">(' + (row.rol||'—') + ')</span></td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap">Municipio</td><td>' + (row.municipio||'—') + ' · Sec. ' + (row.seccion||'—') + '</td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap">Casilla</td><td>' + (row.casilla||'—') + '</td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap">Tipo</td><td style="font-weight:600;color:#EF4444">' + (row.tipo_emergencia||'—') + '</td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap;vertical-align:top">Resumen IA</td><td style="font-size:11px;color:#44403c">' + (row.resumen_ia||row.descripcion_original||'—') + '</td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap">Riesgo físico</td><td style="font-weight:600;color:' + (row.riesgo_fisico==='SÍ'?'#EF4444':'#4ade80') + '">' + (row.riesgo_fisico||'—') + '</td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap">Abogado</td><td>' + (row.requiere_abogado||'—') + '</td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap">Autoridad</td><td>' + (row.requiere_autoridad||'—') + '</td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap">Fecha / Hora</td><td style="font-family:\'IBM Plex Mono\',monospace;font-size:11px">' + (row.fecha||'') + ' ' + (row.hora||'') + '</td></tr>' +
-          '<tr><td style="color:#78716c;white-space:nowrap">Estatus</td><td>' + (row.estatus||'RECIBIDA') + '</td></tr>' +
-          (row.latitud && row.longitud ? '<tr><td style="color:#78716c;white-space:nowrap">GPS</td><td style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:#64748b">' + parseFloat(row.latitud).toFixed(6) + ', ' + parseFloat(row.longitud).toFixed(6) + '</td></tr>' : '') +
-          '</table></div>';
-        infoWindow.setContent(html);
-        infoWindow.open(map, marker);
-      });
-      sosMarkers.push(marker);
-    });
-  }
-
 
   // ── Conteo Rápido (Tab 4) ────────────────────────────────────────────────────
   async function loadConteo() {
@@ -987,12 +947,181 @@
     loadData(false);
     loadIncidencias();
     loadConteo();
-    loadEmergencias();
 
     setInterval(() => loadData(false), AUTO_REFRESH_MS);
     setInterval(() => loadIncidencias(), 30000);
     setInterval(() => loadConteo(), 30000);
-    setInterval(() => loadEmergencias(), 60000);
+  }
+
+  // ── C · Análisis Electoral 2024 ─────────────────────────────────────────────
+
+  const ELEC_TABS = {
+    ayun:       'ayuntamientos',
+    dip_loc:    'diputados_locales',
+    dip_fed:    'diputados_federales',
+    senadores:  'senadores',
+    presidente: 'presidente',
+  };
+  const ELEC_DATA   = {};
+  const ELEC_LAYERS = {};
+  const SECCION_GEO_CACHE = { gj: null };
+
+  const ELEC_BASE = 'https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/electoral/';
+  const GEO_BASE  = 'https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/';
+
+  function toggleElecGroup(tab) {
+    const body  = document.getElementById('body-' + tab);
+    const arrow = document.getElementById('arrow-' + tab);
+    const open  = body.style.display !== 'none';
+    body.style.display  = open ? 'none' : 'block';
+    arrow.textContent   = open ? '▶' : '▼';
+  }
+
+  function colorMCLugar(lugar) {
+    const m = { 1:'#E65100', 2:'#FF7043', 3:'#FFAB91' };
+    return m[lugar] || '#FFE8DC';
+  }
+
+  function colorGanador(fuerza) {
+    if (!fuerza) return '#9E9E9E';
+    const f = fuerza.toUpperCase();
+    if (f === 'MC') return '#E65100';
+    if (f.includes('MORENA') || f.includes('VERDE') || f.includes('PT') && !f.includes('PAN')) return '#880E4F';
+    if (f.includes('PAN') || f.includes('PRI') || f.includes('PRD')) return '#1565C0';
+    if (f === 'PES' || f === 'PS') return '#6A1B9A';
+    return '#F9A825';
+  }
+
+  function colorMargenMC(m) {
+    if (m === 0)    return '#FFAB91';
+    if (m >= 100)   return '#BF360C';
+    if (m >= 50)    return '#E65100';
+    if (m >= 20)    return '#FF7043';
+    if (m >= 1)     return '#FFCCBC';
+    if (m >= -19)   return '#CE93D8';
+    if (m >= -49)   return '#AB47BC';
+    if (m >= -99)   return '#7B1FA2';
+    return '#0D47A1';
+  }
+
+  function margenLabel(m) {
+    if (m === null || m === undefined) return '—';
+    if (m === 0)  return 'Empate';
+    if (m >= 100) return 'Ganada +100 votos';
+    if (m >= 50)  return 'Ganada 50–99 votos';
+    if (m >= 20)  return 'Ganada 20–49 votos';
+    if (m >= 1)   return 'Ganada 1–19 votos';
+    if (m >= -19) return 'Perdida 1–19 votos';
+    if (m >= -49) return 'Perdida 20–49 votos';
+    if (m >= -99) return 'Perdida 50–99 votos';
+    return 'Perdida +100 votos';
+  }
+
+  async function fetchElecData(tab) {
+    if (ELEC_DATA[tab]) return ELEC_DATA[tab];
+    const r = await fetch(ELEC_BASE + ELEC_TABS[tab] + '.json');
+    ELEC_DATA[tab] = await r.json();
+    return ELEC_DATA[tab];
+  }
+
+  async function fetchSeccionGeoJSON() {
+    if (SECCION_GEO_CACHE.gj) return SECCION_GEO_CACHE.gj;
+    const r = await fetch(GEO_BASE + 'SECCION.geojson');
+    SECCION_GEO_CACHE.gj = await r.json();
+    return SECCION_GEO_CACHE.gj;
+  }
+
+  function buildElecPopup(sec, d, type, tab) {
+    const tipoLabel = { ayun:'Ayuntamiento', dip_loc:'Diputación Local', dip_fed:'Diputación Federal', senadores:'Senaduría', presidente:'Presidencia' };
+    const pctStr = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
+    const base = `<b style="font-size:13px">Sección ${sec}</b><br>
+      Estado: Nuevo León<br>
+      Municipio/Distrito: <b>${d.municipio || d.distrito || '—'}</b><br>
+      Tipo de elección: ${tipoLabel[tab] || tab}<br>
+      Participación ciudadana: ${pctStr} (${d.clasificacion_participacion || '—'})<hr style="margin:4px 0">`;
+
+    if (type === 'calor_mc') {
+      const color = d.mc_lugar ? colorMCLugar(d.mc_lugar) : '#9E9E9E';
+      const pctMC = d.total_votos > 0 ? ((d.mc_votos / d.total_votos) * 100).toFixed(1) + '%' : '—';
+      const dif = d.margen_mc != null ? (d.mc_lugar === 1 ? '+' : '') + d.margen_mc + ' votos' : '—';
+      return `<div style="min-width:210px;padding:6px;font-size:12px;line-height:1.7">${base}
+        Lugar MC: <b>${d.mc_lugar ? d.mc_lugar + 'º Lugar' : '—'}</b><br>
+        Votos MC: <b>${d.mc_votos ?? '—'}</b> (${pctMC})<br>
+        Partido ganador: ${d.ganador_1 || '—'}<br>
+        Diferencia vs 1er lugar: <b>${dif}</b><br>
+        Clasificación: ${margenLabel(d.margen_mc)}<br>
+        Color: <span style="display:inline-block;background:${color};width:14px;height:10px;border-radius:2px;vertical-align:middle"></span>
+      </div>`;
+    }
+
+    const nMap = { lugar1:1, lugar2:2, lugar3:3, lugar4:4 };
+    if (nMap[type]) {
+      const n = nMap[type];
+      const fuerza = d['ganador_' + n] || '—';
+      const votos  = d['votos_' + n] ?? '—';
+      const vNext  = d['votos_' + (n + 1)];
+      const dif    = votos !== '—' && vNext != null ? (votos - vNext) + ' votos' : '—';
+      const pctP   = d.total_votos > 0 && votos !== '—' ? ((votos / d.total_votos) * 100).toFixed(1) + '%' : '—';
+      const color  = colorGanador(fuerza);
+      return `<div style="min-width:210px;padding:6px;font-size:12px;line-height:1.7">${base}
+        Lugar: <b>${n}º Lugar</b><br>
+        Fuerza política: <b>${fuerza}</b><br>
+        Votos obtenidos: <b>${votos}</b> (${pctP})<br>
+        Diferencia vs siguiente: <b>${dif}</b><br>
+        Color: <span style="display:inline-block;background:${color};width:14px;height:10px;border-radius:2px;vertical-align:middle"></span>
+      </div>`;
+    }
+
+    if (type === 'calor_margen') {
+      const color    = colorMargenMC(d.margen_mc ?? 0);
+      const rivalVotos = d.ganador_1 !== 'MC' ? d.votos_1 : d.votos_2;
+      const margenStr  = d.margen_mc != null ? (d.margen_mc >= 0 ? '+' : '') + d.margen_mc + ' votos' : '—';
+      return `<div style="min-width:210px;padding:6px;font-size:12px;line-height:1.7">${base}
+        Votos MC: <b>${d.mc_votos ?? '—'}</b><br>
+        Votos rival: <b>${rivalVotos ?? '—'}</b> (${d.ganador_1 !== 'MC' ? d.ganador_1 : d.ganador_2 || '—'})<br>
+        Margen MC: <b>${margenStr}</b><br>
+        Clasificación: ${margenLabel(d.margen_mc)}<br>
+        Participación: ${pctStr}<br>
+        Color: <span style="display:inline-block;background:${color};width:14px;height:10px;border-radius:2px;vertical-align:middle"></span>
+      </div>`;
+    }
+    return `<div style="padding:6px;font-size:12px">${base}</div>`;
+  }
+
+  async function toggleElectoralLayer(tab, type, on) {
+    const key = tab + '_' + type;
+    if (!on) {
+      if (ELEC_LAYERS[key]) ELEC_LAYERS[key].setMap(null);
+      return;
+    }
+    const [elecData, geoJSON] = await Promise.all([fetchElecData(tab), fetchSeccionGeoJSON()]);
+
+    if (!ELEC_LAYERS[key]) {
+      const layer = new google.maps.Data();
+      layer.addGeoJson(geoJSON);
+      layer.setStyle(feature => {
+        const sec = String(feature.getProperty('SECCION'));
+        const d   = elecData[sec];
+        if (!d) return { fillColor:'#9E9E9E', fillOpacity:0.45, strokeColor:'#757575', strokeWeight:1 };
+        let color;
+        if      (type === 'calor_mc')     color = colorMCLugar(d.mc_lugar);
+        else if (type === 'lugar1')       color = colorGanador(d.ganador_1);
+        else if (type === 'lugar2')       color = colorGanador(d.ganador_2);
+        else if (type === 'lugar3')       color = colorGanador(d.ganador_3);
+        else if (type === 'lugar4')       color = colorGanador(d.ganador_4);
+        else if (type === 'calor_margen') color = colorMargenMC(d.margen_mc);
+        return { fillColor: color, fillOpacity: 0.72, strokeColor: color, strokeWeight: 1 };
+      });
+      layer.addListener('click', ev => {
+        const sec = String(ev.feature.getProperty('SECCION'));
+        const d   = elecData[sec] || {};
+        infoWindow.setContent(buildElecPopup(sec, d, type, tab));
+        infoWindow.setPosition(ev.latLng);
+        infoWindow.open(map);
+      });
+      ELEC_LAYERS[key] = layer;
+    }
+    ELEC_LAYERS[key].setMap(map);
   }
 
 </script>
@@ -1001,5 +1130,4 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async" async defer></script>
 </body>
 </html>
-
 
