@@ -1102,7 +1102,7 @@
       layer.setStyle(feature => {
         const sec = String(feature.getProperty('SECCION'));
         const d   = elecData[sec];
-        if (!d) return { fillColor:'#9E9E9E', fillOpacity:0.45, strokeColor:'#757575', strokeWeight:1 };
+        if (!d) return { visible: false };
         let color;
         if      (type === 'calor_mc')     color = colorMCLugar(d.mc_lugar);
         else if (type === 'lugar1')       color = colorGanador(d.ganador_1);
