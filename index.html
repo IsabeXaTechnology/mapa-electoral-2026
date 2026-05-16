@@ -1032,6 +1032,10 @@
   }
 
   function buildElecPopup(sec, d, type, tab) {
+    if (!d || d.sin_datos) {
+      const mun = d && d.municipio ? '<br>Municipio: ' + d.municipio : '';
+      return `<div style="min-width:180px;padding:6px"><b style="font-size:13px">Sección ${sec}</b>${mun}<br><span style="color:#9E9E9E;font-size:12px">Sin datos electorales registrados<br>para las elecciones 2024.</span></div>`;
+    }
     const tipoLabel = { ayun:'Ayuntamiento', dip_loc:'Diputación Local', dip_fed:'Diputación Federal', senadores:'Senaduría', presidente:'Presidencia' };
     const pctStr = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
     const base = `<b style="font-size:13px">Sección ${sec}</b><br>
@@ -1102,7 +1106,7 @@
       layer.setStyle(feature => {
         const sec = String(feature.getProperty('SECCION'));
         const d   = elecData[sec];
-        if (!d) return { visible: false };
+        if (!d || d.sin_datos) return { fillColor: '#BDBDBD', fillOpacity: 0.22, strokeColor: '#9E9E9E', strokeWeight: 0.5 };
         let color;
         if      (type === 'calor_mc')     color = colorMCLugar(d.mc_lugar);
         else if (type === 'lugar1')       color = colorGanador(d.ganador_1);
