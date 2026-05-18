@@ -249,6 +249,27 @@
     .iw-img { display: block; width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; cursor: pointer; }
     .iw-ocr { font-size: 10px; color: var(--text-3); background: #f4f3ee; border-radius: 4px; padding: 4px 6px; margin-top: 4px; max-height: 80px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; font-family: "IBM Plex Mono",monospace; }
     .iw-alerta-badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 10px; font-weight: 700; background: #fef3c7; color: #92400e; margin-bottom: 6px; }
+    /* ── Calendario mensual ─────────────────────── */
+    #cal-header-row { display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid #1e2d3d;flex-shrink:0 }
+    #cal-month-label { flex:1;text-align:center;font-weight:700;font-size:14px;color:#e2e8f0 }
+    .cal-nav-btn { background:rgba(255,255,255,.06);border:1px solid #2d3f54;border-radius:6px;color:#94a3b8;padding:4px 10px;cursor:pointer;font-size:13px }
+    .cal-nav-btn:hover { background:rgba(255,255,255,.12) }
+    .cal-today-btn { background:#1e3a8a;border:1px solid #3b5fc0;border-radius:6px;color:#93c5fd;padding:4px 8px;cursor:pointer;font-size:11px }
+    .cal-add-btn { background:#1e3a8a;border:none;border-radius:6px;color:#fff;padding:4px 10px;cursor:pointer;font-size:11px }
+    #cal-day-headers-wrap { padding:4px 8px 0;flex-shrink:0 }
+    #cal-day-headers { display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:2px }
+    .cal-day-hdr { text-align:center;font-size:10px;color:#64748b;font-weight:600;padding:3px 0;text-transform:uppercase }
+    #cal-grid-wrap { flex:1;overflow-y:auto;padding:0 8px 8px }
+    #cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:2px }
+    .cal-cell { background:#0d1822;border:1px solid #1e2d3d;border-radius:4px;min-height:72px;padding:3px;box-sizing:border-box }
+    .cal-cell.cal-today { border-color:#3b82f6;background:#0f1f3d }
+    .cal-cell.cal-other { opacity:.4 }
+    .cal-date-num { font-size:10px;color:#94a3b8;margin-bottom:2px;font-weight:600 }
+    .cal-cell.cal-today .cal-date-num { color:#60a5fa;background:#1e3a8a;border-radius:10px;display:inline-block;padding:0 5px }
+    .cal-ev { font-size:9px;color:#fff;border-radius:3px;padding:1px 4px;margin-bottom:1px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:1.6 }
+    .cal-ev:hover { filter:brightness(1.15) }
+    .cal-more { font-size:9px;color:#64748b;padding:1px 4px;cursor:default }
+    #cal-update-time { font-size:10px;color:#475569;padding:4px 12px;flex-shrink:0;border-top:1px solid #1e2d3d }
   </style>
 </head>
 <body>
@@ -307,6 +328,10 @@
       <button class="tb" onclick="switchTab(7)" title="Agenda de Eventos">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Agenda
+      </button>
+      <button class="tb" onclick="switchTab(8)" title="Calendario de Eventos">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 15 11 17 15 13"/></svg>
+        Calendario
       </button>
     </div>
 
@@ -633,6 +658,29 @@
       </div>
     </div>
 
+    <!-- Panel 8: Calendario mensual -->
+    <div class="panel" id="panel-8">
+      <div id="cal-header-row">
+        <button class="cal-nav-btn" onclick="prevCalMonth()">&#x2039;</button>
+        <span id="cal-month-label">—</span>
+        <button class="cal-nav-btn" onclick="nextCalMonth()">&#x203A;</button>
+        <button class="cal-today-btn" onclick="goToToday()">Hoy</button>
+        <button class="cal-add-btn" onclick="openAgendaForm()">+ Evento</button>
+      </div>
+      <div id="cal-day-headers-wrap">
+        <div id="cal-day-headers">
+          <div class="cal-day-hdr">Lu</div><div class="cal-day-hdr">Ma</div>
+          <div class="cal-day-hdr">Mi</div><div class="cal-day-hdr">Ju</div>
+          <div class="cal-day-hdr">Vi</div><div class="cal-day-hdr">Sa</div>
+          <div class="cal-day-hdr">Do</div>
+        </div>
+      </div>
+      <div id="cal-grid-wrap">
+        <div id="cal-grid"></div>
+      </div>
+      <div id="cal-update-time"></div>
+    </div>
+
   </div><!-- /sidebar -->
 
   <div id="map"></div>
@@ -672,12 +720,23 @@
     else if (prev === 4) { crtMarkers.forEach(m => m.setMap(null)); }
     else if (prev === 6) { Object.values(adminMarkers).flat().forEach(m => m.setMap(null)); }
     else if (prev === 7) { agendaMarkers.forEach(m => m.setMap(null)); }
+    if (prev === 8) {
+      document.getElementById('map').style.display = '';
+      document.getElementById('sidebar').style.width = '';
+      document.getElementById('sidebar').style.maxWidth = '';
+    }
 
     if (n === 2 && allData.length > 0) { applyFilters(); }
     else if (n === 3) { renderIncidenciaMarkers(incData); }
     else if (n === 4) { if (crtData) renderConteoMarkers(crtData.casillas || []); else loadConteo(); }
     else if (n === 6) { loadAdminPins(); }
     else if (n === 7) { loadAgendaEvents(); }
+    else if (n === 8) {
+      document.getElementById('map').style.display = 'none';
+      document.getElementById('sidebar').style.width = '100%';
+      document.getElementById('sidebar').style.maxWidth = '100%';
+      loadCalendarEvents();
+    }
   }
 
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
@@ -1570,6 +1629,97 @@
     }
   }
 
+
+  // ── CALENDARIO module ────────────────────────────────────────────────────────
+  let calCurrentDate = new Date();
+  let calAllEvents   = [];
+
+  async function loadCalendarEvents() {
+    const timeEl = document.getElementById('cal-update-time');
+    if (timeEl) timeEl.textContent = 'Cargando...';
+    try {
+      const res = await fetch(AGENDA_API + '?range=all');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const d = await res.json();
+      calAllEvents = d.events || [];
+      renderCalendar();
+      const t = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+      if (timeEl) timeEl.textContent = '✓ Actualizado: ' + t;
+    } catch(e) {
+      console.error('Calendar error:', e);
+      if (timeEl) timeEl.textContent = '⚠ Error al cargar';
+    }
+  }
+
+  function renderCalendar() {
+    const year  = calCurrentDate.getFullYear();
+    const month = calCurrentDate.getMonth();
+    const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                       'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const lbl = document.getElementById('cal-month-label');
+    if (lbl) lbl.textContent = MONTHS_ES[month] + ' ' + year;
+
+    const firstDay = new Date(year, month, 1);
+    let startDow = firstDay.getDay();
+    startDow = (startDow === 0) ? 6 : startDow - 1;
+
+    const daysInMonth   = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMon = new Date(year, month, 0).getDate();
+
+    const today = new Date();
+    const todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
+    const evByDay = {};
+    calAllEvents.forEach(ev => {
+      if (!ev.start || ev.status === 'cancelado') return;
+      const dayKey = ev.start.substring(0, 10);
+      if (!evByDay[dayKey]) evByDay[dayKey] = [];
+      evByDay[dayKey].push(ev);
+    });
+
+    const cells = [];
+    for (let i = startDow - 1; i >= 0; i--) cells.push({ day: daysInPrevMon - i, mo: month - 1, yr: year, other: true });
+    for (let d = 1; d <= daysInMonth; d++)   cells.push({ day: d, mo: month, yr: year, other: false });
+    let nd = 1;
+    while (cells.length < 42) cells.push({ day: nd++, mo: month + 1, yr: year, other: true });
+
+    const MAX_VIS = 3;
+    const grid = document.getElementById('cal-grid');
+    if (!grid) return;
+    grid.innerHTML = cells.map(cell => {
+      const m = cell.mo < 0 ? 11 : cell.mo > 11 ? 0 : cell.mo;
+      const y = cell.mo < 0 ? cell.yr - 1 : cell.mo > 11 ? cell.yr + 1 : cell.yr;
+      const dayStr = y + '-' + String(m+1).padStart(2,'0') + '-' + String(cell.day).padStart(2,'0');
+      const isToday = dayStr === todayStr;
+      const evs = (evByDay[dayStr] || []).sort((a,b) => (a.start||'') < (b.start||'') ? -1 : 1);
+
+      let chips = evs.slice(0, MAX_VIS).map(ev => {
+        const cfg = (typeof AGENDA_TYPES !== 'undefined' ? AGENDA_TYPES[ev.type] : null) || {color:'#607D8B', emoji:'⚫', label:'Evento'};
+        const time = ev.start && ev.start.length > 10 ? ev.start.substring(11,16) : '';
+        const txt  = (time ? time + ' ' : '') + cfg.emoji + ' ' + (ev.title || cfg.label);
+        const safe = JSON.stringify(ev).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        return '<span class="cal-ev" style="background:' + cfg.color + ';opacity:' + (ev.status==='finalizado'?'.6':'1') + '" onclick=\'openAgendaForm(' + safe + ')\'>' + txt + '</span>';
+      }).join('');
+
+      if (evs.length > MAX_VIS) chips += '<span class="cal-more">+' + (evs.length - MAX_VIS) + ' más</span>';
+
+      return '<div class="cal-cell' + (isToday?' cal-today':'') + (cell.other?' cal-other':'') + '">' +
+             '<div class="cal-date-num">' + cell.day + '</div>' + chips + '</div>';
+    }).join('');
+  }
+
+  function prevCalMonth() {
+    calCurrentDate = new Date(calCurrentDate.getFullYear(), calCurrentDate.getMonth() - 1, 1);
+    renderCalendar();
+  }
+  function nextCalMonth() {
+    calCurrentDate = new Date(calCurrentDate.getFullYear(), calCurrentDate.getMonth() + 1, 1);
+    renderCalendar();
+  }
+  function goToToday() {
+    calCurrentDate = new Date();
+    renderCalendar();
+  }
 
   // ── AGENDA module ───────────────────────────────────────────────────────────
   const AGENDA_API  = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/agenda-events';
