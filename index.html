@@ -1294,10 +1294,10 @@
       + (pin.section ? '<div style="font-size:12px;margin-bottom:2px"><b>Secci\u00f3n:</b> ' + pin.section + '</div>' : '')
       + (pin.description ? '<div style="font-size:12px;margin-bottom:4px">' + pin.description + '</div>' : '')
       + (pin.observations ? '<div style="font-size:11px;color:#78716c;margin-bottom:4px;font-style:italic">' + pin.observations + '</div>' : '')
-      + (pin.photo_url ? '<img src="' + pin.photo_url + '" style="width:100%;border-radius:6px;margin-bottom:6px;max-height:130px;object-fit:cover" onerror="this.style.display='none'">' : '')
+      + (pin.photo_url ? '<img src="' + pin.photo_url + '" style="width:100%;border-radius:6px;margin-bottom:6px;max-height:130px;object-fit:cover" onerror="this.style.display=\'none\'">' : '')
       + (pin.username ? '<div style="font-size:10px;color:#94a3b8;margin-bottom:8px">\u{1F4F1} ' + pin.username + ' \u00b7 ' + (pin.source || '') + '</div>' : '')
       + '<div style="display:flex;gap:6px">'
-      + '<button onclick='openAdminForm(' + pinJSON + ')' style="flex:1;padding:5px 8px;background:#1e3a8a;border:none;border-radius:5px;color:#fff;font-size:11px;cursor:pointer">\u270F\uFE0F Editar</button>'
+      + '<button onclick="openAdminForm(' + pinJSON + ')" style="flex:1;padding:5px 8px;background:#1e3a8a;border:none;border-radius:5px;color:#fff;font-size:11px;cursor:pointer">\u270F\uFE0F Editar</button>'
       + '<button onclick="deleteAdminRecord(\'' + pin.id + '\')" style="flex:1;padding:5px 8px;background:#7f1d1d;border:none;border-radius:5px;color:#fff;font-size:11px;cursor:pointer">\u{1F5D1}\uFE0F Eliminar</button>'
       + '</div></div>';
   }
