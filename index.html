@@ -304,6 +304,10 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Admin
       </button>
+      <button class="tb" onclick="switchTab(7)" title="Agenda de Eventos">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Agenda
+      </button>
     </div>
 
     <!-- Panel 1: Capas -->
@@ -560,7 +564,7 @@
         </div>
         <div class="kpi-grid-3" style="margin-top:6px">
           <div class="kpi-mini"><div class="kpi-mini-lbl">Promoc.</div><div class="kpi-mini-val" id="adm-k-promocional" style="color:#f472b6">—</div></div>
-          <div class="kpi-mini kpi-gris"><div class="kpi-mini-lbl">Marcadores</div><div class="kpi-mini-val" id="adm-k-marcador">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-lbl">Grupos</div><div class="kpi-mini-val" id="adm-k-grupo" style="color:#26C6DA">—</div></div>
           <div class="kpi-mini"><div class="kpi-mini-lbl">Total</div><div class="kpi-mini-val" id="adm-k-total" style="color:#e2e8f0">—</div></div>
         </div>
 
@@ -582,6 +586,50 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           Actualización cada 60s
         </div>
+      </div>
+    </div>
+
+    <!-- Panel 7: Agenda -->
+    <div class="panel" id="panel-7">
+      <div class="lg-title">Agenda de Eventos</div>
+      <div class="kpi-grid-3" style="margin-top:6px">
+        <div class="kpi-mini"><div class="kpi-mini-lbl">Brigadas</div><div class="kpi-mini-val" id="ag-k-brigada" style="color:#E65100">—</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-lbl">J. Vecinales</div><div class="kpi-mini-val" id="ag-k-junta_vecinal" style="color:#00897B">—</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-lbl">Eventos</div><div class="kpi-mini-val" id="ag-k-evento" style="color:#8E24AA">—</div></div>
+      </div>
+      <div class="kpi-grid-3" style="margin-top:6px">
+        <div class="kpi-mini"><div class="kpi-mini-lbl">Pub. Móvil</div><div class="kpi-mini-val" id="ag-k-publicidad_movil" style="color:#D81B60">—</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-lbl">Avanzadas</div><div class="kpi-mini-val" id="ag-k-avanzada" style="color:#3949AB">—</div></div>
+        <div class="kpi-mini kpi-gris"><div class="kpi-mini-lbl">Otros</div><div class="kpi-mini-val" id="ag-k-otro">—</div></div>
+      </div>
+      <div class="kpi-grid-3" style="margin-top:6px">
+        <div class="kpi-mini"><div class="kpi-mini-lbl">Esta semana</div><div class="kpi-mini-val" id="ag-k-week" style="color:#60a5fa">—</div></div>
+        <div style="flex:2"></div>
+        <div class="kpi-mini"><div class="kpi-mini-lbl">Total</div><div class="kpi-mini-val" id="ag-k-total" style="color:#e2e8f0">—</div></div>
+      </div>
+
+      <div class="flbl" style="margin-top:8px">Filtro de fechas</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+        <button class="ag-range-btn on" data-range="week" onclick="setAgendaRange('week')" style="padding:4px 10px;border-radius:12px;border:1px solid #60a5fa;background:#1e3a8a;color:#fff;font-size:10px;cursor:pointer">Esta semana</button>
+        <button class="ag-range-btn" data-range="day" onclick="setAgendaRange('day')" style="padding:4px 10px;border-radius:12px;border:1px solid #64748b;background:transparent;color:#94a3b8;font-size:10px;cursor:pointer">Hoy</button>
+        <button class="ag-range-btn" data-range="month" onclick="setAgendaRange('month')" style="padding:4px 10px;border-radius:12px;border:1px solid #64748b;background:transparent;color:#94a3b8;font-size:10px;cursor:pointer">Este mes</button>
+        <button class="ag-range-btn" data-range="all" onclick="setAgendaRange('all')" style="padding:4px 10px;border-radius:12px;border:1px solid #64748b;background:transparent;color:#94a3b8;font-size:10px;cursor:pointer">Todo</button>
+      </div>
+
+      <div class="flbl" style="margin-top:8px">Tipo de evento</div>
+      <div id="agenda-filter-btns" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"></div>
+
+      <button class="btn-act" style="margin-top:10px" onclick="openAgendaForm()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Agregar evento
+      </button>
+      <button class="btn-act" style="background:rgba(255,255,255,.06);margin-top:4px" onclick="loadAgendaEvents()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Actualizar
+      </button>
+      <div class="stats-foot" id="ag-update-time" style="margin-top:6px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Carga al abrir el panel
       </div>
     </div>
 
@@ -622,11 +670,14 @@
     if (prev === 2) { allMarkers.forEach(m => m.setMap(null)); if (clusterer) { clusterer.setMap(null); clusterer = null; } }
     else if (prev === 3) { incMarkers.forEach(m => m.setMap(null)); }
     else if (prev === 4) { crtMarkers.forEach(m => m.setMap(null)); }
+    else if (prev === 6) { Object.values(adminMarkers).flat().forEach(m => m.setMap(null)); }
+    else if (prev === 7) { agendaMarkers.forEach(m => m.setMap(null)); }
 
     if (n === 2 && allData.length > 0) { applyFilters(); }
     else if (n === 3) { renderIncidenciaMarkers(incData); }
     else if (n === 4) { if (crtData) renderConteoMarkers(crtData.casillas || []); else loadConteo(); }
     else if (n === 6) { loadAdminPins(); }
+    else if (n === 7) { loadAgendaEvents(); }
   }
 
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
@@ -1005,13 +1056,20 @@
     setInterval(() => { if (currentTab === 6) loadAdminPins(); }, 60000);
 
     map.addListener('click', e => {
-      if (!pickingLocationForAdmin) return;
       const lat = e.latLng.lat(), lng = e.latLng.lng();
-      const latEl = document.getElementById('adm-f-lat');
-      const lngEl = document.getElementById('adm-f-lng');
-      if (latEl) latEl.value = lat.toFixed(7);
-      if (lngEl) lngEl.value = lng.toFixed(7);
-      geocodeAdminLocation(lat, lng);
+      if (pickingLocationForAdmin) {
+        const latEl = document.getElementById('adm-f-lat');
+        const lngEl = document.getElementById('adm-f-lng');
+        if (latEl) latEl.value = lat.toFixed(7);
+        if (lngEl) lngEl.value = lng.toFixed(7);
+        geocodeAdminLocation(lat, lng);
+      } else if (pickingLocationForAgenda) {
+        const latEl = document.getElementById('ag-f-lat');
+        const lngEl = document.getElementById('ag-f-lng');
+        if (latEl) latEl.value = lat.toFixed(7);
+        if (lngEl) lngEl.value = lng.toFixed(7);
+        geocodeAgendaLocation(lat, lng);
+      }
     });
   }
 
@@ -1201,13 +1259,13 @@
     afiliado:    { color:'#1565C0', label:'Afiliado',     emoji:'\u{1F464}' },
     simpatizante:{ color:'#43A047', label:'Simpatizante', emoji:'\u2B50' },
     lider:       { color:'#F9A825', label:'L\u00edder',  emoji:'\u{1F451}' },
+    grupo:       { color:'#00838F', label:'Grupo',        emoji:'\u{1F465}' },
     apoyo:       { color:'#2E7D32', label:'Apoyo',        emoji:'\u{1F4E6}' },
     brigada:     { color:'#E65100', label:'Brigada',      emoji:'\u{1F6A9}' },
     barda:       { color:'#455A64', label:'Barda',        emoji:'\u{1F9F1}' },
     lona:        { color:'#6A1B9A', label:'Lona',         emoji:'\u{1F4CB}' },
     playera:     { color:'#C62828', label:'Playera',      emoji:'\u{1F455}' },
     promocional: { color:'#AD1457', label:'Promocional',  emoji:'\u{1F4E2}' },
-    marcador:    { color:'#212121', label:'Marcador',     emoji:'\u{1F4CD}' },
     otro:        { color:'#607D8B', label:'Otro',         emoji:'\u26AB' },
   };
 
@@ -1258,7 +1316,7 @@
     set('adm-k-lona',        kpis.lona);
     set('adm-k-playera',     kpis.playera);
     set('adm-k-promocional', kpis.promocional);
-    set('adm-k-marcador',    kpis.marcador);
+    set('adm-k-grupo',       kpis.grupo);
     set('adm-k-today',       kpis.today);
     set('adm-k-total',       kpis.total);
   }
@@ -1366,14 +1424,18 @@
 
   function updateAdminFormFields() {
     const type = (document.getElementById('adm-f-type') || {}).value || '';
-    const needSubtype = ['apoyo','brigada','barda','lona','promocional'].includes(type);
-    const needPhone   = ['afiliado','lider'].includes(type);
-    const needQty     = ['playera','promocional'].includes(type);
+    const needSubtype  = ['apoyo','brigada','barda','lona','promocional'].includes(type);
+    const needPhone    = ['afiliado','lider','grupo'].includes(type);
+    const needQty      = ['playera','promocional'].includes(type);
+    const isApoyo      = ['apoyo','brigada','barda','lona','playera','promocional','otro'].includes(type);
+    const isGrupo      = type === 'grupo';
     const s = id => { const el = document.getElementById(id); if (el) el.style.display = 'block'; };
     const h = id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; };
-    needSubtype ? s('adm-row-subtype') : h('adm-row-subtype');
-    needPhone   ? s('adm-row-phone')   : h('adm-row-phone');
-    needQty     ? s('adm-row-quantity'): h('adm-row-quantity');
+    needSubtype ? s('adm-row-subtype')     : h('adm-row-subtype');
+    needPhone   ? s('adm-row-phone')       : h('adm-row-phone');
+    needQty     ? s('adm-row-quantity')    : h('adm-row-quantity');
+    isApoyo     ? s('adm-row-beneficiary') : h('adm-row-beneficiary');
+    isGrupo     ? s('adm-row-grupo')       : h('adm-row-grupo');
   }
 
   function openAdminForm(pin) {
@@ -1387,7 +1449,10 @@
     const fields = {type:'record_type', subtype:'subtype', title:'title', phone:'phone',
       quantity:'quantity', desc:'description', obs:'observations',
       lat:'lat', lng:'lng', municipality:'municipality',
-      neighborhood:'neighborhood', address:'address', section:'section', status:'status'};
+      neighborhood:'neighborhood', address:'address', section:'section', status:'status',
+      'benef-type':'beneficiary_type', 'benef-name':'beneficiary_name',
+      'benef-phone':'beneficiary_phone', 'benef-id':'beneficiary_id',
+      'group-type':'group_type', 'member-count':'member_count'};
     Object.entries(fields).forEach(function([formKey, pinKey]) {
       const el = document.getElementById('adm-f-' + formKey);
       if (el) el.value = (pin && pin[pinKey] != null) ? pin[pinKey] : (formKey === 'status' ? 'activo' : '');
@@ -1444,8 +1509,10 @@
       });
     }
     const g = id => { const el = document.getElementById('adm-f-' + id); return el ? el.value : ''; };
+    const PERSONA_TYPES = ['afiliado','simpatizante','lider','grupo'];
     const payload = {
       record_type: type,
+      category: PERSONA_TYPES.includes(type) ? 'persona' : 'apoyo',
       subtype: g('subtype'), title: g('title'), phone: g('phone'),
       quantity: g('quantity'), description: g('desc'), observations: g('obs'),
       latitude: lat, longitude: lng,
@@ -1453,6 +1520,9 @@
       approximate_address: g('address'), electoral_section: g('section'),
       status: g('status') || 'activo',
       source_channel: 'dashboard',
+      beneficiary_type: g('benef-type'), beneficiary_name: g('benef-name'),
+      beneficiary_phone: g('benef-phone'), beneficiary_id: g('benef-id'),
+      group_type: g('group-type'), member_count: g('member-count'),
     };
     if (photo_base64) payload.photo_base64 = photo_base64;
     const isEdit = adminModalMode === 'edit';
@@ -1501,6 +1571,277 @@
   }
 
 
+  // ── AGENDA module ───────────────────────────────────────────────────────────
+  const AGENDA_API  = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/agenda-events';
+  const AGENDA_POST = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/agenda-event';
+
+  const AGENDA_TYPES = {
+    brigada:         { color:'#E65100', emoji:'🚩', label:'Brigada' },
+    junta_vecinal:   { color:'#00695C', emoji:'🏘️', label:'Junta Vecinal' },
+    evento:          { color:'#6A1B9A', emoji:'🎪', label:'Evento' },
+    publicidad_movil:{ color:'#AD1457', emoji:'📢', label:'Publicidad Móvil' },
+    avanzada:        { color:'#1A237E', emoji:'⚡', label:'Avanzada' },
+    otro:            { color:'#607D8B', emoji:'⚫', label:'Otro' },
+  };
+
+  let agendaData = [];
+  let agendaMarkers = [];
+  let agendaRange = 'week';
+  let agendaFilters = new Set(Object.keys(AGENDA_TYPES));
+  let agendaModalMode = 'create';
+  let currentAgendaId = null;
+  let pickingLocationForAgenda = false;
+
+  function makeAgendaIcon(type) {
+    const cfg = AGENDA_TYPES[type] || AGENDA_TYPES.otro;
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="36" viewBox="0 0 30 36"><path d="M15 0C6.7 0 0 6.7 0 15c0 10 15 21 15 21s15-11 15-21C30 6.7 23.3 0 15 0z" fill="' + cfg.color + '" stroke="#fff" stroke-width="1.5"/><rect x="8" y="8" width="14" height="14" rx="2" fill="none" stroke="#fff" stroke-width="1.5"/><line x1="11" y1="8" x2="11" y2="6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="19" y1="8" x2="19" y2="6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="12" x2="22" y2="12" stroke="#fff" stroke-width="1.5"/></svg>';
+    return {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+      scaledSize: new google.maps.Size(30, 36),
+      anchor: new google.maps.Point(15, 36)
+    };
+  }
+
+  async function loadAgendaEvents() {
+    const timeEl = document.getElementById('ag-update-time');
+    if (timeEl) timeEl.textContent = 'Cargando...';
+    try {
+      const res = await fetch(AGENDA_API + '?range=' + agendaRange);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const d = await res.json();
+      agendaData = d.events || [];
+      renderAgendaKPIs(d.kpis || {});
+      renderAgendaMarkers();
+      renderAgendaFilterBtns();
+      const t = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+      if (timeEl) timeEl.textContent = '✓ Actualizado: ' + t;
+    } catch(e) {
+      console.error('Agenda events error:', e);
+      if (timeEl) timeEl.textContent = '⚠ Error al cargar eventos';
+    }
+  }
+
+  function renderAgendaMarkers() {
+    agendaMarkers.forEach(m => m.setMap(null));
+    agendaMarkers = [];
+    agendaData.forEach(ev => {
+      if (!ev.lat || !ev.lng) return;
+      if (!agendaFilters.has(ev.type)) return;
+      if (ev.status === 'cancelado') return;
+      const marker = new google.maps.Marker({
+        position: { lat: parseFloat(ev.lat), lng: parseFloat(ev.lng) },
+        icon: makeAgendaIcon(ev.type),
+        map: (currentTab === 7) ? map : null,
+        title: ev.title || ev.type,
+      });
+      marker.addListener('click', () => {
+        infoWindow.setContent(buildAgendaPopup(ev));
+        infoWindow.open(map, marker);
+      });
+      agendaMarkers.push(marker);
+    });
+  }
+
+  function buildAgendaPopup(ev) {
+    const cfg = AGENDA_TYPES[ev.type] || AGENDA_TYPES.otro;
+    const fmtDate = str => {
+      if (!str) return '—';
+      try { return new Date(str).toLocaleString('es-MX', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+      catch(e) { return str; }
+    };
+    const evJson = JSON.stringify(ev).replace(/'/g, "\\'");
+    return '<div style="font-family:sans-serif;font-size:12px;max-width:240px">' +
+      '<div style="font-weight:700;font-size:13px;margin-bottom:6px">' + cfg.emoji + ' ' + (ev.title || cfg.label) + '</div>' +
+      '<div style="color:#555;margin-bottom:4px"><b>Tipo:</b> ' + cfg.label + '</div>' +
+      (ev.description ? '<div style="color:#555;margin-bottom:4px"><b>Desc:</b> ' + ev.description + '</div>' : '') +
+      '<div style="color:#555;margin-bottom:4px"><b>Inicio:</b> ' + fmtDate(ev.start) + '</div>' +
+      '<div style="color:#555;margin-bottom:4px"><b>Fin:</b> ' + fmtDate(ev.end) + '</div>' +
+      (ev.address ? '<div style="color:#555;margin-bottom:4px"><b>Dir:</b> ' + ev.address + '</div>' : '') +
+      '<div style="color:#555;margin-bottom:8px"><b>Estatus:</b> ' + (ev.status || 'programado') + '</div>' +
+      '<div style="display:flex;gap:6px">' +
+      '<button onclick=\'openAgendaForm(' + evJson + ')\' style="flex:1;padding:5px;background:#1e3a8a;border:none;border-radius:4px;color:#fff;font-size:11px;cursor:pointer">Editar</button>' +
+      '<button onclick="deleteAgendaRecord(\'' + ev.id + '\')" style="padding:5px 8px;background:rgba(127,29,29,.2);border:1px solid #7f1d1d;border-radius:4px;color:#fca5a5;font-size:11px;cursor:pointer">Cancelar</button>' +
+      '</div></div>';
+  }
+
+  function renderAgendaKPIs(kpis) {
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = (val || 0).toLocaleString('es-MX'); };
+    set('ag-k-brigada',          kpis.brigada);
+    set('ag-k-junta_vecinal',    kpis.junta_vecinal);
+    set('ag-k-evento',           kpis.evento);
+    set('ag-k-publicidad_movil', kpis.publicidad_movil);
+    set('ag-k-avanzada',         kpis.avanzada);
+    set('ag-k-otro',             kpis.otro);
+    set('ag-k-total',            kpis.total);
+    set('ag-k-week',             kpis.week);
+  }
+
+  function renderAgendaFilterBtns() {
+    const cont = document.getElementById('agenda-filter-btns');
+    if (!cont) return;
+    cont.innerHTML = '';
+    Object.entries(AGENDA_TYPES).forEach(([k, cfg]) => {
+      const btn = document.createElement('button');
+      const active = agendaFilters.has(k);
+      btn.style.cssText = 'padding:4px 8px;border-radius:12px;border:1px solid ' + cfg.color + ';background:' +
+        (active ? cfg.color : 'transparent') + ';color:' + (active ? '#fff' : cfg.color) + ';font-size:10px;cursor:pointer;margin:2px';
+      btn.textContent = cfg.emoji + ' ' + cfg.label;
+      btn.onclick = () => {
+        if (agendaFilters.has(k)) agendaFilters.delete(k); else agendaFilters.add(k);
+        renderAgendaMarkers();
+        renderAgendaFilterBtns();
+      };
+      cont.appendChild(btn);
+    });
+  }
+
+  function setAgendaRange(r) {
+    agendaRange = r;
+    document.querySelectorAll('.ag-range-btn').forEach(b => {
+      const isOn = b.dataset.range === r;
+      b.style.background = isOn ? '#1e3a8a' : 'transparent';
+      b.style.borderColor = isOn ? '#60a5fa' : '#64748b';
+      b.style.color = isOn ? '#fff' : '#94a3b8';
+    });
+    loadAgendaEvents();
+  }
+
+  function openAgendaForm(ev) {
+    agendaModalMode = ev ? 'edit' : 'create';
+    currentAgendaId = ev ? (ev.id || null) : null;
+    const titleEl = document.getElementById('ag-modal-title');
+    const delBtn  = document.getElementById('ag-delete-btn');
+    if (titleEl) titleEl.textContent = ev ? 'Editar Evento' : 'Nuevo Evento';
+    if (delBtn)  delBtn.style.display = ev ? 'block' : 'none';
+    const g = id => document.getElementById('ag-f-' + id);
+    if (g('type'))         g('type').value         = ev ? (ev.type || '') : '';
+    if (g('title'))        g('title').value        = ev ? (ev.title || '') : '';
+    if (g('desc'))         g('desc').value         = ev ? (ev.description || '') : '';
+    if (g('start'))        g('start').value        = ev && ev.start ? ev.start.substring(0,16) : '';
+    if (g('end'))          g('end').value          = ev && ev.end   ? ev.end.substring(0,16)   : '';
+    if (g('address'))      g('address').value      = ev ? (ev.address || '') : '';
+    if (g('municipality')) g('municipality').value = ev ? (ev.municipality || '') : '';
+    if (g('neighborhood')) g('neighborhood').value = ev ? (ev.neighborhood || '') : '';
+    if (g('section'))      g('section').value      = ev ? (ev.section || '') : '';
+    if (g('lat'))          g('lat').value          = ev ? (ev.lat || '') : '';
+    if (g('lng'))          g('lng').value          = ev ? (ev.lng || '') : '';
+    if (g('status'))       g('status').value       = ev ? (ev.status || 'programado') : 'programado';
+    document.getElementById('agenda-modal').style.display = 'flex';
+    pickingLocationForAgenda = true;
+    map.setOptions({ cursor: 'crosshair' });
+    infoWindow.close();
+  }
+
+  function closeAgendaForm() {
+    document.getElementById('agenda-modal').style.display = 'none';
+    pickingLocationForAgenda = false;
+    map.setOptions({ cursor: '' });
+  }
+
+  async function submitAgendaRecord() {
+    const g = id => { const el = document.getElementById('ag-f-' + id); return el ? el.value : ''; };
+    const type = g('type');
+    const lat  = parseFloat(g('lat'));
+    const lng  = parseFloat(g('lng'));
+    if (!type)                   return alert('Selecciona el tipo de evento.');
+    if (!g('title'))             return alert('Ingresa un título para el evento.');
+    if (!g('start'))             return alert('Ingresa la fecha y hora de inicio.');
+    if (isNaN(lat) || isNaN(lng)) return alert('Indica la ubicación. Haz clic en el mapa.');
+    const payload = {
+      event_type: type, title: g('title'), description: g('desc'),
+      address: g('address'), municipality: g('municipality'), neighborhood: g('neighborhood'),
+      electoral_section: g('section'), latitude: lat, longitude: lng,
+      start_datetime: g('start'), end_datetime: g('end'),
+      status: g('status') || 'programado', source_channel: 'dashboard',
+    };
+    const isEdit = agendaModalMode === 'edit';
+    if (isEdit && currentAgendaId) payload.id = currentAgendaId;
+    const method = isEdit ? 'PUT' : 'POST';
+    const saveBtn = document.getElementById('ag-save-btn');
+    try {
+      if (saveBtn) saveBtn.textContent = 'Guardando...';
+      const res = await fetch(AGENDA_POST, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const d = await res.json();
+      if (res.ok && d.success !== false) {
+        closeAgendaForm();
+        infoWindow.close();
+        loadAgendaEvents();
+      } else {
+        alert('Error al guardar: ' + (d.error || 'respuesta inesperada'));
+      }
+    } catch(e) {
+      alert('Error de conexión: ' + e.message);
+    } finally {
+      if (saveBtn) saveBtn.textContent = 'Guardar';
+    }
+  }
+
+  async function deleteAgendaRecord(id) {
+    if (!id) return;
+    if (!confirm('¿Cancelar este evento? Quedará como cancelado (reversible).')) return;
+    try {
+      const res = await fetch(AGENDA_POST, {
+        method: 'DELETE',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ id })
+      });
+      const d = await res.json();
+      if (res.ok && d.success !== false) {
+        infoWindow.close();
+        closeAgendaForm();
+        loadAgendaEvents();
+      } else {
+        alert('Error: ' + (d.error || 'respuesta inesperada'));
+      }
+    } catch(e) {
+      alert('Error de conexión: ' + e.message);
+    }
+  }
+
+  function geocodeAgendaLocation(lat, lng) {
+    if (isNaN(lat) || isNaN(lng) || Math.abs(lat) < 0.01 || Math.abs(lng) < 0.01) return;
+    const url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&key=' + API_KEY + '&language=es&region=MX';
+    fetch(url).then(r => r.json()).then(d => {
+      if (!d.results || !d.results.length) return;
+      const get = t => { const c = d.results[0].address_components.find(x => x.types.includes(t)); return c ? c.long_name : ''; };
+      const mun  = get('locality') || get('administrative_area_level_2');
+      const nb   = get('sublocality_level_1') || get('neighborhood') || get('sublocality');
+      const addr = d.results[0].formatted_address;
+      const set = (id, val) => { const el = document.getElementById('ag-f-' + id); if (el && val) el.value = val; };
+      set('municipality', mun);
+      set('neighborhood', nb);
+      set('address', addr);
+    }).catch(e => console.warn('Geocoding error:', e));
+  }
+
+  function lookupBeneficiary() {
+    const phoneEl = document.getElementById('adm-f-benef-phone');
+    const normalized = (phoneEl ? phoneEl.value : '').replace(/\D/g, '');
+    const div = document.getElementById('adm-benef-result');
+    if (normalized.length < 10) {
+      if (div) div.textContent = 'Ingresa al menos 10 dígitos.';
+      return;
+    }
+    if (div) div.textContent = 'Buscando...';
+    fetch(ADMIN_API).then(r => r.json()).then(d => {
+      const pins = d.pins || [];
+      const found = pins.find(p => String(p.phone || '').replace(/\D/g, '') === normalized);
+      if (found) {
+        const label = (ADMIN_TYPES[found.type] || {}).label || found.type;
+        if (div) div.innerHTML = '✅ <b>' + (found.title || found.person_name || '?') + '</b> (' + label + ')';
+        const set = (id, val) => { const el = document.getElementById('adm-f-' + id); if (el) el.value = val || ''; };
+        set('benef-type', found.type);
+        set('benef-name', found.title || found.person_name || '');
+        set('benef-id',   found.id || '');
+      } else {
+        if (div) div.textContent = '❌ No encontrado con ese teléfono.';
+        ['benef-type','benef-name','benef-id'].forEach(id => {
+          const el = document.getElementById('adm-f-' + id); if (el) el.value = '';
+        });
+      }
+    }).catch(e => { if (div) div.textContent = '⚠ Error al buscar: ' + e.message; });
+  }
+
 </script>
 
 <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
@@ -1524,7 +1865,7 @@
       <option value="lona">&#x1F4CB; Lona</option>
       <option value="playera">&#x1F455; Playera</option>
       <option value="promocional">&#x1F4E2; Promocional</option>
-      <option value="marcador">&#x1F4CD; Marcador</option>
+      <option value="grupo">&#x1F465; Grupo</option>
       <option value="otro">&#x26AB; Otro</option>
     </select>
 
@@ -1539,6 +1880,32 @@
     <div id="adm-row-phone" style="display:none">
       <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Tel&eacute;fono *</div>
       <input id="adm-f-phone" placeholder="Ej. 81 1234 5678" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+    </div>
+
+    <div id="adm-row-beneficiary" style="display:none">
+      <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Beneficiario (buscar por tel&eacute;fono)</div>
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <input id="adm-f-benef-phone" placeholder="10 d&iacute;gitos" style="flex:1;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;box-sizing:border-box">
+        <button onclick="lookupBeneficiary()" style="padding:8px 12px;background:#1e3a8a;border:none;border-radius:6px;color:#fff;font-size:12px;cursor:pointer">Buscar</button>
+      </div>
+      <div id="adm-benef-result" style="font-size:11px;color:#94a3b8;margin-bottom:8px"></div>
+      <input type="hidden" id="adm-f-benef-type">
+      <input type="hidden" id="adm-f-benef-name">
+      <input type="hidden" id="adm-f-benef-id">
+    </div>
+
+    <div id="adm-row-grupo" style="display:none">
+      <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Tipo de grupo</div>
+      <select id="adm-f-group-type" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+        <option value="">Selecciona...</option>
+        <option value="vecinal">Vecinal</option>
+        <option value="deportivo">Deportivo</option>
+        <option value="religioso">Religioso</option>
+        <option value="laboral">Laboral</option>
+        <option value="otro">Otro</option>
+      </select>
+      <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">N&uacute;mero de integrantes</div>
+      <input id="adm-f-member-count" type="number" min="1" placeholder="Cantidad aproximada" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
     </div>
 
     <div id="adm-row-quantity" style="display:none">
@@ -1586,6 +1953,68 @@
       <button onclick="closeAdminForm()" style="padding:9px 14px;background:rgba(255,255,255,.08);border:none;border-radius:6px;color:#94a3b8;font-size:12px;cursor:pointer">Cancelar</button>
     </div>
     <button id="adm-modal-del" onclick="deleteAdminRecord(document.getElementById('adm-modal-id').value)" style="display:none;width:100%;margin-top:8px;padding:9px;background:rgba(127,29,29,.2);border:1px solid #7f1d1d;border-radius:6px;color:#fca5a5;font-size:12px;cursor:pointer">&#x1F5D1;&#xFE0F; Eliminar registro</button>
+  </div>
+</div>
+
+<!-- ─── Modal AGENDA ────────────────────────────────────────────────────────── -->
+<div id="agenda-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#1a2332;border:1px solid #2d3f54;border-radius:10px;padding:20px;width:360px;max-height:90vh;overflow-y:auto;box-sizing:border-box">
+    <div id="ag-modal-title" style="font-weight:700;font-size:14px;color:#fff;margin-bottom:14px">Nuevo Evento</div>
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Tipo *</div>
+    <select id="ag-f-type" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+      <option value="">Selecciona tipo...</option>
+      <option value="brigada">🚩 Brigada</option>
+      <option value="junta_vecinal">🏘️ Junta Vecinal</option>
+      <option value="evento">🎪 Evento</option>
+      <option value="publicidad_movil">📢 Publicidad Móvil</option>
+      <option value="avanzada">⚡ Avanzada</option>
+      <option value="otro">⚫ Otro</option>
+    </select>
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">T&iacute;tulo *</div>
+    <input id="ag-f-title" placeholder="T&iacute;tulo del evento" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Descripci&oacute;n</div>
+    <textarea id="ag-f-desc" placeholder="Detalles del evento..." rows="2" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box;resize:vertical"></textarea>
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Inicio *</div>
+    <input id="ag-f-start" type="datetime-local" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Fin</div>
+    <input id="ag-f-end" type="datetime-local" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Ubicaci&oacute;n * <span style="font-size:9px;color:#60a5fa;font-weight:normal;text-transform:none">(haz clic en el mapa)</span></div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <input id="ag-f-lat" placeholder="Latitud" oninput="geocodeAgendaLocation(parseFloat(this.value),parseFloat(document.getElementById('ag-f-lng').value))" style="flex:1;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:11px;box-sizing:border-box">
+      <input id="ag-f-lng" placeholder="Longitud" oninput="geocodeAgendaLocation(parseFloat(document.getElementById('ag-f-lat').value),parseFloat(this.value))" style="flex:1;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:11px;box-sizing:border-box">
+    </div>
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Municipio <span style="font-weight:normal;text-transform:none">(auto)</span></div>
+    <input id="ag-f-municipality" placeholder="Se llena autom&aacute;ticamente" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Colonia <span style="font-weight:normal;text-transform:none">(auto)</span></div>
+    <input id="ag-f-neighborhood" placeholder="Se llena autom&aacute;ticamente" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Direcci&oacute;n <span style="font-weight:normal;text-transform:none">(auto)</span></div>
+    <input id="ag-f-address" placeholder="Se llena autom&aacute;ticamente" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Secci&oacute;n Electoral</div>
+    <input id="ag-f-section" type="number" min="1" placeholder="N&uacute;mero de secci&oacute;n (opcional)" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Estatus</div>
+    <select id="ag-f-status" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:14px;box-sizing:border-box">
+      <option value="programado">Programado</option>
+      <option value="en_curso">En curso</option>
+      <option value="finalizado">Finalizado</option>
+      <option value="cancelado">Cancelado</option>
+    </select>
+
+    <div style="display:flex;gap:8px">
+      <button id="ag-save-btn" onclick="submitAgendaRecord()" style="flex:1;padding:9px;background:#1e3a8a;border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer">Guardar</button>
+      <button onclick="closeAgendaForm()" style="padding:9px 14px;background:rgba(255,255,255,.08);border:none;border-radius:6px;color:#94a3b8;font-size:12px;cursor:pointer">Cancelar</button>
+    </div>
+    <button id="ag-delete-btn" onclick="deleteAgendaRecord(currentAgendaId)" style="display:none;width:100%;margin-top:8px;padding:9px;background:rgba(127,29,29,.2);border:1px solid #7f1d1d;border-radius:6px;color:#fca5a5;font-size:12px;cursor:pointer">&#x1F5D1;&#xFE0F; Cancelar evento</button>
   </div>
 </div>
 
