@@ -299,6 +299,11 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Stats
       </button>
+      <div style="width:1px;background:rgba(255,255,255,.1);margin:4px 0;align-self:stretch"></div>
+      <button class="tb" onclick="switchTab(6)" title="Admin Territorial">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Admin
+      </button>
     </div>
 
     <!-- Panel 1: Capas -->
@@ -535,6 +540,51 @@
       </div>
     </div>
 
+    <!-- Panel 6: Admin Territorial -->
+    <div class="panel" id="panel-6">
+      <div id="p-admin">
+        <div class="kpi-grid-3">
+          <div class="kpi-mini"><div class="kpi-mini-lbl">Afiliados</div><div class="kpi-mini-val" id="adm-k-afiliado" style="color:#60a5fa">—</div></div>
+          <div class="kpi-mini kpi-verde"><div class="kpi-mini-lbl">Simpatizantes</div><div class="kpi-mini-val" id="adm-k-simpatizante">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-lbl">Líderes</div><div class="kpi-mini-val" id="adm-k-lider" style="color:#F9A825">—</div></div>
+        </div>
+        <div class="kpi-grid-3" style="margin-top:6px">
+          <div class="kpi-mini kpi-nar"><div class="kpi-mini-lbl">Brigadas</div><div class="kpi-mini-val" id="adm-k-brigada">—</div></div>
+          <div class="kpi-mini kpi-verde"><div class="kpi-mini-lbl">Apoyos</div><div class="kpi-mini-val" id="adm-k-apoyo">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-lbl">Hoy</div><div class="kpi-mini-val" id="adm-k-today" style="color:#c084fc">—</div></div>
+        </div>
+        <div class="kpi-grid-3" style="margin-top:6px">
+          <div class="kpi-mini kpi-gris"><div class="kpi-mini-lbl">Bardas</div><div class="kpi-mini-val" id="adm-k-barda">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-lbl">Lonas</div><div class="kpi-mini-val" id="adm-k-lona" style="color:#a78bfa">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-lbl">Playeras</div><div class="kpi-mini-val" id="adm-k-playera" style="color:#f87171">—</div></div>
+        </div>
+        <div class="kpi-grid-3" style="margin-top:6px">
+          <div class="kpi-mini"><div class="kpi-mini-lbl">Promoc.</div><div class="kpi-mini-val" id="adm-k-promocional" style="color:#f472b6">—</div></div>
+          <div class="kpi-mini kpi-gris"><div class="kpi-mini-lbl">Marcadores</div><div class="kpi-mini-val" id="adm-k-marcador">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-lbl">Total</div><div class="kpi-mini-val" id="adm-k-total" style="color:#e2e8f0">—</div></div>
+        </div>
+
+        <div class="flbl" style="margin-top:8px">Filtrar por tipo</div>
+        <div id="adm-filter-btns" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"></div>
+
+        <div class="flbl" style="margin-top:10px">Capas en mapa</div>
+        <div id="adm-layers" style="display:flex;flex-direction:column;gap:3px;margin-top:4px"></div>
+
+        <button class="btn-act" style="margin-top:10px" onclick="openAdminForm()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Agregar registro
+        </button>
+        <button class="btn-act" style="background:rgba(255,255,255,.06);margin-top:4px" onclick="loadAdminPins()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Actualizar
+        </button>
+        <div class="stats-foot" id="adm-update-time" style="margin-top:6px">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Actualización cada 60s
+        </div>
+      </div>
+    </div>
+
   </div><!-- /sidebar -->
 
   <div id="map"></div>
@@ -576,6 +626,7 @@
     if (n === 2 && allData.length > 0) { applyFilters(); }
     else if (n === 3) { renderIncidenciaMarkers(incData); }
     else if (n === 4) { if (crtData) renderConteoMarkers(crtData.casillas || []); else loadConteo(); }
+    else if (n === 6) { loadAdminPins(); }
   }
 
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
@@ -951,6 +1002,17 @@
     setInterval(() => loadData(false), AUTO_REFRESH_MS);
     setInterval(() => loadIncidencias(), 30000);
     setInterval(() => loadConteo(), 30000);
+    setInterval(() => { if (currentTab === 6) loadAdminPins(); }, 60000);
+
+    map.addListener('click', e => {
+      if (!pickingLocationForAdmin) return;
+      const lat = e.latLng.lat(), lng = e.latLng.lng();
+      const latEl = document.getElementById('adm-f-lat');
+      const lngEl = document.getElementById('adm-f-lng');
+      if (latEl) latEl.value = lat.toFixed(7);
+      if (lngEl) lngEl.value = lng.toFixed(7);
+      geocodeAdminLocation(lat, lng);
+    });
   }
 
   // ── C · Análisis Electoral 2024 ─────────────────────────────────────────────
@@ -1128,10 +1190,405 @@
     ELEC_LAYERS[key].setMap(map);
   }
 
+  // ─── ADMIN MODULE ───────────────────────────────────────────────────────────
+  const MAPS_KEY   = 'AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI';
+  const ADMIN_API  = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/admin-pins';
+  const ADMIN_POST = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/admin-record';
+  const ADMIN_PUT  = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/admin-record-update';
+  const ADMIN_DEL  = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/admin-record-delete';
+
+  const ADMIN_TYPES = {
+    afiliado:    { color:'#1565C0', label:'Afiliado',     emoji:'\u{1F464}' },
+    simpatizante:{ color:'#43A047', label:'Simpatizante', emoji:'\u2B50' },
+    lider:       { color:'#F9A825', label:'L\u00edder',  emoji:'\u{1F451}' },
+    apoyo:       { color:'#2E7D32', label:'Apoyo',        emoji:'\u{1F4E6}' },
+    brigada:     { color:'#E65100', label:'Brigada',      emoji:'\u{1F6A9}' },
+    barda:       { color:'#455A64', label:'Barda',        emoji:'\u{1F9F1}' },
+    lona:        { color:'#6A1B9A', label:'Lona',         emoji:'\u{1F4CB}' },
+    playera:     { color:'#C62828', label:'Playera',      emoji:'\u{1F455}' },
+    promocional: { color:'#AD1457', label:'Promocional',  emoji:'\u{1F4E2}' },
+    marcador:    { color:'#212121', label:'Marcador',     emoji:'\u{1F4CD}' },
+    otro:        { color:'#607D8B', label:'Otro',         emoji:'\u26AB' },
+  };
+
+  let adminPins = [];
+  let adminMarkers = {};
+  let adminFilters = new Set(Object.keys(ADMIN_TYPES));
+  let pickingLocationForAdmin = false;
+  let adminModalMode = 'create';
+
+  function makeAdminIcon(type) {
+    const cfg = ADMIN_TYPES[type] || ADMIN_TYPES.otro;
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="36" viewBox="0 0 30 36"><path d="M15 0C6.7 0 0 6.7 0 15c0 10 15 21 15 21s15-11 15-21C30 6.7 23.3 0 15 0z" fill="' + cfg.color + '" stroke="#fff" stroke-width="1.5"/><text x="15" y="21" text-anchor="middle" font-size="13" fill="#fff">' + cfg.emoji + '</text></svg>';
+    return {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+      scaledSize: new google.maps.Size(30, 36),
+      anchor: new google.maps.Point(15, 36)
+    };
+  }
+
+  async function loadAdminPins() {
+    const timeEl = document.getElementById('adm-update-time');
+    if (timeEl) timeEl.textContent = 'Cargando...';
+    try {
+      const res = await fetch(ADMIN_API);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const d = await res.json();
+      adminPins = d.pins || [];
+      renderAdminKPIs(d.kpis || {});
+      renderAdminMarkers();
+      renderAdminFilterBtns();
+      renderAdminLayerToggles();
+      const t = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+      if (timeEl) timeEl.textContent = '\u2713 Actualizado: ' + t;
+    } catch(e) {
+      console.error('Admin pins error:', e);
+      if (timeEl) timeEl.textContent = '\u26A0 Error al cargar pins';
+    }
+  }
+
+  function renderAdminKPIs(kpis) {
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = (val || 0).toLocaleString('es-MX'); };
+    set('adm-k-afiliado',    kpis.afiliado);
+    set('adm-k-simpatizante',kpis.simpatizante);
+    set('adm-k-lider',       kpis.lider);
+    set('adm-k-brigada',     kpis.brigada);
+    set('adm-k-apoyo',       kpis.apoyo);
+    set('adm-k-barda',       kpis.barda);
+    set('adm-k-lona',        kpis.lona);
+    set('adm-k-playera',     kpis.playera);
+    set('adm-k-promocional', kpis.promocional);
+    set('adm-k-marcador',    kpis.marcador);
+    set('adm-k-today',       kpis.today);
+    set('adm-k-total',       kpis.total);
+  }
+
+  function renderAdminMarkers() {
+    Object.values(adminMarkers).flat().forEach(m => m.setMap(null));
+    adminMarkers = {};
+    Object.keys(ADMIN_TYPES).forEach(t => { adminMarkers[t] = []; });
+    adminPins.forEach(pin => {
+      if (!pin.lat || !pin.lng) return;
+      const marker = new google.maps.Marker({
+        position: { lat: pin.lat, lng: pin.lng },
+        icon: makeAdminIcon(pin.type),
+        title: pin.title || pin.type,
+        map: adminFilters.has(pin.type) ? map : null,
+      });
+      marker.addListener('click', () => {
+        infoWindow.setContent(buildAdminPopup(pin));
+        infoWindow.open(map, marker);
+      });
+      if (adminMarkers[pin.type]) adminMarkers[pin.type].push(marker);
+    });
+  }
+
+  function buildAdminPopup(pin) {
+    const cfg = ADMIN_TYPES[pin.type] || ADMIN_TYPES.otro;
+    const pinJSON = JSON.stringify(pin).replace(/\\/g,'\\\\').replace(/"/g,'&quot;');
+    return '<div style="min-width:220px;max-width:280px;padding:8px;font-family:IBM Plex Sans,sans-serif">'
+      + '<div style="font-weight:700;font-size:14px;color:#1c1917;margin-bottom:2px">' + cfg.emoji + ' ' + (pin.title || cfg.label) + '</div>'
+      + '<div style="font-size:11px;color:#78716c;margin-bottom:6px">' + cfg.label + (pin.subtype ? ' \u00b7 ' + pin.subtype : '') + ' \u00b7 ' + (pin.date || '') + '</div>'
+      + (pin.municipality ? '<div style="font-size:12px;margin-bottom:2px"><b>Municipio:</b> ' + pin.municipality + '</div>' : '')
+      + (pin.neighborhood ? '<div style="font-size:12px;margin-bottom:2px"><b>Colonia:</b> ' + pin.neighborhood + '</div>' : '')
+      + (pin.section ? '<div style="font-size:12px;margin-bottom:2px"><b>Secci\u00f3n:</b> ' + pin.section + '</div>' : '')
+      + (pin.description ? '<div style="font-size:12px;margin-bottom:4px">' + pin.description + '</div>' : '')
+      + (pin.observations ? '<div style="font-size:11px;color:#78716c;margin-bottom:4px;font-style:italic">' + pin.observations + '</div>' : '')
+      + (pin.photo_url ? '<img src="' + pin.photo_url + '" style="width:100%;border-radius:6px;margin-bottom:6px;max-height:130px;object-fit:cover" onerror="this.style.display='none'">' : '')
+      + (pin.username ? '<div style="font-size:10px;color:#94a3b8;margin-bottom:8px">\u{1F4F1} ' + pin.username + ' \u00b7 ' + (pin.source || '') + '</div>' : '')
+      + '<div style="display:flex;gap:6px">'
+      + '<button onclick='openAdminForm(' + pinJSON + ')' style="flex:1;padding:5px 8px;background:#1e3a8a;border:none;border-radius:5px;color:#fff;font-size:11px;cursor:pointer">\u270F\uFE0F Editar</button>'
+      + '<button onclick="deleteAdminRecord(\'' + pin.id + '\')" style="flex:1;padding:5px 8px;background:#7f1d1d;border:none;border-radius:5px;color:#fff;font-size:11px;cursor:pointer">\u{1F5D1}\uFE0F Eliminar</button>'
+      + '</div></div>';
+  }
+
+  function toggleAdminType(type) {
+    if (adminFilters.has(type)) {
+      adminFilters.delete(type);
+      (adminMarkers[type] || []).forEach(m => m.setMap(null));
+    } else {
+      adminFilters.add(type);
+      (adminMarkers[type] || []).forEach(m => m.setMap(map));
+    }
+    document.querySelectorAll('.adm-filter-btn[data-type="' + type + '"]').forEach(b => {
+      const cfg = ADMIN_TYPES[type];
+      const active = adminFilters.has(type);
+      b.style.background = active ? cfg.color + '33' : 'transparent';
+    });
+    document.querySelectorAll('.adm-layer-chk[data-type="' + type + '"]').forEach(cb => cb.checked = adminFilters.has(type));
+  }
+
+  function renderAdminFilterBtns() {
+    const container = document.getElementById('adm-filter-btns');
+    if (!container) return;
+    container.innerHTML = Object.entries(ADMIN_TYPES).map(function([t, cfg]) {
+      const count = adminPins.filter(p => p.type === t).length;
+      const active = adminFilters.has(t);
+      return '<button class="adm-filter-btn" data-type="' + t + '" onclick="toggleAdminType(\'' + t + '\')"'
+        + ' style="padding:3px 8px;border-radius:12px;border:1px solid ' + cfg.color + ';'
+        + 'background:' + (active ? cfg.color + '33' : 'transparent') + ';'
+        + 'color:' + cfg.color + ';font-size:10px;cursor:pointer;font-weight:600">'
+        + cfg.emoji + ' ' + cfg.label + ' <span style="opacity:.7">' + count + '</span></button>';
+    }).join('');
+  }
+
+  function renderAdminLayerToggles() {
+    const container = document.getElementById('adm-layers');
+    if (!container) return;
+    container.innerHTML = Object.entries(ADMIN_TYPES).map(function([t, cfg]) {
+      return '<div class="li" style="padding-left:0">'
+        + '<label class="tog"><input type="checkbox" class="adm-layer-chk" data-type="' + t + '" '
+        + (adminFilters.has(t) ? 'checked' : '') + ' onchange="toggleAdminType(\'' + t + '\')"><span class="tog-sl"></span></label>'
+        + '<span class="swatch" style="background:' + cfg.color + '"></span>'
+        + '<span class="li-name">' + cfg.emoji + ' ' + cfg.label + '</span></div>';
+    }).join('');
+  }
+
+  async function geocodeAdminLocation(lat, lng) {
+    try {
+      const url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&key=' + MAPS_KEY + '&language=es&region=MX';
+      const res = await fetch(url);
+      const d = await res.json();
+      if (d.status !== 'OK' || !d.results.length) return;
+      const comps = d.results[0].address_components;
+      const get = type => ((comps.find(c => c.types.includes(type)) || {}).long_name || '');
+      const mun  = get('locality') || get('administrative_area_level_2');
+      const nb   = get('sublocality_level_1') || get('neighborhood') || get('sublocality');
+      const addr = d.results[0].formatted_address;
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      set('adm-f-municipality', mun);
+      set('adm-f-neighborhood', nb);
+      set('adm-f-address', addr);
+    } catch(e) {
+      console.warn('Geocoding error:', e);
+    }
+  }
+
+  function updateAdminFormFields() {
+    const type = (document.getElementById('adm-f-type') || {}).value || '';
+    const needSubtype = ['apoyo','brigada','barda','lona','promocional'].includes(type);
+    const needPhone   = ['afiliado','lider'].includes(type);
+    const needQty     = ['playera','promocional'].includes(type);
+    const s = id => { const el = document.getElementById(id); if (el) el.style.display = 'block'; };
+    const h = id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; };
+    needSubtype ? s('adm-row-subtype') : h('adm-row-subtype');
+    needPhone   ? s('adm-row-phone')   : h('adm-row-phone');
+    needQty     ? s('adm-row-quantity'): h('adm-row-quantity');
+  }
+
+  function openAdminForm(pin) {
+    adminModalMode = pin ? 'edit' : 'create';
+    const titleEl = document.getElementById('adm-modal-title');
+    const delBtn  = document.getElementById('adm-modal-del');
+    if (titleEl) titleEl.textContent = pin ? 'Editar Registro' : 'Nuevo Registro Territorial';
+    if (delBtn)  delBtn.style.display = pin ? 'block' : 'none';
+    const idEl = document.getElementById('adm-modal-id');
+    if (idEl) idEl.value = pin ? (pin.id || '') : '';
+    const fields = {type:'record_type', subtype:'subtype', title:'title', phone:'phone',
+      quantity:'quantity', desc:'description', obs:'observations',
+      lat:'lat', lng:'lng', municipality:'municipality',
+      neighborhood:'neighborhood', address:'address', section:'section', status:'status'};
+    Object.entries(fields).forEach(function([formKey, pinKey]) {
+      const el = document.getElementById('adm-f-' + formKey);
+      if (el) el.value = (pin && pin[pinKey] != null) ? pin[pinKey] : (formKey === 'status' ? 'activo' : '');
+    });
+    // Sobreescribir lat/lng desde pin directamente
+    if (pin) {
+      const latEl = document.getElementById('adm-f-lat'); if (latEl && pin.lat) latEl.value = pin.lat;
+      const lngEl = document.getElementById('adm-f-lng'); if (lngEl && pin.lng) lngEl.value = pin.lng;
+    }
+    const prev = document.getElementById('adm-f-photo-preview');
+    if (prev) { prev.style.display = (pin && pin.photo_url) ? 'block' : 'none'; if (pin && pin.photo_url) prev.src = pin.photo_url; }
+    const photoIn = document.getElementById('adm-f-photo');
+    if (photoIn) photoIn.value = '';
+    updateAdminFormFields();
+    document.getElementById('adm-modal').style.display = 'flex';
+    pickingLocationForAdmin = true;
+    map.setOptions({ cursor: 'crosshair' });
+  }
+
+  function closeAdminForm() {
+    document.getElementById('adm-modal').style.display = 'none';
+    pickingLocationForAdmin = false;
+    map.setOptions({ cursor: '' });
+  }
+
+  function previewAdminPhoto(input) {
+    const prev = document.getElementById('adm-f-photo-preview');
+    if (!prev) return;
+    if (input.files && input.files[0]) {
+      const r = new FileReader();
+      r.onload = e => { prev.src = e.target.result; prev.style.display = 'block'; };
+      r.readAsDataURL(input.files[0]);
+    } else {
+      prev.style.display = 'none';
+    }
+  }
+
+  async function submitAdminRecord() {
+    const typeEl = document.getElementById('adm-f-type');
+    const latEl  = document.getElementById('adm-f-lat');
+    const lngEl  = document.getElementById('adm-f-lng');
+    const type   = typeEl ? typeEl.value : '';
+    const lat    = latEl  ? parseFloat(latEl.value)  : NaN;
+    const lng    = lngEl  ? parseFloat(lngEl.value) : NaN;
+    if (!type)       return alert('Selecciona el tipo de registro.');
+    if (!lat || !lng || isNaN(lat) || isNaN(lng)) return alert('Indica la ubicaci\u00f3n. Haz clic en el mapa o escribe las coordenadas.');
+    const photoInput = document.getElementById('adm-f-photo');
+    let photo_base64 = null;
+    if (photoInput && photoInput.files && photoInput.files.length > 0) {
+      photo_base64 = await new Promise(res => {
+        const r = new FileReader();
+        r.onload = e => res(e.target.result.split(',')[1]);
+        r.readAsDataURL(photoInput.files[0]);
+      });
+    }
+    const g = id => { const el = document.getElementById('adm-f-' + id); return el ? el.value : ''; };
+    const payload = {
+      record_type: type,
+      subtype: g('subtype'), title: g('title'), phone: g('phone'),
+      quantity: g('quantity'), description: g('desc'), observations: g('obs'),
+      latitude: lat, longitude: lng,
+      municipality: g('municipality'), neighborhood: g('neighborhood'),
+      approximate_address: g('address'), electoral_section: g('section'),
+      status: g('status') || 'activo',
+      source_channel: 'dashboard',
+    };
+    if (photo_base64) payload.photo_base64 = photo_base64;
+    const isEdit = adminModalMode === 'edit';
+    const idVal  = document.getElementById('adm-modal-id')?.value;
+    if (isEdit && idVal) payload.id = idVal;
+    const url    = isEdit ? ADMIN_PUT : ADMIN_POST;
+    const method = isEdit ? 'PUT' : 'POST';
+    const saveBtn = document.getElementById('adm-save-btn');
+    try {
+      if (saveBtn) saveBtn.textContent = 'Guardando...';
+      const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const d = await res.json();
+      if (res.ok && d.success !== false) {
+        closeAdminForm();
+        infoWindow.close();
+        loadAdminPins();
+      } else {
+        alert('Error al guardar: ' + (d.error || 'respuesta inesperada del servidor'));
+      }
+    } catch(e) {
+      alert('Error de conexi\u00f3n: ' + e.message);
+    } finally {
+      if (saveBtn) saveBtn.textContent = 'Guardar';
+    }
+  }
+
+  async function deleteAdminRecord(id) {
+    if (!id) return;
+    if (!confirm('\u00bfEliminar este registro del mapa? Quedar\u00e1 como inactivo (reversible).')) return;
+    try {
+      const res = await fetch(ADMIN_DEL, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ id, action: 'delete' })
+      });
+      const d = await res.json();
+      if (res.ok && d.success !== false) {
+        infoWindow.close();
+        loadAdminPins();
+      } else {
+        alert('Error al eliminar: ' + (d.error || 'respuesta inesperada'));
+      }
+    } catch(e) {
+      alert('Error de conexi\u00f3n: ' + e.message);
+    }
+  }
+
+
 </script>
 
 <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async" async defer></script>
+
+<!-- ─── Modal ADMIN ─────────────────────────────────────────────────────────── -->
+<div id="adm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#1a2332;border:1px solid #2d3f54;border-radius:10px;padding:20px;width:360px;max-height:90vh;overflow-y:auto;box-sizing:border-box">
+    <div id="adm-modal-title" style="font-weight:700;font-size:14px;color:#fff;margin-bottom:14px">Nuevo Registro Territorial</div>
+    <input type="hidden" id="adm-modal-id">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Tipo *</div>
+    <select id="adm-f-type" onchange="updateAdminFormFields()" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+      <option value="">Selecciona tipo...</option>
+      <option value="afiliado">&#x1F464; Afiliado</option>
+      <option value="simpatizante">&#x2B50; Simpatizante</option>
+      <option value="lider">&#x1F451; L&iacute;der</option>
+      <option value="apoyo">&#x1F4E6; Apoyo</option>
+      <option value="brigada">&#x1F6A9; Brigada</option>
+      <option value="barda">&#x1F9F1; Barda</option>
+      <option value="lona">&#x1F4CB; Lona</option>
+      <option value="playera">&#x1F455; Playera</option>
+      <option value="promocional">&#x1F4E2; Promocional</option>
+      <option value="marcador">&#x1F4CD; Marcador</option>
+      <option value="otro">&#x26AB; Otro</option>
+    </select>
+
+    <div id="adm-row-subtype" style="display:none">
+      <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Subtipo / Estatus</div>
+      <input id="adm-f-subtype" placeholder="ej. Despensa, Brigada m&eacute;dica, Instalada..." style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+    </div>
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Nombre / T&iacute;tulo</div>
+    <input id="adm-f-title" placeholder="Nombre completo o t&iacute;tulo del elemento" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div id="adm-row-phone" style="display:none">
+      <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Tel&eacute;fono *</div>
+      <input id="adm-f-phone" placeholder="Ej. 81 1234 5678" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+    </div>
+
+    <div id="adm-row-quantity" style="display:none">
+      <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Cantidad entregada</div>
+      <input id="adm-f-quantity" type="number" min="0" placeholder="0" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+    </div>
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Descripci&oacute;n</div>
+    <textarea id="adm-f-desc" placeholder="Descripci&oacute;n, beneficiario, n&uacute;mero de asistentes..." rows="2" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box;resize:vertical"></textarea>
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Observaciones</div>
+    <input id="adm-f-obs" placeholder="Observaciones adicionales (opcional)" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Ubicaci&oacute;n * <span style="font-size:9px;color:#60a5fa;font-weight:normal;text-transform:none">(haz clic en el mapa)</span></div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <input id="adm-f-lat" placeholder="Latitud" oninput="geocodeAdminLocation(parseFloat(this.value),parseFloat(document.getElementById('adm-f-lng').value))" style="flex:1;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:11px;box-sizing:border-box">
+      <input id="adm-f-lng" placeholder="Longitud" oninput="geocodeAdminLocation(parseFloat(document.getElementById('adm-f-lat').value),parseFloat(this.value))" style="flex:1;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:11px;box-sizing:border-box">
+    </div>
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Municipio <span style="font-weight:normal;text-transform:none">(auto)</span></div>
+    <input id="adm-f-municipality" placeholder="Se llena autom&aacute;ticamente" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Colonia <span style="font-weight:normal;text-transform:none">(auto)</span></div>
+    <input id="adm-f-neighborhood" placeholder="Se llena autom&aacute;ticamente" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Direcci&oacute;n <span style="font-weight:normal;text-transform:none">(auto)</span></div>
+    <input id="adm-f-address" placeholder="Se llena autom&aacute;ticamente" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Secci&oacute;n Electoral</div>
+    <input id="adm-f-section" type="number" min="1" placeholder="N&uacute;mero de secci&oacute;n (opcional)" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:8px;box-sizing:border-box">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Foto / Evidencia</div>
+    <input id="adm-f-photo" type="file" accept="image/*" onchange="previewAdminPhoto(this)" style="width:100%;padding:6px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#94a3b8;font-size:11px;margin-bottom:6px;box-sizing:border-box">
+    <img id="adm-f-photo-preview" src="" alt="preview" style="display:none;width:100%;border-radius:6px;margin-bottom:8px;max-height:120px;object-fit:cover">
+
+    <div style="font-size:10px;color:#64748b;margin-bottom:3px;text-transform:uppercase;font-weight:600">Estatus</div>
+    <select id="adm-f-status" style="width:100%;padding:8px;background:#0d1822;border:1px solid #2d3f54;border-radius:6px;color:#cbd5e1;font-size:12px;margin-bottom:14px;box-sizing:border-box">
+      <option value="activo">Activo</option>
+      <option value="pendiente">Pendiente</option>
+      <option value="inactivo">Inactivo</option>
+    </select>
+
+    <div style="display:flex;gap:8px">
+      <button id="adm-save-btn" onclick="submitAdminRecord()" style="flex:1;padding:9px;background:#1e3a8a;border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer">Guardar</button>
+      <button onclick="closeAdminForm()" style="padding:9px 14px;background:rgba(255,255,255,.08);border:none;border-radius:6px;color:#94a3b8;font-size:12px;cursor:pointer">Cancelar</button>
+    </div>
+    <button id="adm-modal-del" onclick="deleteAdminRecord(document.getElementById('adm-modal-id').value)" style="display:none;width:100%;margin-top:8px;padding:9px;background:rgba(127,29,29,.2);border:1px solid #7f1d1d;border-radius:6px;color:#fca5a5;font-size:12px;cursor:pointer">&#x1F5D1;&#xFE0F; Eliminar registro</button>
+  </div>
+</div>
+
 </body>
 </html>
 
