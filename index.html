@@ -270,9 +270,218 @@
     .cal-ev:hover { filter:brightness(1.15) }
     .cal-more { font-size:9px;color:#64748b;padding:1px 4px;cursor:default }
     #cal-update-time { font-size:10px;color:#475569;padding:4px 12px;flex-shrink:0;border-top:1px solid #1e2d3d }
+
+    /* ── TERRAXIS 3.0 Design Tokens ───────────────────────────────────────── */
+    :root {
+      --brand-navy: #0d2447;
+      --brand-navy-deep: #071428;
+      --brand-teal: #1ba888;
+      --brand-teal-bright: #3fd9b3;
+      --brand-gray: #5b6770;
+      /* Superficies light (default) */
+      --page-bg: #f3f5f8;
+      --surface: #ffffff;
+      --surface-2: #f0f2f6;
+      --border: #dde2eb;
+      --text-primary: #1a2332;
+      --text-2: #4a5568;
+      --text-3: #8896a5;
+      /* Nav (siempre oscuro) */
+      --nav-bg: #0d2447;
+      --nav-text: rgba(255,255,255,.65);
+      --nav-text-active: #ffffff;
+      --nav-active-bg: rgba(27,168,136,.18);
+      --nav-border: rgba(255,255,255,.08);
+      /* Topbar */
+      --topbar-bg: #ffffff;
+      --topbar-border: #dde2eb;
+    }
+    [data-theme="dark"] {
+      --page-bg: #060d18;
+      --surface: #0a1322;
+      --surface-2: #0f1c2e;
+      --border: #1e2d3d;
+      --text-primary: #e2e8f0;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --topbar-bg: #0a1322;
+      --topbar-border: #1e2d3d;
+    }
+
+    /* ── Login Screen ─────────────────────────────────────────────────────── */
+    #login-screen {
+      display:flex; position:fixed; inset:0; z-index:9999;
+    }
+    .login-panel-left {
+      flex:1; background:var(--brand-navy); display:flex; flex-direction:column;
+      align-items:center; justify-content:center; padding:48px; gap:24px;
+      color:#fff;
+    }
+    .login-brand {
+      display:flex; align-items:center; gap:12px; font-size:28px; font-weight:700;
+      letter-spacing:.04em;
+    }
+    .login-iso { width:44px; height:44px; object-fit:contain; }
+    .login-teal { color:var(--brand-teal); }
+    .login-version { font-size:13px; font-weight:400; color:rgba(255,255,255,.45); margin-left:4px; }
+    .login-tagline { font-size:22px; font-weight:600; line-height:1.45; text-align:center; max-width:360px; opacity:.92; }
+    .login-stats { font-size:12px; color:rgba(255,255,255,.45); letter-spacing:.06em; margin-top:8px; }
+    .login-panel-right {
+      width:420px; background:var(--page-bg,#f3f5f8); display:flex;
+      align-items:center; justify-content:center; padding:40px;
+    }
+    .login-form-card { width:100%; max-width:340px; }
+    .login-form-title { font-size:20px; font-weight:700; color:var(--text-primary,#1a2332); margin-bottom:24px; }
+    #login-error {
+      display:none; background:#fee2e2; border:1px solid #fca5a5; border-radius:6px;
+      padding:8px 12px; font-size:12px; color:#b91c1c; margin-bottom:12px;
+    }
+    .login-form-card input {
+      width:100%; padding:10px 14px; border:1px solid var(--border,#dde2eb);
+      border-radius:7px; font-size:14px; font-family:inherit; background:var(--surface,#fff);
+      color:var(--text-primary,#1a2332); box-sizing:border-box; margin-bottom:10px; outline:none;
+      transition:border-color .15s;
+    }
+    .login-form-card input:focus { border-color:var(--brand-teal); }
+    #login-btn {
+      width:100%; padding:11px; background:var(--brand-teal); border:none; border-radius:7px;
+      color:#fff; font-size:14px; font-weight:600; font-family:inherit; cursor:pointer;
+      margin-top:4px; transition:background .15s;
+    }
+    #login-btn:hover { background:#17967a; }
+    .login-disclaimer { font-size:11px; color:var(--text-3,#8896a5); margin-top:16px; text-align:center; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)}
+    }
+    .shake { animation:shake .4s ease; }
+
+    /* ── App Layout ───────────────────────────────────────────────────────── */
+    body[data-theme] { background:var(--page-bg); }
+    #app { flex:1; display:flex; overflow:hidden; background:var(--page-bg); }
+
+    /* ── Nav Rail ─────────────────────────────────────────────────────────── */
+    #tx-nav {
+      width:240px; min-width:240px; background:var(--nav-bg);
+      display:flex; flex-direction:column; flex-shrink:0; overflow:hidden;
+      transition:width .22s cubic-bezier(.4,0,.2,1), min-width .22s cubic-bezier(.4,0,.2,1);
+      border-right:1px solid var(--nav-border);
+    }
+    body.nav-collapsed #tx-nav { width:64px; min-width:64px; }
+    .nav-logo {
+      display:flex; align-items:center; padding:0 16px; height:56px; flex-shrink:0;
+      border-bottom:1px solid var(--nav-border); gap:10px;
+    }
+    .nav-iso { width:28px; height:28px; object-fit:contain; flex-shrink:0; }
+    .nav-wordmark { font-size:15px; font-weight:700; color:#fff; letter-spacing:.06em; flex:1; white-space:nowrap; overflow:hidden; }
+    .nav-teal { color:var(--brand-teal); }
+    .nav-toggle {
+      flex-shrink:0; background:none; border:none; color:rgba(255,255,255,.5);
+      font-size:18px; cursor:pointer; padding:4px; line-height:1; border-radius:4px;
+      transition:color .15s, background .15s;
+    }
+    .nav-toggle:hover { color:#fff; background:rgba(255,255,255,.08); }
+    .nav-items { flex:1; overflow-y:auto; overflow-x:hidden; padding:8px 0; }
+    .nav-items::-webkit-scrollbar { width:3px; }
+    .nav-items::-webkit-scrollbar-thumb { background:rgba(255,255,255,.15); border-radius:3px; }
+    .nav-group-label {
+      font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+      color:rgba(255,255,255,.3); padding:14px 20px 6px; white-space:nowrap; overflow:hidden;
+    }
+    body.nav-collapsed .nav-group-label { opacity:0; height:0; padding:0; overflow:hidden; }
+    .nav-item {
+      display:flex; align-items:center; gap:12px; width:100%; padding:9px 16px;
+      background:none; border:none; color:var(--nav-text); cursor:pointer; font-size:13px;
+      font-family:inherit; font-weight:500; text-align:left; white-space:nowrap;
+      border-left:3px solid transparent; transition:color .15s, background .15s, border-color .15s;
+      position:relative; overflow:hidden;
+    }
+    .nav-item svg { flex-shrink:0; width:18px; height:18px; }
+    .nav-label { flex:1; overflow:hidden; text-overflow:ellipsis; }
+    body.nav-collapsed .nav-label,
+    body.nav-collapsed .nav-wordmark,
+    body.nav-collapsed .nav-user-info { display:none; }
+    .nav-item:hover { color:var(--nav-text-active); background:rgba(255,255,255,.06); }
+    .nav-item.on {
+      color:var(--nav-text-active); background:var(--nav-active-bg);
+      border-left-color:var(--brand-teal);
+    }
+    .nav-badge-live {
+      font-size:9px; font-weight:700; letter-spacing:.05em;
+      background:var(--brand-teal); color:#fff; padding:2px 5px; border-radius:3px;
+      flex-shrink:0;
+    }
+    .nav-user {
+      display:flex; align-items:center; gap:10px; padding:12px 16px;
+      border-top:1px solid var(--nav-border); flex-shrink:0; overflow:hidden;
+    }
+    .nav-avatar {
+      width:32px; height:32px; border-radius:50%; background:var(--brand-teal);
+      display:flex; align-items:center; justify-content:center; font-size:11px;
+      font-weight:700; color:#fff; flex-shrink:0;
+    }
+    .nav-user-name { font-size:12px; font-weight:600; color:rgba(255,255,255,.9); display:block; white-space:nowrap; }
+    .nav-user-role { font-size:10px; color:rgba(255,255,255,.4); display:block; white-space:nowrap; }
+
+    /* ── Main Area ────────────────────────────────────────────────────────── */
+    #tx-main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+
+    /* ── Topbar ───────────────────────────────────────────────────────────── */
+    #tx-topbar {
+      height:56px; background:var(--topbar-bg); border-bottom:1px solid var(--topbar-border);
+      display:flex; align-items:center; gap:12px; padding:0 16px; flex-shrink:0; z-index:100;
+    }
+    .topbar-left { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+    .topbar-breadcrumb { font-size:12px; color:var(--text-3); white-space:nowrap; }
+    #topbar-section { font-size:13px; font-weight:600; color:var(--text-primary); }
+    #topbar-status {
+      font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px;
+      background:rgba(27,168,136,.1); color:var(--brand-teal); white-space:nowrap;
+    }
+    .topbar-search {
+      flex:1; max-width:400px; display:flex; align-items:center; gap:8px;
+      background:var(--surface-2,#f0f2f6); border:1px solid var(--border); border-radius:7px;
+      padding:0 12px; height:34px;
+    }
+    .topbar-search input {
+      flex:1; border:none; background:none; outline:none; font-size:12px;
+      color:var(--text-primary); font-family:inherit;
+    }
+    .topbar-search input::placeholder { color:var(--text-3); }
+    .topbar-search svg { color:var(--text-3); flex-shrink:0; }
+    .topbar-actions { display:flex; align-items:center; gap:8px; margin-left:auto; }
+    .topbar-btn {
+      display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:6px;
+      border:1px solid var(--border); background:var(--surface); color:var(--text-2);
+      font-size:12px; font-weight:500; font-family:inherit; cursor:pointer;
+      transition:background .15s, color .15s;
+    }
+    .topbar-btn:hover { background:var(--surface-2); color:var(--text-primary); }
+    .topbar-btn-refresh { display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:6px;
+      border:1px solid var(--border); background:var(--surface); color:var(--text-2);
+      font-size:12px; font-weight:500; font-family:inherit; cursor:pointer;
+      transition:background .15s;
+    }
+    .topbar-btn-refresh:hover { background:var(--surface-2); }
+    #last-update-tx { font-size:11px; color:var(--text-3); white-space:nowrap; }
+
+    /* ── Content Area ─────────────────────────────────────────────────────── */
+    #tx-content { flex:1; display:flex; overflow:hidden; }
+    #panel-area {
+      width:280px; min-width:280px; background:var(--sidebar-bg,#0d1822);
+      display:flex; flex-direction:column; flex-shrink:0; overflow:hidden;
+    }
+
+    /* ── Placeholder Panels ───────────────────────────────────────────────── */
+    .placeholder-panel {
+      flex:1; display:flex; flex-direction:column; align-items:center;
+      justify-content:center; gap:16px; padding:40px;
+    }
+    .placeholder-panel img { opacity:.25; width:120px; }
+    .placeholder-panel h3 { font-size:16px; font-weight:600; color:rgba(255,255,255,.6); margin:0; }
+    .placeholder-panel p { font-size:12px; color:rgba(255,255,255,.35); margin:0; text-align:center; }
   </style>
 </head>
-<body>
+<body data-theme="light">
 
 <div id="overlay">
   <div id="overlay-box">
@@ -282,58 +491,135 @@
   </div>
 </div>
 
-<!-- Topbar -->
-<div id="topbar">
-  <div id="tb-wordmark">TERRAXIS<em>3.0</em></div>
-  <div class="tb-sep"></div>
-  <div id="tb-title">Sistema Electoral · Nuevo León 2026</div>
-  <div id="tb-actions">
-    <button id="btn-refresh" onclick="loadData(true)">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-      Actualizar
-    </button>
-    <span id="last-update"></span>
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-panel-left">
+    <div class="login-brand">
+      <img src="assets/terraxis-iso.png" class="login-iso" alt="TERRAXIS" />
+      <span>TERRA<span class="login-teal">XIS</span></span>
+      <span class="login-version">v3.0</span>
+    </div>
+    <div class="login-tagline">"Defiende el voto.<br>Coordina el territorio.<br>Asegura el resultado."</div>
+    <div class="login-stats">68,941 secciones &middot; 162,847 casillas &middot; 32 estados</div>
+  </div>
+  <div class="login-panel-right">
+    <div class="login-form-card">
+      <div class="login-form-title">Panel Electoral</div>
+      <div id="login-error"></div>
+      <input id="login-email" type="email" placeholder="Correo electrónico" autocomplete="username" />
+      <input id="login-pass" type="password" placeholder="Contraseña" autocomplete="current-password" />
+      <button id="login-btn" onclick="doLogin()">Iniciar sesi&#xF3;n</button>
+      <p class="login-disclaimer">Uso exclusivo para an&#xe1;lisis territorial. &copy; 2026 TERRAXIS</p>
+    </div>
   </div>
 </div>
 
-<!-- App -->
-<div id="app">
-  <div id="sidebar">
-    <div id="tab-nav">
-      <button class="tb on" onclick="switchTab(1)" title="Capas">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        Capas
-      </button>
-      <button class="tb" onclick="switchTab(2)" title="Check In">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Check In
-      </button>
-      <button class="tb" onclick="switchTab(3)" title="Incidencias">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        Alertas
-      </button>
-      <button class="tb" onclick="switchTab(4)" title="Conteo Rápido">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        Conteo
-      </button>
-      <button class="tb" onclick="switchTab(5)" title="Estadísticas">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Stats
-      </button>
-      <div style="width:1px;background:rgba(255,255,255,.1);margin:4px 0;align-self:stretch"></div>
-      <button class="tb" onclick="switchTab(6)" title="Admin Territorial">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        Admin
-      </button>
-      <button class="tb" onclick="switchTab(7)" title="Agenda de Eventos">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Agenda
-      </button>
-      <button class="tb" onclick="switchTab(8)" title="Calendario de Eventos">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 15 11 17 15 13"/></svg>
-        Calendario
-      </button>
+<!-- App (oculto hasta login) -->
+<div id="app" style="display:none">
+
+  <!-- Nav Rail -->
+  <nav id="tx-nav">
+    <div class="nav-logo">
+      <img src="assets/terraxis-iso.png" class="nav-iso" alt="" />
+      <span class="nav-wordmark">TERRA<span class="nav-teal">XIS</span></span>
+      <button class="nav-toggle" onclick="toggleNav()" title="Colapsar menú">&#9776;</button>
     </div>
+    <div class="nav-items">
+
+      <!-- Sin grupo -->
+      <button class="tb nav-item" data-tab="9" onclick="switchTab(9)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Inicio</span>
+      </button>
+      <button class="tb nav-item on" data-tab="1" onclick="switchTab(1)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span class="nav-label">Mapa Electoral</span>
+      </button>
+      <button class="tb nav-item" data-tab="5" onclick="switchTab(5)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span class="nav-label">Estad&#xED;sticas</span>
+      </button>
+
+      <!-- Gestión de campaña -->
+      <div class="nav-group-label">Gesti&#xF3;n de campa&#xF1;a</div>
+      <button class="tb nav-item" data-tab="7" onclick="switchTab(7)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="nav-label">Tablero Electoral</span>
+      </button>
+      <button class="tb nav-item" data-tab="8" onclick="switchTab(8)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span class="nav-label">Calendario</span>
+      </button>
+      <button class="tb nav-item" data-tab="6" onclick="switchTab(6)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="nav-label">Registro</span>
+      </button>
+      <button class="tb nav-item" data-tab="10" onclick="switchTab(10)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="nav-label">Comunidad</span>
+      </button>
+
+      <!-- Jornada electoral -->
+      <div class="nav-group-label">Jornada electoral</div>
+      <button class="tb nav-item" data-tab="2" onclick="switchTab(2)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span class="nav-label">Check In</span>
+        <span class="nav-badge-live">LIVE</span>
+      </button>
+      <button class="tb nav-item" data-tab="3" onclick="switchTab(3)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span class="nav-label">Alertas</span>
+        <span class="nav-badge-live">LIVE</span>
+      </button>
+      <button class="tb nav-item" data-tab="4" onclick="switchTab(4)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span class="nav-label">Conteo Interno</span>
+        <span class="nav-badge-live">LIVE</span>
+      </button>
+      <button class="tb nav-item" data-tab="11" onclick="switchTab(11)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="nav-label">Auditor&#xED;a</span>
+        <span class="nav-badge-live">LIVE</span>
+      </button>
+
+    </div><!-- /nav-items -->
+    <div class="nav-user">
+      <div class="nav-avatar">AC</div>
+      <div class="nav-user-info">
+        <span class="nav-user-name">Admin Central</span>
+        <span class="nav-user-role">Administrador</span>
+      </div>
+    </div>
+  </nav><!-- /tx-nav -->
+
+  <!-- Main Content -->
+  <div id="tx-main">
+
+    <!-- Topbar -->
+    <header id="tx-topbar">
+      <div class="topbar-left">
+        <span class="topbar-breadcrumb">Elecci&#xF3;n 2026 &rsaquo;</span>
+        <span id="topbar-section">Mapa Electoral</span>
+        <span id="topbar-status">&#x25CF; EN L&#xCD;NEA</span>
+      </div>
+      <div class="topbar-search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input placeholder="Buscar secci&#xF3;n, casilla, direcci&#xF3;n&#x2026;" />
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-btn-refresh" onclick="loadData(true)" title="Actualizar datos">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Actualizar
+        </button>
+        <span id="last-update"></span>
+        <button class="topbar-btn" id="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">&#x2600;</button>
+        <button class="topbar-btn" onclick="doLogout()" title="Cerrar sesi&#xF3;n">&#x21A9; Salir</button>
+      </div>
+    </header><!-- /tx-topbar -->
+
+    <!-- Content -->
+    <div id="tx-content">
+      <div id="panel-area">
 
     <!-- Panel 1: Capas -->
     <div class="panel on" id="panel-1">
@@ -681,9 +967,39 @@
       <div id="cal-update-time"></div>
     </div>
 
-  </div><!-- /sidebar -->
 
-  <div id="map"></div>
+    <!-- Panel 9: Inicio (placeholder) -->
+    <div class="panel" id="panel-9">
+      <div class="placeholder-panel">
+        <img src="assets/terraxis-full.png" alt="TERRAXIS" />
+        <h3>Inicio</h3>
+        <p>Panel de inicio en desarrollo.<br>Pr&#xF3;ximamente disponible.</p>
+      </div>
+    </div>
+
+    <!-- Panel 10: Comunidad (placeholder) -->
+    <div class="panel" id="panel-10">
+      <div class="placeholder-panel">
+        <img src="assets/terraxis-full.png" alt="TERRAXIS" />
+        <h3>Comunidad</h3>
+        <p>M&#xF3;dulo de comunidad en desarrollo.<br>Pr&#xF3;ximamente disponible.</p>
+      </div>
+    </div>
+
+    <!-- Panel 11: Auditoría (placeholder) -->
+    <div class="panel" id="panel-11">
+      <div class="placeholder-panel">
+        <img src="assets/terraxis-full.png" alt="TERRAXIS" />
+        <h3>Auditor&#xED;a</h3>
+        <p>M&#xF3;dulo de auditor&#xED;a en desarrollo.<br>Pr&#xF3;ximamente disponible.</p>
+      </div>
+    </div>
+
+      </div><!-- /panel-area -->
+
+      <div id="map"></div>
+    </div><!-- /tx-content -->
+  </div><!-- /tx-main -->
 </div><!-- /app -->
 
 <script>
@@ -709,11 +1025,30 @@
   let incMarkers = [], incData = [];
 
   // ── Tab navigation ───────────────────────────────────────────────────────────
+  const TAB_LABELS = {
+    1:'Mapa Electoral', 2:'Check In', 3:'Alertas', 4:'Conteo Interno',
+    5:'Estad\xEDsticas', 6:'Registro', 7:'Tablero Electoral', 8:'Calendario',
+    9:'Inicio', 10:'Comunidad', 11:'Auditor\xEDa'
+  };
+  const LIVE_TABS = new Set([2, 3, 4, 11]);
+
+  function updateTopbar(n) {
+    const secEl = document.getElementById('topbar-section');
+    const stEl  = document.getElementById('topbar-status');
+    if (secEl) secEl.textContent = TAB_LABELS[n] || '';
+    if (stEl) {
+      const isLive = LIVE_TABS.has(n);
+      stEl.textContent = isLive ? '\u25CF EN VIVO' : '\u25CF EN L\xCDNEA';
+      stEl.style.color = isLive ? 'var(--brand-teal)' : '#1ba888';
+    }
+  }
+
   function switchTab(n) {
     const prev = currentTab;
     currentTab = n;
-    document.querySelectorAll('.tb').forEach((b, i)    => b.classList.toggle('on', i + 1 === n));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('on', parseInt(b.dataset.tab) === n));
     document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('on', i + 1 === n));
+    updateTopbar(n);
 
     if (prev === 2) { allMarkers.forEach(m => m.setMap(null)); if (clusterer) { clusterer.setMap(null); clusterer = null; } }
     else if (prev === 3) { incMarkers.forEach(m => m.setMap(null)); }
@@ -722,8 +1057,8 @@
     else if (prev === 7) { agendaMarkers.forEach(m => m.setMap(null)); }
     if (prev === 8) {
       document.getElementById('map').style.display = '';
-      document.getElementById('sidebar').style.width = '';
-      document.getElementById('sidebar').style.maxWidth = '';
+      document.getElementById('panel-area').style.width = '';
+      document.getElementById('panel-area').style.maxWidth = '';
     }
 
     if (n === 2 && allData.length > 0) { applyFilters(); }
@@ -733,8 +1068,8 @@
     else if (n === 7) { loadAgendaEvents(); }
     else if (n === 8) {
       document.getElementById('map').style.display = 'none';
-      document.getElementById('sidebar').style.width = '100%';
-      document.getElementById('sidebar').style.maxWidth = '100%';
+      document.getElementById('panel-area').style.width = '100%';
+      document.getElementById('panel-area').style.maxWidth = '100%';
       loadCalendarEvents();
     }
   }
@@ -1991,6 +2326,71 @@
       }
     }).catch(e => { if (div) div.textContent = '⚠ Error al buscar: ' + e.message; });
   }
+
+  // ── TERRAXIS 3.0: Login / Logout / Theme / Nav ──────────────────────────
+  const TX_CREDENTIALS = {
+    email: 'isabexatechnology@gmail.com',
+    pass:  'Terraxis.2026'
+  };
+
+  function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-pass').value;
+    const errEl = document.getElementById('login-error');
+    const btn   = document.getElementById('login-btn');
+    if (email === TX_CREDENTIALS.email && pass === TX_CREDENTIALS.pass) {
+      btn.textContent = 'Verificando…';
+      setTimeout(() => {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        switchTab(1);
+      }, 600);
+    } else {
+      errEl.textContent = 'Credenciales incorrectas.';
+      errEl.style.display = 'block';
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-pass').classList.add('shake');
+      setTimeout(() => document.getElementById('login-pass').classList.remove('shake'), 500);
+    }
+  }
+
+  function doLogout() {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-error').style.display = 'none';
+  }
+
+  function toggleTheme() {
+    const isDark = document.body.dataset.theme === 'dark';
+    document.body.dataset.theme = isDark ? 'light' : 'dark';
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = isDark ? '☀' : '🌙';
+    localStorage.setItem('tx-theme', document.body.dataset.theme);
+  }
+
+  function toggleNav() {
+    document.body.classList.toggle('nav-collapsed');
+  }
+
+  // Restore theme on load
+  (function() {
+    const saved = localStorage.getItem('tx-theme');
+    if (saved) document.body.dataset.theme = saved;
+  })();
+
+  // Enter key on password field
+  document.addEventListener('DOMContentLoaded', function() {
+    const passEl = document.getElementById('login-pass');
+    if (passEl) passEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doLogin();
+    });
+    const emailEl = document.getElementById('login-email');
+    if (emailEl) emailEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('login-pass') && document.getElementById('login-pass').focus();
+    });
+  });
+
 
 </script>
 
