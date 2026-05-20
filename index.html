@@ -1342,12 +1342,10 @@
     <div class="panel" id="panel-10">
       <div style="padding:24px;display:flex;flex-direction:column;gap:0;height:100%;box-sizing:border-box;overflow-y:auto">
 
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-          <div>
-            <h2 style="margin:0;font-size:18px;font-weight:600">Comunidad &middot; Mensaje Masivo WhatsApp</h2>
-            <p style="margin:4px 0 0;color:var(--text-3);font-size:13px">Env&iacute;a mensajes a contactos registrados, filtrados por tipo y territorio</p>
-          </div>
-          <div id="com-steps" style="display:flex;gap:6px;align-items:center;flex-shrink:0"></div>
+        <div style="margin-bottom:14px">
+          <h2 style="margin:0;font-size:15px;font-weight:600;color:rgba(255,255,255,0.92)">Comunidad &middot; WhatsApp</h2>
+          <p style="margin:3px 0 8px;color:rgba(255,255,255,0.5);font-size:11px">Env&iacute;a mensajes masivos a tus contactos</p>
+          <div id="com-steps" style="display:flex;gap:5px;align-items:center"></div>
         </div>
 
         <!-- Loading -->
@@ -1358,30 +1356,30 @@
 
         <!-- Step 1: Tipo -->
         <div id="com-step1" style="display:block">
-          <p style="font-size:13px;color:var(--text-2);margin:0 0 14px">&#xBF;A qui&eacute;n quieres enviar el mensaje?</p>
-          <div id="com-tipo-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:680px"></div>
+          <p style="font-size:12px;color:rgba(255,255,255,0.6);margin:0 0 10px">&#xBF;A qui&eacute;n quieres enviar?</p>
+          <div id="com-tipo-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px"></div>
         </div>
 
         <!-- Step 2: Territorio -->
         <div id="com-step2" style="display:none;flex-direction:column;gap:14px">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <p style="font-size:13px;color:var(--text-2);margin:0">Filtra por territorio para ver los contactos disponibles</p>
+          <div>
+            <p style="font-size:12px;color:rgba(255,255,255,0.6);margin:0 0 6px">Filtra por territorio</p>
             <button class="btn sm" onclick="comBackStep(1)">&larr; Cambiar tipo</button>
           </div>
           <div style="display:inline-flex;background:var(--bg-tint);border-radius:6px;padding:3px;gap:2px">
             <button id="com-tog-sec" class="btn sm" onclick="comSetFilterBy('seccion')" style="font-size:12px">Secci&oacute;n</button>
             <button id="com-tog-col" class="btn sm ghost" onclick="comSetFilterBy('colonia')" style="font-size:12px">Colonia</button>
           </div>
-          <input id="com-terr-search" class="input" style="max-width:340px" placeholder="Buscar..." oninput="comFilterTerr(this.value)" />
-          <div id="com-terr-list" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:4px"></div>
+          <input id="com-terr-search" class="input" style="width:100%" placeholder="Buscar..." oninput="comFilterTerr(this.value)" />
+          <div id="com-terr-list" style="max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:2px"></div>
           <div id="com-terr-badge" style="font-size:13px;color:var(--teal);font-weight:600"></div>
           <div><button id="com-to-step3" class="btn primary" onclick="comGoStep3()" disabled>Siguiente &rarr;</button></div>
         </div>
 
         <!-- Step 3: Mensaje -->
-        <div id="com-step3" style="display:none;flex-direction:column;gap:14px;max-width:600px">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <div id="com-preview-badge" style="font-size:13px;font-weight:600;color:var(--teal)"></div>
+        <div id="com-step3" style="display:none;flex-direction:column;gap:12px">
+          <div>
+            <div id="com-preview-badge" style="font-size:11px;font-weight:600;color:var(--teal);margin-bottom:5px"></div>
             <button class="btn sm" onclick="comBackStep(2)">&larr; Cambiar territorio</button>
           </div>
           <div>
@@ -1399,7 +1397,7 @@
             </div>
             <img id="com-img-preview" style="display:none;margin-top:10px;max-height:130px;border-radius:6px;border:1px solid var(--border)" alt="preview" />
           </div>
-          <div id="com-send-area" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div id="com-send-area" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px">
             <button id="com-send-btn" class="btn teal" onclick="comBlast()" style="gap:8px;font-size:13px;padding:9px 16px">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.099-.472-.148-.67.15-.2.3-.767.966-.94 1.164-.174.199-.347.223-.647.075-.3-.15-1.267-.466-2.415-1.485-.893-.795-1.496-1.77-1.67-2.07-.174-.3-.019-.463.13-.613.134-.13.3-.35.45-.52.149-.168.199-.3.3-.498.099-.2.05-.374-.025-.524-.075-.15-.668-1.612-.916-2.207-.24-.58-.487-.5-.668-.51-.172-.008-.372-.01-.572-.01-.2 0-.523.074-.797.372-.273.3-1.045 1.02-1.045 2.475 0 1.46 1.07 2.872 1.22 3.072.149.2 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.273-.198-.573-.347z"/><path d="M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652C8.07 23.399 10.045 23.86 12.045 23.86c6.582 0 11.94-5.334 11.945-11.893.002-3.18-1.24-6.165-3.47-8.418z"/></svg>
               Enviar por WhatsApp
@@ -2870,8 +2868,8 @@
     const grid = document.getElementById('com-tipo-grid');
     if (!grid) return;
     grid.innerHTML = COM_TIPOS.map(t =>
-      `<button class="btn" onclick="comSelectTipo('${t.id}')" style="flex-direction:column;gap:4px;padding:12px 6px;text-align:center;font-size:12px;line-height:1.3">
-        <span style="font-size:18px">${t.emoji}</span><span>${t.label}</span>
+      `<button class="btn" onclick="comSelectTipo('${t.id}')" style="flex-direction:row;gap:5px;padding:8px;font-size:12px;justify-content:flex-start;width:100%">
+        <span style="font-size:14px;flex-shrink:0">${t.emoji}</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.label}</span>
       </button>`
     ).join('');
     comSetStep(1);
@@ -2966,7 +2964,7 @@
     const tipoLabel = (COM_TIPOS.find(t => t.id === comState.tipo) || {}).label || comState.tipo;
     const n = comState.recipients.length;
     const el = document.getElementById('com-preview-badge');
-    if (el) el.textContent = '&#x1F4F2; ' + n + ' contacto' + (n!==1?'s':'') + ' · ' + tipoLabel + ' · ' + comState.filterBy + ': ' + comState.terrValue;
+    if (el) el.innerHTML = '📲 ' + n + ' contacto' + (n!==1?'s':'') + ' · ' + tipoLabel + ' · ' + comState.filterBy + ': ' + comState.terrValue;
     document.getElementById('com-result').style.display = 'none';
     document.getElementById('com-send-area').style.display = 'flex';
     const btn = document.getElementById('com-send-btn');
