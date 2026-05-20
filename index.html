@@ -250,26 +250,59 @@
     .iw-ocr { font-size: 10px; color: var(--text-3); background: #f4f3ee; border-radius: 4px; padding: 4px 6px; margin-top: 4px; max-height: 80px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; font-family: "IBM Plex Mono",monospace; }
     .iw-alerta-badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 10px; font-weight: 700; background: #fef3c7; color: #92400e; margin-bottom: 6px; }
     /* ── Calendario mensual ─────────────────────── */
-    #cal-header-row { display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid #1e2d3d;flex-shrink:0 }
-    #cal-month-label { flex:1;text-align:center;font-weight:700;font-size:14px;color:#e2e8f0 }
-    .cal-nav-btn { background:rgba(255,255,255,.06);border:1px solid #2d3f54;border-radius:6px;color:#94a3b8;padding:4px 10px;cursor:pointer;font-size:13px }
-    .cal-nav-btn:hover { background:rgba(255,255,255,.12) }
-    .cal-today-btn { background:#1e3a8a;border:1px solid #3b5fc0;border-radius:6px;color:#93c5fd;padding:4px 8px;cursor:pointer;font-size:11px }
-    .cal-add-btn { background:#1e3a8a;border:none;border-radius:6px;color:#fff;padding:4px 10px;cursor:pointer;font-size:11px }
-    #cal-day-headers-wrap { padding:4px 8px 0;flex-shrink:0 }
-    #cal-day-headers { display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:2px }
-    .cal-day-hdr { text-align:center;font-size:10px;color:#64748b;font-weight:600;padding:3px 0;text-transform:uppercase }
-    #cal-grid-wrap { flex:1;overflow-y:auto;padding:0 8px 8px }
-    #cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:2px }
-    .cal-cell { background:#0d1822;border:1px solid #1e2d3d;border-radius:4px;min-height:72px;padding:3px;box-sizing:border-box }
-    .cal-cell.cal-today { border-color:#3b82f6;background:#0f1f3d }
-    .cal-cell.cal-other { opacity:.4 }
-    .cal-date-num { font-size:10px;color:#94a3b8;margin-bottom:2px;font-weight:600 }
-    .cal-cell.cal-today .cal-date-num { color:#60a5fa;background:#1e3a8a;border-radius:10px;display:inline-block;padding:0 5px }
-    .cal-ev { font-size:9px;color:#fff;border-radius:3px;padding:1px 4px;margin-bottom:1px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:1.6 }
-    .cal-ev:hover { filter:brightness(1.15) }
-    .cal-more { font-size:9px;color:#64748b;padding:1px 4px;cursor:default }
-    #cal-update-time { font-size:10px;color:#475569;padding:4px 12px;flex-shrink:0;border-top:1px solid #1e2d3d }
+    #cal-header-row { display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #1e2d3d;flex-shrink:0;flex-wrap:wrap }
+    #cal-month-label { font-weight:700;font-size:16px;color:#e2e8f0;letter-spacing:-0.01em;min-width:140px;text-align:center }
+    .cal-nav-btn { background:rgba(255,255,255,.07);border:1px solid #2d3f54;border-radius:6px;color:#94a3b8;padding:5px 12px;cursor:pointer;font-size:15px;line-height:1;transition:background 120ms }
+    .cal-nav-btn:hover { background:rgba(255,255,255,.15);color:#e2e8f0 }
+    .cal-today-btn { background:transparent;border:1px solid #2d4a6e;border-radius:6px;color:#60a5fa;padding:4px 10px;cursor:pointer;font-size:11px;font-weight:600;transition:background 120ms }
+    .cal-today-btn:hover { background:#1e3a8a }
+    .cal-add-btn { background:linear-gradient(135deg,#1ba888,#0d8a6e);border:none;border-radius:6px;color:#fff;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600;transition:filter 120ms;white-space:nowrap }
+    .cal-add-btn:hover { filter:brightness(1.12) }
+    #cal-type-filters { display:flex;gap:4px;align-items:center;flex-wrap:wrap }
+    .cal-type-btn { display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;border:1px solid #2d3f54;background:rgba(255,255,255,.05);color:#94a3b8;cursor:pointer;font-size:11px;font-weight:600;transition:all 120ms;white-space:nowrap }
+    .cal-type-btn.active { border-color:transparent;color:#fff;opacity:1 }
+    .cal-type-btn:not(.active) { opacity:.4;filter:grayscale(.5) }
+    .cal-type-btn:hover { opacity:.85 }
+    #cal-day-headers-wrap { padding:6px 10px 0;flex-shrink:0 }
+    #cal-day-headers { display:grid;grid-template-columns:repeat(7,1fr);gap:3px }
+    .cal-day-hdr { text-align:center;font-size:11px;color:#4a5a72;font-weight:700;padding:5px 0;text-transform:uppercase;letter-spacing:.06em }
+    #cal-grid-wrap { flex:1;overflow-y:auto;padding:0 10px 10px }
+    #cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:3px }
+    .cal-cell { background:#0b1520;border:1px solid #1a2840;border-radius:6px;min-height:96px;padding:6px;box-sizing:border-box;cursor:pointer;transition:border-color 140ms,background 140ms;position:relative }
+    .cal-cell:hover { border-color:#2d4a6e;background:#0d1c2e }
+    .cal-cell.cal-today { border-color:#3b82f6;background:#0a1a30 }
+    .cal-cell.cal-today:hover { border-color:#60a5fa;background:#0f2040 }
+    .cal-cell.cal-other { opacity:.28;cursor:default;pointer-events:none }
+    .cal-cell.cal-has-events { border-color:#1e3a50 }
+    .cal-date-num { font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600;line-height:1 }
+    .cal-cell.cal-today .cal-date-num { color:#fff;background:#3b82f6;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700 }
+    .cal-ev { font-size:10px;color:#e2e8f0;border-radius:4px;padding:2px 6px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:1.5;border-left:3px solid;background:rgba(0,0,0,.2) }
+    .cal-ev:hover { filter:brightness(1.2) }
+    .cal-more { font-size:10px;color:#3b82f6;padding:2px 4px;font-weight:600;display:block }
+    .cal-more:hover { color:#60a5fa }
+    #cal-update-time { font-size:10px;color:#2d4155;padding:5px 14px;flex-shrink:0;border-top:1px solid #1e2d3d }
+    #cal-modal-overlay { position:absolute;inset:0;background:rgba(0,0,0,.68);display:flex;align-items:center;justify-content:center;z-index:200 }
+    #cal-modal { background:#0e1a2c;border:1px solid #1e3a5a;border-radius:12px;width:500px;max-width:94%;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 48px rgba(0,0,0,.7);overflow:hidden;animation:fadeIn 150ms }
+    #cal-modal-header { display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #1a2840;flex-shrink:0 }
+    #cal-modal-title { font-size:14px;font-weight:700;color:#e2e8f0 }
+    .cal-modal-close { background:rgba(255,255,255,.06);border:1px solid #2d3f54;border-radius:6px;color:#94a3b8;padding:4px 9px;cursor:pointer;font-size:14px;line-height:1;transition:background 120ms }
+    .cal-modal-close:hover { background:rgba(255,255,255,.14);color:#e2e8f0 }
+    #cal-modal-body { flex:1;overflow-y:auto }
+    .cal-modal-ev { display:flex;align-items:flex-start;gap:12px;padding:11px 18px;border-bottom:1px solid #0e1922;transition:background 120ms }
+    .cal-modal-ev:last-child { border-bottom:none }
+    .cal-modal-ev:hover { background:#0a1422 }
+    .cal-modal-ev-icon { font-size:22px;flex-shrink:0;margin-top:2px }
+    .cal-modal-ev-body { flex:1;min-width:0 }
+    .cal-modal-ev-time { font-size:11px;color:#3b82f6;font-weight:700;font-family:monospace;margin-bottom:2px }
+    .cal-modal-ev-title { font-size:13px;color:#e2e8f0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis }
+    .cal-modal-ev-meta { font-size:11px;color:#4a5a72;margin-top:3px;line-height:1.5 }
+    .cal-modal-ev-badge { display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;font-weight:600;margin-left:6px;vertical-align:middle }
+    .cal-modal-edit-btn { background:rgba(59,130,246,.08);border:1px solid #2d4a6e;border-radius:6px;color:#60a5fa;padding:5px 11px;cursor:pointer;font-size:11px;font-weight:600;flex-shrink:0;transition:background 120ms;white-space:nowrap;align-self:center }
+    .cal-modal-edit-btn:hover { background:#1e3a8a;border-color:#3b5fc0 }
+    #cal-modal-footer { padding:12px 18px;border-top:1px solid #1a2840;flex-shrink:0 }
+    #cal-modal-add-btn { width:100%;background:rgba(27,168,136,.08);border:1px dashed #1ba888;border-radius:8px;color:#3fd9b3;padding:10px;cursor:pointer;font-size:12px;font-weight:600;transition:background 120ms }
+    #cal-modal-add-btn:hover { background:rgba(27,168,136,.18) }
+    .cal-modal-empty { padding:32px 18px;text-align:center;color:#334155;font-size:13px;line-height:1.6 }
 
 
     /* ── TERRAXIS 3.0 · Design Tokens (from handoff styles.css) ─────────── */
@@ -1306,12 +1339,14 @@
     </div>
 
     <!-- Panel 8: Calendario mensual -->
-    <div class="panel" id="panel-8">
+    <div class="panel" id="panel-8" style="position:relative">
       <div id="cal-header-row">
         <button class="cal-nav-btn" onclick="prevCalMonth()">&#x2039;</button>
         <span id="cal-month-label">—</span>
         <button class="cal-nav-btn" onclick="nextCalMonth()">&#x203A;</button>
         <button class="cal-today-btn" onclick="goToToday()">Hoy</button>
+        <div id="cal-type-filters"></div>
+        <div style="flex:1"></div>
         <button class="cal-add-btn" onclick="openAgendaForm()">+ Evento</button>
       </div>
       <div id="cal-day-headers-wrap">
@@ -1326,6 +1361,18 @@
         <div id="cal-grid"></div>
       </div>
       <div id="cal-update-time"></div>
+      <div id="cal-modal-overlay" style="display:none" onclick="calCloseModal()">
+        <div id="cal-modal" onclick="event.stopPropagation()">
+          <div id="cal-modal-header">
+            <span id="cal-modal-title"></span>
+            <button class="cal-modal-close" onclick="calCloseModal()">✕</button>
+          </div>
+          <div id="cal-modal-body"></div>
+          <div id="cal-modal-footer">
+            <button id="cal-modal-add-btn" onclick="calModalAddEvent()">+ Agregar evento este día</button>
+          </div>
+        </div>
+      </div>
     </div>
 
 
@@ -2404,6 +2451,8 @@
   // ── CALENDARIO module ────────────────────────────────────────────────────────
   let calCurrentDate = new Date();
   let calAllEvents   = [];
+  let calActiveTypes = null;
+  let calSelectedDay = null;
 
   async function loadCalendarEvents() {
     const timeEl = document.getElementById('cal-update-time');
@@ -2413,6 +2462,8 @@
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const d = await res.json();
       calAllEvents = d.events || [];
+      if (!calActiveTypes && typeof AGENDA_TYPES !== 'undefined') calActiveTypes = new Set(Object.keys(AGENDA_TYPES));
+      renderCalTypeFilters();
       renderCalendar();
       const t = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
       if (timeEl) timeEl.textContent = '✓ Actualizado: ' + t;
@@ -2420,6 +2471,32 @@
       console.error('Calendar error:', e);
       if (timeEl) timeEl.textContent = '⚠ Error al cargar';
     }
+  }
+
+  function renderCalTypeFilters() {
+    const wrap = document.getElementById('cal-type-filters');
+    if (!wrap || typeof AGENDA_TYPES === 'undefined') return;
+    if (!calActiveTypes) calActiveTypes = new Set(Object.keys(AGENDA_TYPES));
+    wrap.innerHTML = Object.entries(AGENDA_TYPES).map(([key, cfg]) => {
+      const isActive = calActiveTypes.has(key);
+      const style = isActive ? 'background:' + cfg.color + '28;border-color:' + cfg.color + '80' : '';
+      return '<button class="cal-type-btn' + (isActive ? ' active' : '') + '" style="' + style + '"' +
+             ' onclick="calToggleType(\'' + key + '\')" title="' + cfg.label + '">' +
+             cfg.emoji + ' <span style="font-size:10px">' + cfg.label + '</span>' +
+             '</button>';
+    }).join('');
+  }
+
+  function calToggleType(type) {
+    if (!calActiveTypes && typeof AGENDA_TYPES !== 'undefined') calActiveTypes = new Set(Object.keys(AGENDA_TYPES));
+    if (!calActiveTypes) return;
+    if (calActiveTypes.has(type)) {
+      if (calActiveTypes.size > 1) calActiveTypes.delete(type);
+    } else {
+      calActiveTypes.add(type);
+    }
+    renderCalTypeFilters();
+    renderCalendar();
   }
 
   function renderCalendar() {
@@ -2440,9 +2517,12 @@
     const today = new Date();
     const todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
 
+    const activeSet = calActiveTypes || (typeof AGENDA_TYPES !== 'undefined' ? new Set(Object.keys(AGENDA_TYPES)) : null);
+
     const evByDay = {};
     calAllEvents.forEach(ev => {
       if (!ev.start || ev.status === 'cancelado') return;
+      if (activeSet && !activeSet.has(ev.type)) return;
       const dayKey = ev.start.substring(0, 10);
       if (!evByDay[dayKey]) evByDay[dayKey] = [];
       evByDay[dayKey].push(ev);
@@ -2454,7 +2534,7 @@
     let nd = 1;
     while (cells.length < 42) cells.push({ day: nd++, mo: month + 1, yr: year, other: true });
 
-    const MAX_VIS = 3;
+    const MAX_VIS = 4;
     const grid = document.getElementById('cal-grid');
     if (!grid) return;
     grid.innerHTML = cells.map(cell => {
@@ -2463,20 +2543,78 @@
       const dayStr = y + '-' + String(m+1).padStart(2,'0') + '-' + String(cell.day).padStart(2,'0');
       const isToday = dayStr === todayStr;
       const evs = (evByDay[dayStr] || []).sort((a,b) => (a.start||'') < (b.start||'') ? -1 : 1);
+      const hasEvents = evs.length > 0;
+
+      const clickAttr = !cell.other ? ' onclick="calOpenDayModal(\'' + dayStr + '\')"' : '';
 
       let chips = evs.slice(0, MAX_VIS).map(ev => {
         const cfg = (typeof AGENDA_TYPES !== 'undefined' ? AGENDA_TYPES[ev.type] : null) || {color:'#607D8B', emoji:'⚫', label:'Evento'};
         const time = ev.start && ev.start.length > 10 ? ev.start.substring(11,16) : '';
-        const txt  = (time ? time + ' ' : '') + cfg.emoji + ' ' + (ev.title || cfg.label);
-        const safe = JSON.stringify(ev).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-        return '<span class="cal-ev" style="background:' + cfg.color + ';opacity:' + (ev.status==='finalizado'?'.6':'1') + '" onclick=\'openAgendaForm(' + safe + ')\'>' + txt + '</span>';
+        const txt  = cfg.emoji + (time ? ' ' + time : '') + ' ' + (ev.title || cfg.label);
+        return '<span class="cal-ev" style="border-left-color:' + cfg.color + ';background:' + cfg.color + '18;opacity:' + (ev.status==='finalizado'?'.55':'1') + '">' + txt + '</span>';
       }).join('');
 
       if (evs.length > MAX_VIS) chips += '<span class="cal-more">+' + (evs.length - MAX_VIS) + ' más</span>';
 
-      return '<div class="cal-cell' + (isToday?' cal-today':'') + (cell.other?' cal-other':'') + '">' +
+      return '<div class="cal-cell' + (isToday?' cal-today':'') + (cell.other?' cal-other':'') + (hasEvents?' cal-has-events':'') + '"' + clickAttr + '>' +
              '<div class="cal-date-num">' + cell.day + '</div>' + chips + '</div>';
     }).join('');
+  }
+
+  function calOpenDayModal(dateStr) {
+    calSelectedDay = dateStr;
+    const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const DAYS_ES   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    const d = new Date(dateStr + 'T12:00:00');
+    const titleEl = document.getElementById('cal-modal-title');
+    if (titleEl) titleEl.textContent = '📅 ' + DAYS_ES[d.getDay()] + ' ' + d.getDate() + ' de ' + MONTHS_ES[d.getMonth()] + ', ' + d.getFullYear();
+
+    const evs = calAllEvents
+      .filter(ev => ev.start && ev.start.startsWith(dateStr) && ev.status !== 'cancelado')
+      .sort((a,b) => (a.start||'') < (b.start||'') ? -1 : 1);
+
+    const body = document.getElementById('cal-modal-body');
+    if (body) {
+      if (evs.length === 0) {
+        body.innerHTML = '<div class="cal-modal-empty">No hay eventos para este día.<br><span style="color:#1ba888;font-size:12px">Usa el botón de abajo para agregar uno.</span></div>';
+      } else {
+        body.innerHTML = evs.map(ev => {
+          const cfg = (typeof AGENDA_TYPES !== 'undefined' ? AGENDA_TYPES[ev.type] : null) || {color:'#607D8B', emoji:'⚫', label:'Evento'};
+          const time = ev.start && ev.start.length > 10 ? ev.start.substring(11,16) : '';
+          const statusMap = { finalizado: ['#d6f1e6','#0e6e54','Finalizado'], cancelado: ['#fbe2e2','#b91c1c','Cancelado'], programado: ['#dbeafe','#1e40af','Programado'] };
+          const [sBg, sColor, sLabel] = statusMap[ev.status] || statusMap['programado'];
+          const meta = [ev.location || ev.colonia || '', ev.notes || ''].filter(Boolean).join(' · ');
+          const safe = JSON.stringify(ev).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+          return '<div class="cal-modal-ev">' +
+            '<div class="cal-modal-ev-icon">' + cfg.emoji + '</div>' +
+            '<div class="cal-modal-ev-body">' +
+              (time ? '<div class="cal-modal-ev-time">' + time + '</div>' : '') +
+              '<div class="cal-modal-ev-title">' + (ev.title || cfg.label) + '</div>' +
+              '<div class="cal-modal-ev-meta">' + cfg.label +
+                '<span class="cal-modal-ev-badge" style="background:' + sBg + ';color:' + sColor + '">' + sLabel + '</span>' +
+                (meta ? '<br>' + meta : '') +
+              '</div>' +
+            '</div>' +
+            '<button class="cal-modal-edit-btn" onclick=\'openAgendaForm(' + safe + ')\'>\u270f\ufe0f Editar</button>' +
+            '</div>';
+        }).join('');
+      }
+    }
+
+    const overlay = document.getElementById('cal-modal-overlay');
+    if (overlay) overlay.style.display = 'flex';
+  }
+
+  function calCloseModal() {
+    const overlay = document.getElementById('cal-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
+    calSelectedDay = null;
+  }
+
+  function calModalAddEvent() {
+    const preDate = calSelectedDay ? calSelectedDay + 'T09:00' : '';
+    calCloseModal();
+    openAgendaForm(preDate ? { start: preDate } : undefined);
   }
 
   function prevCalMonth() {
@@ -2491,6 +2629,7 @@
     calCurrentDate = new Date();
     renderCalendar();
   }
+
 
   // ── AGENDA module ───────────────────────────────────────────────────────────
   const AGENDA_API  = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/agenda-events';
