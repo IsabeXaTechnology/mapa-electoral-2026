@@ -1338,12 +1338,80 @@
       </div>
     </div>
 
-    <!-- Panel 10: Comunidad (placeholder) -->
+    <!-- Panel 10: Comunidad -->
     <div class="panel" id="panel-10">
-      <div class="placeholder-panel">
-        <img src="assets/terraxis-iso.png" alt="TERRAXIS" />
-        <h3>Comunidad</h3>
-        <p>M&#xF3;dulo de comunidad en desarrollo.<br>Pr&#xF3;ximamente disponible.</p>
+      <div style="padding:24px;display:flex;flex-direction:column;gap:0;height:100%;box-sizing:border-box;overflow-y:auto">
+
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <div>
+            <h2 style="margin:0;font-size:18px;font-weight:600">Comunidad &middot; Mensaje Masivo WhatsApp</h2>
+            <p style="margin:4px 0 0;color:var(--text-3);font-size:13px">Env&iacute;a mensajes a contactos registrados, filtrados por tipo y territorio</p>
+          </div>
+          <div id="com-steps" style="display:flex;gap:6px;align-items:center;flex-shrink:0"></div>
+        </div>
+
+        <!-- Loading -->
+        <div id="com-loading" style="display:none;text-align:center;padding:48px 0;color:var(--text-3)">
+          <div style="font-size:22px;margin-bottom:8px">&#x23F3;</div>
+          <div style="font-size:14px">Cargando contactos&hellip;</div>
+        </div>
+
+        <!-- Step 1: Tipo -->
+        <div id="com-step1" style="display:block">
+          <p style="font-size:13px;color:var(--text-2);margin:0 0 14px">&#xBF;A qui&eacute;n quieres enviar el mensaje?</p>
+          <div id="com-tipo-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:680px"></div>
+        </div>
+
+        <!-- Step 2: Territorio -->
+        <div id="com-step2" style="display:none;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <p style="font-size:13px;color:var(--text-2);margin:0">Filtra por territorio para ver los contactos disponibles</p>
+            <button class="btn sm" onclick="comBackStep(1)">&larr; Cambiar tipo</button>
+          </div>
+          <div style="display:inline-flex;background:var(--bg-tint);border-radius:6px;padding:3px;gap:2px">
+            <button id="com-tog-sec" class="btn sm" onclick="comSetFilterBy('seccion')" style="font-size:12px">Secci&oacute;n</button>
+            <button id="com-tog-col" class="btn sm ghost" onclick="comSetFilterBy('colonia')" style="font-size:12px">Colonia</button>
+          </div>
+          <input id="com-terr-search" class="input" style="max-width:340px" placeholder="Buscar..." oninput="comFilterTerr(this.value)" />
+          <div id="com-terr-list" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:4px"></div>
+          <div id="com-terr-badge" style="font-size:13px;color:var(--teal);font-weight:600"></div>
+          <div><button id="com-to-step3" class="btn primary" onclick="comGoStep3()" disabled>Siguiente &rarr;</button></div>
+        </div>
+
+        <!-- Step 3: Mensaje -->
+        <div id="com-step3" style="display:none;flex-direction:column;gap:14px;max-width:600px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <div id="com-preview-badge" style="font-size:13px;font-weight:600;color:var(--teal)"></div>
+            <button class="btn sm" onclick="comBackStep(2)">&larr; Cambiar territorio</button>
+          </div>
+          <div>
+            <label class="label">Mensaje</label>
+            <textarea id="com-msg-text" class="input textarea" rows="5" maxlength="1000" placeholder="Escribe el mensaje que se enviar&aacute; por WhatsApp..." oninput="comUpdateCount()" style="resize:vertical;min-height:110px"></textarea>
+            <div style="text-align:right;font-size:11px;color:var(--text-3);margin-top:3px"><span id="com-char-count">0</span> / 1000</div>
+          </div>
+          <div>
+            <label class="label">Imagen (opcional)</label>
+            <input type="file" id="com-img-input" accept="image/*" style="display:none" onchange="comHandleImg(this)" />
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <button class="btn sm" onclick="document.getElementById('com-img-input').click()">&#x1F4CE; Adjuntar imagen</button>
+              <span id="com-img-name" style="font-size:12px;color:var(--text-3)"></span>
+              <button id="com-img-remove" class="btn sm danger" onclick="comRemoveImg()" style="display:none">&#x2715; Quitar</button>
+            </div>
+            <img id="com-img-preview" style="display:none;margin-top:10px;max-height:130px;border-radius:6px;border:1px solid var(--border)" alt="preview" />
+          </div>
+          <div id="com-send-area" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <button id="com-send-btn" class="btn teal" onclick="comBlast()" style="gap:8px;font-size:13px;padding:9px 16px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.099-.472-.148-.67.15-.2.3-.767.966-.94 1.164-.174.199-.347.223-.647.075-.3-.15-1.267-.466-2.415-1.485-.893-.795-1.496-1.77-1.67-2.07-.174-.3-.019-.463.13-.613.134-.13.3-.35.45-.52.149-.168.199-.3.3-.498.099-.2.05-.374-.025-.524-.075-.15-.668-1.612-.916-2.207-.24-.58-.487-.5-.668-.51-.172-.008-.372-.01-.572-.01-.2 0-.523.074-.797.372-.273.3-1.045 1.02-1.045 2.475 0 1.46 1.07 2.872 1.22 3.072.149.2 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.273-.198-.573-.347z"/><path d="M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652C8.07 23.399 10.045 23.86 12.045 23.86c6.582 0 11.94-5.334 11.945-11.893.002-3.18-1.24-6.165-3.47-8.418z"/></svg>
+              Enviar por WhatsApp
+            </button>
+            <span id="com-send-status" style="font-size:13px;color:var(--text-2)"></span>
+          </div>
+          <div id="com-result" style="display:none;padding:16px;background:var(--bg-tint);border-radius:8px;border:1px solid var(--border)">
+            <div id="com-result-text" style="font-size:14px;font-weight:600;margin-bottom:12px"></div>
+            <button class="btn primary" onclick="comReset()">Nueva campa&ntilde;a</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1368,6 +1436,8 @@
   const SHEET_ID_INC    = '1UsQ_lPNK-obsFUZVgiguTlfAdPQeqT_CYdGe5pcOmww';
   const API_KEY         = 'AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI';
   const CRT_API         = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/crt-dashboard';
+  const COMUNIDAD_API   = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/comunidad-data';
+  const COMUNIDAD_BLAST = 'https://isabexa-technology-n8n.xvzwyz.easypanel.host/webhook/comunidad-blast';
   const AUTO_REFRESH_MS = 120000;
 
   const COLOR    = { gris:'#9E9E9E', VERDE:'#43A047', NARANJA:'#FB8C00', ROJO:'#E53935' };
@@ -1439,6 +1509,7 @@
       document.getElementById('panel-area').style.maxWidth = '100%';
       loadCalendarEvents();
     }
+    else if (n === 10) { comInit(); }
   }
 
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
@@ -2777,6 +2848,203 @@
   })();
 
   // Enter key on password field
+  // ── Comunidad ─────────────────────────────────────────────────────────────────
+  const COM_TIPOS = [
+    { id:'todos',        label:'Todos',        emoji:'&#x1F465;' },
+    { id:'afiliado',     label:'Afiliado',     emoji:'&#x1F464;' },
+    { id:'simpatizante', label:'Simpatizante', emoji:'&#x2B50;'  },
+    { id:'lider',        label:'L&iacute;der', emoji:'&#x1F451;' },
+    { id:'grupo',        label:'Grupo',        emoji:'&#x1F465;' },
+    { id:'apoyo',        label:'Apoyo',        emoji:'&#x1F4E6;' },
+    { id:'brigada',      label:'Brigada',      emoji:'&#x1F6A9;' },
+    { id:'barda',        label:'Barda',        emoji:'&#x1F9F1;' },
+    { id:'lona',         label:'Lona',         emoji:'&#x1F4CB;' },
+    { id:'playera',      label:'Playera',      emoji:'&#x1F455;' },
+  ];
+
+  let comState = { step:1, tipo:'', filterBy:'seccion', terrValue:'', records:[], recipients:[], imageBase64:null, mimeType:null };
+  let _comSecciones = [], _comColonias = [];
+  let _comInited = false;
+
+  function comInit() {
+    const grid = document.getElementById('com-tipo-grid');
+    if (!grid) return;
+    grid.innerHTML = COM_TIPOS.map(t =>
+      `<button class="btn" onclick="comSelectTipo('${t.id}')" style="flex-direction:column;gap:4px;padding:12px 6px;text-align:center;font-size:12px;line-height:1.3">
+        <span style="font-size:18px">${t.emoji}</span><span>${t.label}</span>
+      </button>`
+    ).join('');
+    comSetStep(1);
+  }
+
+  function comSetStep(n) {
+    comState.step = n;
+    ['com-step1','com-step2','com-step3','com-loading'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    const show = n === 0 ? 'com-loading' : 'com-step' + n;
+    const el = document.getElementById(show);
+    if (el) el.style.display = n === 1 ? 'block' : 'flex';
+    comRenderStepIndicator();
+  }
+
+  function comRenderStepIndicator() {
+    const el = document.getElementById('com-steps');
+    if (!el) return;
+    el.innerHTML = [['1','Tipo'],['2','Territorio'],['3','Mensaje']].map(([n, label]) =>
+      `<div style="display:flex;align-items:center;gap:5px;opacity:${comState.step >= parseInt(n) ? 1 : 0.35}">
+        <div style="width:20px;height:20px;border-radius:50%;background:${comState.step >= parseInt(n) ? 'var(--teal)' : 'var(--border)'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${n}</div>
+        <span style="font-size:11px;color:var(--text-2)">${label}</span>
+      </div>${n < '3' ? '<span style="color:var(--border);font-size:12px">&#x203A;</span>' : ''}`
+    ).join('');
+  }
+
+  async function comSelectTipo(tipo) {
+    comState.tipo = tipo;
+    comSetStep(0);
+    try {
+      const url = COMUNIDAD_API + (tipo && tipo !== 'todos' ? '?tipo=' + tipo : '');
+      const res = await fetch(url);
+      const data = await res.json();
+      comState.records = data.records || [];
+      _comSecciones = data.secciones || [];
+      _comColonias  = data.colonias  || [];
+      comState.terrValue = '';
+      comState.recipients = [];
+      document.getElementById('com-terr-search').value = '';
+      document.getElementById('com-terr-badge').textContent = '';
+      document.getElementById('com-to-step3').disabled = true;
+      comSetFilterBy(comState.filterBy);
+      comSetStep(2);
+    } catch(e) {
+      comSetStep(1);
+      alert('Error cargando contactos: ' + e.message);
+    }
+  }
+
+  function comSetFilterBy(by) {
+    comState.filterBy = by;
+    comState.terrValue = '';
+    comState.recipients = [];
+    document.getElementById('com-to-step3').disabled = true;
+    document.getElementById('com-terr-badge').textContent = '';
+    const secBtn = document.getElementById('com-tog-sec');
+    const colBtn = document.getElementById('com-tog-col');
+    if (secBtn) { secBtn.className = 'btn sm' + (by === 'seccion' ? '' : ' ghost'); }
+    if (colBtn) { colBtn.className = 'btn sm' + (by === 'colonia' ? '' : ' ghost'); }
+    comRenderTerrList('');
+  }
+
+  function comFilterTerr(q) { comRenderTerrList(q); }
+
+  function comRenderTerrList(q) {
+    const list = comState.filterBy === 'seccion' ? _comSecciones : _comColonias;
+    const filtered = q ? list.filter(v => v.toLowerCase().includes(q.toLowerCase())) : list;
+    const el = document.getElementById('com-terr-list');
+    if (!filtered.length) {
+      el.innerHTML = '<div style="color:var(--text-3);font-size:13px;padding:8px">Sin resultados</div>';
+      return;
+    }
+    el.innerHTML = filtered.map(v =>
+      `<button class="btn sm" onclick="comSelectTerr('${v.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}',this)" style="text-align:left;justify-content:flex-start;font-size:12px;padding:6px 10px">${v}</button>`
+    ).join('');
+  }
+
+  function comSelectTerr(val, btn) {
+    comState.terrValue = val;
+    document.querySelectorAll('#com-terr-list .btn').forEach(b => { b.style.background=''; b.style.color=''; b.style.borderColor=''; });
+    if (btn) { btn.style.background='var(--teal)'; btn.style.color='#fff'; btn.style.borderColor='var(--teal)'; }
+    const field = comState.filterBy === 'seccion' ? 'seccion' : 'colonia';
+    comState.recipients = comState.records.filter(r => r[field] === val);
+    const n = comState.recipients.length;
+    document.getElementById('com-terr-badge').textContent = n + ' contacto' + (n !== 1 ? 's' : '') + ' con WhatsApp';
+    document.getElementById('com-to-step3').disabled = n === 0;
+  }
+
+  function comGoStep3() {
+    const tipoLabel = (COM_TIPOS.find(t => t.id === comState.tipo) || {}).label || comState.tipo;
+    const n = comState.recipients.length;
+    const el = document.getElementById('com-preview-badge');
+    if (el) el.textContent = '&#x1F4F2; ' + n + ' contacto' + (n!==1?'s':'') + ' · ' + tipoLabel + ' · ' + comState.filterBy + ': ' + comState.terrValue;
+    document.getElementById('com-result').style.display = 'none';
+    document.getElementById('com-send-area').style.display = 'flex';
+    const btn = document.getElementById('com-send-btn');
+    if (btn) btn.disabled = false;
+    document.getElementById('com-send-status').textContent = '';
+    comSetStep(3);
+  }
+
+  function comBackStep(n) { comSetStep(n); }
+
+  function comUpdateCount() {
+    const txt = document.getElementById('com-msg-text');
+    document.getElementById('com-char-count').textContent = txt ? txt.value.length : 0;
+  }
+
+  function comHandleImg(input) {
+    const file = input.files[0];
+    if (!file) return;
+    comState.mimeType = file.type;
+    document.getElementById('com-img-name').textContent = file.name;
+    document.getElementById('com-img-remove').style.display = '';
+    const reader = new FileReader();
+    reader.onload = e => {
+      comState.imageBase64 = e.target.result;
+      const prev = document.getElementById('com-img-preview');
+      prev.src = e.target.result;
+      prev.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function comRemoveImg() {
+    comState.imageBase64 = null; comState.mimeType = null;
+    document.getElementById('com-img-input').value = '';
+    document.getElementById('com-img-name').textContent = '';
+    document.getElementById('com-img-remove').style.display = 'none';
+    document.getElementById('com-img-preview').style.display = 'none';
+  }
+
+  async function comBlast() {
+    const message = (document.getElementById('com-msg-text').value || '').trim();
+    if (!message) { alert('Escribe el mensaje antes de enviar.'); return; }
+    const numbers = comState.recipients.map(r => r.telefono).filter(Boolean);
+    if (!numbers.length) { alert('Sin contactos con teléfono válido.'); return; }
+    const btn = document.getElementById('com-send-btn');
+    const status = document.getElementById('com-send-status');
+    btn.disabled = true;
+    status.textContent = 'Enviando ' + numbers.length + ' mensajes…';
+    try {
+      const body = { numbers, message };
+      if (comState.imageBase64) {
+        const raw = comState.imageBase64;
+        body.imageBase64 = raw.includes(',') ? raw.split(',')[1] : raw;
+        body.mimeType = comState.mimeType || 'image/jpeg';
+      }
+      const res = await fetch(COMUNIDAD_BLAST, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      const data = await res.json();
+      document.getElementById('com-result-text').innerHTML =
+        '&#x2705; <strong>' + (data.sent||0) + ' enviados</strong>' +
+        (data.failed ? ' &nbsp;&middot;&nbsp; &#x274C; <strong>' + data.failed + ' fallidos</strong>' : '');
+      document.getElementById('com-result').style.display = 'block';
+      document.getElementById('com-send-area').style.display = 'none';
+    } catch(e) {
+      status.textContent = 'Error: ' + e.message;
+      btn.disabled = false;
+    }
+  }
+
+  function comReset() {
+    comState = { step:1, tipo:'', filterBy:'seccion', terrValue:'', records:[], recipients:[], imageBase64:null, mimeType:null };
+    _comSecciones = []; _comColonias = [];
+    const msgEl = document.getElementById('com-msg-text');
+    if (msgEl) msgEl.value = '';
+    document.getElementById('com-char-count').textContent = '0';
+    comRemoveImg();
+    comInit();
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     const passEl = document.getElementById('login-pass');
     if (passEl) passEl.addEventListener('keydown', function(e) {
