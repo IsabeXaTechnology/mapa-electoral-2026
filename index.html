@@ -2147,6 +2147,29 @@
   }
 
   function buildElecPopup(sec, d, type, tab) {
+    if (type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df') {
+      const dataMap = type === 'top10_secciones' ? TOP10_DATA : type === 'top10_distrito' ? TOP10DL_DATA : TOP10DF_DATA;
+      const t10 = dataMap[tab] && dataMap[tab][sec];
+      if (!t10) return `<div style="padding:6px;font-size:12px"><b>Sección ${sec}</b></div>`;
+      const ganador = d.ganador_1 || '—';
+      const margen  = d.margen_mc != null ? (d.margen_mc > 0 ? '+' : '') + d.margen_mc + ' votos' : '—';
+      const pct     = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
+      const munName = d.municipio ? (MUN_NL[String(d.municipio)] || d.municipio) : (t10.municipio || '—');
+      return `<div style="min-width:240px;padding:6px;font-size:12px;line-height:1.7">
+        <b style="font-size:13px">Sección ${sec}</b><br>
+        Municipio: <b>${munName}</b><br>
+        <div style="margin:4px 0 3px;padding:3px 7px;background:#FF6D00;color:#fff;border-radius:4px;font-size:11px;font-weight:600">🏆 TOP 10 · Rank #${t10.rank} en ${t10.municipio}</div>
+        1er Lugar: <b>${ganador}</b> · Margen: <b>${margen}</b><br>
+        Participación: <b>${pct}</b><br>
+        <table style="width:100%;margin-top:4px;font-size:11px;border-collapse:collapse">
+          <tr style="background:#f5f5f5"><td colspan="3" style="padding:2px 4px;font-weight:600;color:#555">Puntuación: ${t10.score}/11 pts</td></tr>
+          <tr><td style="padding:2px 4px;color:#777">Lugar MC</td><td style="padding:2px 4px">${t10.lugar_mc}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_lugar} pts</td></tr>
+          <tr style="background:#f9f9f9"><td style="padding:2px 4px;color:#777">Margen</td><td style="padding:2px 4px">${t10.margen_cat}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_margen} pts</td></tr>
+          <tr><td style="padding:2px 4px;color:#777">Participación</td><td style="padding:2px 4px">${t10.clas_part}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_part} pts</td></tr>
+          <tr style="background:#f9f9f9"><td style="padding:2px 4px;color:#777">Lista Nominal</td><td style="padding:2px 4px">${t10.clas_ln}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_ln} pts</td></tr>
+        </table>
+      </div>`;
+    }
     if (!d || d.sin_datos) {
       const munRaw = d && d.municipio ? String(d.municipio) : '';
       const mun = munRaw ? '<br>Municipio: ' + (MUN_NL[munRaw] || munRaw) : '';
@@ -2224,26 +2247,6 @@
         Color: <span style="display:inline-block;background:${colL};width:14px;height:10px;border-radius:2px;vertical-align:middle;border:1px solid #ccc"></span>
       </div>`;
     }
-    if (type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df') {
-      const dataMap = type === 'top10_secciones' ? TOP10_DATA : type === 'top10_distrito' ? TOP10DL_DATA : TOP10DF_DATA;
-      const t10 = dataMap[tab] && dataMap[tab][sec];
-      if (!t10) return `<div style="padding:6px;font-size:12px">${base}</div>`;
-      const ganador = d.ganador_1 || '—';
-      const margen  = d.margen_mc != null ? (d.margen_mc > 0 ? '+' : '') + d.margen_mc + ' votos' : '—';
-      const pct     = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
-      return `<div style="min-width:240px;padding:6px;font-size:12px;line-height:1.7">${base}
-        <div style="margin:4px 0 3px;padding:3px 7px;background:#FF6D00;color:#fff;border-radius:4px;font-size:11px;font-weight:600">🏆 TOP 10 · Rank #${t10.rank} en ${t10.municipio}</div>
-        1er Lugar: <b>${ganador}</b> · Margen: <b>${margen}</b><br>
-        Participación: <b>${pct}</b><br>
-        <table style="width:100%;margin-top:4px;font-size:11px;border-collapse:collapse">
-          <tr style="background:#f5f5f5"><td colspan="3" style="padding:2px 4px;font-weight:600;color:#555">Puntuación: ${t10.score}/11 pts</td></tr>
-          <tr><td style="padding:2px 4px;color:#777">Lugar MC</td><td style="padding:2px 4px">${t10.lugar_mc}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_lugar} pts</td></tr>
-          <tr style="background:#f9f9f9"><td style="padding:2px 4px;color:#777">Margen</td><td style="padding:2px 4px">${t10.margen_cat}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_margen} pts</td></tr>
-          <tr><td style="padding:2px 4px;color:#777">Participación</td><td style="padding:2px 4px">${t10.clas_part}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_part} pts</td></tr>
-          <tr style="background:#f9f9f9"><td style="padding:2px 4px;color:#777">Lista Nominal</td><td style="padding:2px 4px">${t10.clas_ln}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_ln} pts</td></tr>
-        </table>
-      </div>`;
-    }
     return `<div style="padding:6px;font-size:12px">${base}</div>`;
   }
 
@@ -2289,6 +2292,8 @@
         });
         layer.addListener('click', ev => {
           const sec = String(ev.feature.getProperty('SECCION'));
+          if ((type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df')
+              && !(top10Data && top10Data[sec])) return;
           const d   = elecData[sec] || {};
           infoWindow.setContent(buildElecPopup(sec, d, type, tab));
           infoWindow.setPosition(ev.latLng);
