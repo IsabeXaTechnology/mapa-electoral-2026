@@ -2057,7 +2057,7 @@
   function buildElecPopup(sec, d, type, tab) {
     if (!d || d.sin_datos) {
       const mun = d && d.municipio ? '<br>Municipio: ' + d.municipio : '';
-      return `<div style="min-width:180px;padding:6px"><b style="font-size:13px">Sección ${sec}</b>${mun}<br><span style="color:#9E9E9E;font-size:12px">Sin datos electorales registrados<br>para las elecciones 2024.</span></div>`;
+      return `<div style="min-width:180px;padding:6px"><b style="font-size:13px">Sección ${sec}</b>${mun}<br><span style="color:#9E9E9E;font-size:12px">Nueva Sección. Cambio en la distritación 2027. Sin datos electorales registrados para las elecciones 2024.</span></div>`;
     }
     const tipoLabel = { ayun:'Ayuntamiento', dip_loc:'Diputación Local', dip_fed:'Diputación Federal', senadores:'Senaduría', presidente:'Presidencia' };
     const pctStr = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
