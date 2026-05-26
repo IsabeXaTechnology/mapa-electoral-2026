@@ -2129,7 +2129,10 @@
       layer.setStyle(feature => {
         const sec = String(feature.getProperty('SECCION'));
         const d   = elecData[sec];
-        if (!d || d.sin_datos) return { fillColor: '#BDBDBD', fillOpacity: 0.22, strokeColor: '#9E9E9E', strokeWeight: 0.5 };
+        if (!d || d.sin_datos) {
+          if (type === 'calor_mc') return { fillColor: '#FFE8DC', fillOpacity: 0.72, strokeColor: '#FFE8DC', strokeWeight: 1 };
+          return { fillColor: '#BDBDBD', fillOpacity: 0.22, strokeColor: '#9E9E9E', strokeWeight: 0.5 };
+        }
         let color;
         if      (type === 'calor_mc')     color = colorMCLugar(d.mc_lugar);
         else if (type === 'lugar1')       color = colorGanador(d.ganador_1);
