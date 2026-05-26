@@ -2015,6 +2015,20 @@
     return '#F9A825';
   }
 
+  const MUN_NL = {
+    "1":"Abasolo","2":"Agualeguas","3":"Los Aldamas","4":"Allende","5":"Anahuac",
+    "6":"Apodaca","7":"Aramberri","8":"Bustamante","9":"Cadereyta Jimenez","10":"El Carmen",
+    "11":"Cerralvo","12":"Cienega de Flores","13":"China","14":"Dr. Arroyo","15":"Dr. Coss",
+    "16":"Dr. Gonzalez","17":"Galeana","18":"Garcia","19":"San Pedro Garza Garcia","20":"Gral. Bravo",
+    "21":"Gral. Escobedo","22":"Gral. Teran","23":"Gral. Trevino","24":"Gral. Zaragoza","25":"Gral. Zuazua",
+    "26":"Juarez","27":"Los Herreras","28":"Hidalgo","29":"Higueras","30":"Hualahuises",
+    "31":"Iturbide","32":"Juarez","33":"Lampazos de Naranjo","34":"Linares","35":"Marin",
+    "36":"Melchor Ocampo","37":"Mier y Noriega","38":"Mina","39":"Montemorelos","40":"Monterrey",
+    "41":"Paras","42":"Pesqueria","43":"Los Ramones","44":"Rayones","45":"Sabinas Hidalgo",
+    "46":"Salinas Victoria","47":"San Nicolas de los Garza","48":"Santa Catarina","49":"Santiago",
+    "50":"Vallecillo","51":"Villaldama"
+  };
+
   function colorMargenMC(m) {
     if (m === 0)    return '#FFAB91';
     if (m >= 100)   return '#BF360C';
@@ -2056,7 +2070,8 @@
 
   function buildElecPopup(sec, d, type, tab) {
     if (!d || d.sin_datos) {
-      const mun = d && d.municipio ? '<br>Municipio: ' + d.municipio : '';
+      const munRaw = d && d.municipio ? String(d.municipio) : '';
+      const mun = munRaw ? '<br>Municipio: ' + (MUN_NL[munRaw] || munRaw) : '';
       return `<div style="min-width:180px;padding:6px"><b style="font-size:13px">Sección ${sec}</b>${mun}<br><span style="color:#9E9E9E;font-size:12px">Nueva Sección. Cambio en la distritación 2027. Sin datos electorales registrados para las elecciones 2024.</span></div>`;
     }
     const tipoLabel = { ayun:'Ayuntamiento', dip_loc:'Diputación Local', dip_fed:'Diputación Federal', senadores:'Senaduría', presidente:'Presidencia' };
