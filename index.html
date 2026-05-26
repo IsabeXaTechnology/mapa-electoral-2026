@@ -594,7 +594,7 @@
 
     .nav-item {
       display: flex; align-items: center; gap: 10px;
-      width: 100%; padding: 8px 10px; border-radius: 10px;
+      width: 100%; padding: 7px 8px; border-radius: 12px;
       background: transparent; border: none;
       color: var(--sidebar-text); font-size: 13px; font-weight: 500;
       font-family: inherit; text-align: left; white-space: nowrap;
@@ -602,19 +602,24 @@
       justify-content: flex-start;
       transition: background 160ms, color 120ms;
     }
-    body.nav-collapsed .nav-item { justify-content: center; padding: 11px; }
+    body.nav-collapsed .nav-item { justify-content: center; padding: 8px; }
     .nav-item:hover { background: rgba(255,255,255,.08); color: #fff; }
     .nav-item.on {
-      background: rgba(27,168,136,.18);
+      background: rgba(27,168,136,.22);
       color: #fff; font-weight: 600;
     }
     .nav-item.on::before {
       content: ''; position: absolute; left: 0; top: 5px; bottom: 5px;
       width: 3px; background: var(--teal); border-radius: 0 2px 2px 0;
     }
-    .nav-item svg { flex-shrink: 0; width: 15px; height: 15px; opacity: .7; transition: opacity 120ms; }
-    .nav-item:hover svg { opacity: .9; }
-    .nav-item.on svg { color: var(--teal-bright); opacity: 1; }
+    .nav-item svg {
+      flex-shrink: 0; width: 14px; height: 14px;
+      padding: 5px; box-sizing: content-box;
+      background: rgba(255,255,255,.08); border-radius: 7px;
+      transition: background 160ms, color 160ms;
+    }
+    .nav-item:hover svg { background: rgba(255,255,255,.14); }
+    .nav-item.on svg { background: rgba(27,168,136,.25); color: var(--teal-bright); }
     .nav-label { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     body.nav-collapsed .nav-label { display: none; }
     body.nav-collapsed .nav-badge-live { display: none; }
