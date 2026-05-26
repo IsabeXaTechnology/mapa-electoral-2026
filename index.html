@@ -1041,7 +1041,7 @@
     <div class="panel on" id="panel-1">
       <div id="p-capas">
         <div class="lg-title">A · Límites administrativos</div>
-        <div class="li"><label class="tog"><input type="checkbox" checked onchange="toggleLayer('MUNICIPIO',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#4A148C"></span><span class="li-name">Municipios</span></div>
+        <div class="li"><label class="tog"><input type="checkbox" checked onchange="toggleLayer('MUNICIPIO',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#1565C0"></span><span class="li-name">Municipios</span></div>
         <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('SECCION',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#7B1FA2"></span><span class="li-name">Secciones Electorales Cartografía 2024</span></div>
         <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('DISTRITO_LOCAL',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#E65100"></span><span class="li-name">Distritos locales</span></div>
         <div class="li"><label class="tog"><input type="checkbox" onchange="toggleLayer('DISTRITO_FEDERAL',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#B71C1C"></span><span class="li-name">Distritos federales</span></div>
@@ -1933,7 +1933,7 @@
     const pt   = (color) => () => ({ icon: { path: google.maps.SymbolPath.CIRCLE, scale: 5, fillColor: color, fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1.5 } });
 
     GEO_LAYERS = {
-      MUNICIPIO:             { data:null, styleFn: poly('#4A148C','#4A148C',0.10), infoFn: p => '<b>' + (p.MUNICIPIO||p.NOMBRE||'Municipio') + '</b>' },
+      MUNICIPIO:             { data:null, styleFn: poly('#1565C0','#1565C0',0.10), infoFn: p => '<b>' + (p.MUNICIPIO||p.NOMBRE||'Municipio') + '</b>' },
       SECCION:               { data:null, styleFn: poly('#7B1FA2','#7B1FA2',0.08), infoFn: p => '<b>Sección ' + p.SECCION + '</b><br>' + (p.MUNICIPIO||'') },
       DISTRITO_LOCAL:        { data:null, styleFn: poly('#E65100','#E65100',0.10), infoFn: p => '<b>Distrito Local ' + p.DISTRITO_L + '</b><br>' + (p.MUNICIPIO||'') },
       DISTRITO_FEDERAL:      { data:null, styleFn: poly('#B71C1C','#B71C1C',0.10), infoFn: p => '<b>Distrito Federal ' + p.DISTRITO_F + '</b>' },
