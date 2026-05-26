@@ -2159,39 +2159,45 @@
       if (ELEC_LAYERS[key]) ELEC_LAYERS[key].setMap(null);
       return;
     }
-    const [elecData, geoJSON] = await Promise.all([fetchElecData(tab), fetchSeccionGeoJSON()]);
+    try {
+      const [elecData, geoJSON] = await Promise.all([fetchElecData(tab), fetchSeccionGeoJSON()]);
 
-    if (!ELEC_LAYERS[key]) {
-      const layer = new google.maps.Data();
-      layer.addGeoJson(geoJSON);
-      layer.setStyle(feature => {
-        const sec = String(feature.getProperty('SECCION'));
-        const d   = elecData[sec];
-        if (!d || d.sin_datos) {
-          if (type === 'calor_mc') return { fillColor: '#FFE8DC', fillOpacity: 0.72, strokeColor: '#FFE8DC', strokeWeight: 1 };
-          if (['lugar1','lugar2','lugar3','lugar4','calor_margen','calor_participacion'].includes(type)) return { fillColor: '#4A4A4A', fillOpacity: 0.70, strokeColor: '#4A4A4A', strokeWeight: 0.5 };
-          return { fillColor: '#BDBDBD', fillOpacity: 0.22, strokeColor: '#9E9E9E', strokeWeight: 0.5 };
-        }
-        let color;
-        if      (type === 'calor_mc')     color = colorMCLugar(d.mc_lugar);
-        else if (type === 'lugar1')       color = colorGanador(d.ganador_1);
-        else if (type === 'lugar2')       color = colorGanador(d.ganador_2);
-        else if (type === 'lugar3')       color = colorGanador(d.ganador_3);
-        else if (type === 'lugar4')       color = colorGanador(d.ganador_4);
-        else if (type === 'calor_margen')        color = colorMargenMC(d.margen_mc);
-        else if (type === 'calor_participacion') color = colorParticipacion(d.clasificacion_participacion);
-        return { fillColor: color, fillOpacity: 0.72, strokeColor: color, strokeWeight: 1 };
-      });
-      layer.addListener('click', ev => {
-        const sec = String(ev.feature.getProperty('SECCION'));
-        const d   = elecData[sec] || {};
-        infoWindow.setContent(buildElecPopup(sec, d, type, tab));
-        infoWindow.setPosition(ev.latLng);
-        infoWindow.open(map);
-      });
-      ELEC_LAYERS[key] = layer;
+      if (!ELEC_LAYERS[key]) {
+        const layer = new google.maps.Data();
+        layer.addGeoJson(geoJSON);
+        layer.setStyle(feature => {
+          const sec = String(feature.getProperty('SECCION'));
+          const d   = elecData[sec];
+          if (!d || d.sin_datos) {
+            if (type === 'calor_mc') return { fillColor: '#FFE8DC', fillOpacity: 0.72, strokeColor: '#FFE8DC', strokeWeight: 1 };
+            if (['lugar1','lugar2','lugar3','lugar4','calor_margen','calor_participacion'].includes(type)) return { fillColor: '#4A4A4A', fillOpacity: 0.70, strokeColor: '#4A4A4A', strokeWeight: 0.5 };
+            return { fillColor: '#BDBDBD', fillOpacity: 0.22, strokeColor: '#9E9E9E', strokeWeight: 0.5 };
+          }
+          let color;
+          if      (type === 'calor_mc')     color = colorMCLugar(d.mc_lugar);
+          else if (type === 'lugar1')       color = colorGanador(d.ganador_1);
+          else if (type === 'lugar2')       color = colorGanador(d.ganador_2);
+          else if (type === 'lugar3')       color = colorGanador(d.ganador_3);
+          else if (type === 'lugar4')       color = colorGanador(d.ganador_4);
+          else if (type === 'calor_margen')        color = colorMargenMC(d.margen_mc);
+          else if (type === 'calor_participacion') color = colorParticipacion(d.clasificacion_participacion);
+          return { fillColor: color, fillOpacity: 0.72, strokeColor: color, strokeWeight: 1 };
+        });
+        layer.addListener('click', ev => {
+          const sec = String(ev.feature.getProperty('SECCION'));
+          const d   = elecData[sec] || {};
+          infoWindow.setContent(buildElecPopup(sec, d, type, tab));
+          infoWindow.setPosition(ev.latLng);
+          infoWindow.open(map);
+        });
+        ELEC_LAYERS[key] = layer;
+      }
+      ELEC_LAYERS[key].setMap(map);
+    } catch(err) {
+      console.error('toggleElectoralLayer error [' + tab + '/' + type + ']:', err);
+      alert('Error al cargar la capa electoral.\nDetalle: ' + err.message + '\n\nRevisa la consola del navegador (F12) para más información.');
+      document.querySelectorAll('input[onchange*="' + tab + '"],input[onchange*="' + type + '"]').forEach(i => { if(i.checked) i.checked = false; });
     }
-    ELEC_LAYERS[key].setMap(map);
   }
 
   // ─── ADMIN MODULE ───────────────────────────────────────────────────────────
