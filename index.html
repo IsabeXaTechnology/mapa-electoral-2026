@@ -2121,6 +2121,26 @@
       && ['Media', 'Baja', 'Crítica'].includes(d.clasificacion_participacion);
   }
 
+  function isSpecialActive(tab, sec) {
+    if (TOP10_DATA[tab] && TOP10_DATA[tab][sec]) {
+      const k = tab + '_top10_secciones';
+      if (ELEC_LAYERS[k] && ELEC_LAYERS[k].getMap()) return true;
+    }
+    if (TOP10DL_DATA[tab] && TOP10DL_DATA[tab][sec]) {
+      const k = tab + '_top10_distrito';
+      if (ELEC_LAYERS[k] && ELEC_LAYERS[k].getMap()) return true;
+    }
+    if (TOP10DF_DATA[tab] && TOP10DF_DATA[tab][sec]) {
+      const k = tab + '_top10_df';
+      if (ELEC_LAYERS[k] && ELEC_LAYERS[k].getMap()) return true;
+    }
+    if (isCritica(ELEC_DATA[tab] && ELEC_DATA[tab][sec])) {
+      const k = tab + '_criticas';
+      if (ELEC_LAYERS[k] && ELEC_LAYERS[k].getMap()) return true;
+    }
+    return false;
+  }
+
   async function fetchElecData(tab) {
     if (ELEC_DATA[tab]) return ELEC_DATA[tab];
     const r = await fetch(ELEC_BASE + ELEC_TABS[tab] + '.json');
@@ -2160,7 +2180,11 @@
     if (type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df') {
       const dataMap = type === 'top10_secciones' ? TOP10_DATA : type === 'top10_distrito' ? TOP10DL_DATA : TOP10DF_DATA;
       const t10 = dataMap[tab] && dataMap[tab][sec];
-      if (!t10) return `<div style="padding:6px;font-size:12px"><b>Sección ${sec}</b></div>`;
+      if (!t10) {
+        const munName = d.municipio ? (MUN_NL[String(d.municipio)] || d.municipio) : (d.distrito || '—');
+        const pctStr = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
+        return `<div style="min-width:200px;padding:6px;font-size:12px"><b style="font-size:13px">Sección ${sec}</b><br>Municipio: <b>${munName}</b><br>Participación: ${pctStr}<br><span style="color:#9E9E9E;font-size:11px">Sección no incluida en el top 10 de este agrupamiento</span></div>`;
+      }
       const ganador = d.ganador_1 || '—';
       const margen  = d.margen_mc != null ? (d.margen_mc > 0 ? '+' : '') + d.margen_mc + ' votos' : '—';
       const pct     = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
@@ -2331,6 +2355,8 @@
           if ((type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df')
               && !(top10Data && top10Data[sec])) return;
           if (type === 'criticas' && !isCritica(elecData[sec] || {})) return;
+          const REGULAR_TYPES = ['calor_mc','lugar1','lugar2','lugar3','lugar4','calor_margen','calor_participacion','calor_lista_nominal'];
+          if (REGULAR_TYPES.includes(type) && isSpecialActive(tab, sec)) return;
           const d   = elecData[sec] || {};
           infoWindow.setContent(buildElecPopup(sec, d, type, tab));
           infoWindow.setPosition(ev.latLng);
