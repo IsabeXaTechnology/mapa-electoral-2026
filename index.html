@@ -2078,7 +2078,7 @@
     const pctStr = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
     const base = `<b style="font-size:13px">Sección ${sec}</b><br>
       Estado: Nuevo León<br>
-      Municipio/Distrito: <b>${d.municipio || d.distrito || '—'}</b><br>
+      Municipio/Distrito: <b>${(d.municipio ? (MUN_NL[String(d.municipio)] || d.municipio) : null) || d.distrito || '—'}</b><br>
       Tipo de elección: ${tipoLabel[tab] || tab}<br>
       Participación ciudadana: ${pctStr} (${d.clasificacion_participacion || '—'})<hr style="margin:4px 0">`;
 
