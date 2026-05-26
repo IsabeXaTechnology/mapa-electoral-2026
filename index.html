@@ -2146,7 +2146,7 @@
         const d   = elecData[sec];
         if (!d || d.sin_datos) {
           if (type === 'calor_mc') return { fillColor: '#FFE8DC', fillOpacity: 0.72, strokeColor: '#FFE8DC', strokeWeight: 1 };
-          if (['lugar1','lugar2','lugar3','lugar4'].includes(type)) return { fillColor: '#4A4A4A', fillOpacity: 0.70, strokeColor: '#4A4A4A', strokeWeight: 0.5 };
+          if (['lugar1','lugar2','lugar3','lugar4','calor_margen'].includes(type)) return { fillColor: '#4A4A4A', fillOpacity: 0.70, strokeColor: '#4A4A4A', strokeWeight: 0.5 };
           return { fillColor: '#BDBDBD', fillOpacity: 0.22, strokeColor: '#9E9E9E', strokeWeight: 0.5 };
         }
         let color;
