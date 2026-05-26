@@ -1073,6 +1073,7 @@
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','top10_secciones',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Municipio</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','top10_distrito',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Distrito Local</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','top10_df',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 Distrito Federal</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','criticas',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#2E7D32"></span><span class="li-name">Secciones Críticas a Defender</span></div>
           </div>
         </div>
 
@@ -1090,6 +1091,7 @@
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','top10_secciones',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Municipio</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','top10_distrito',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Distrito Local</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','top10_df',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 Distrito Federal</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_loc','criticas',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#2E7D32"></span><span class="li-name">Secciones Críticas a Defender</span></div>
           </div>
         </div>
 
@@ -1107,6 +1109,7 @@
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','top10_secciones',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Municipio</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','top10_distrito',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Distrito Local</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','top10_df',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 Distrito Federal</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('dip_fed','criticas',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#2E7D32"></span><span class="li-name">Secciones Críticas a Defender</span></div>
           </div>
         </div>
 
@@ -1124,6 +1127,7 @@
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','top10_secciones',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Municipio</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','top10_distrito',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Distrito Local</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','top10_df',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 Distrito Federal</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('senadores','criticas',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#2E7D32"></span><span class="li-name">Secciones Críticas a Defender</span></div>
           </div>
         </div>
 
@@ -1141,6 +1145,7 @@
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','top10_secciones',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Municipio</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','top10_distrito',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Distrito Local</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','top10_df',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 Distrito Federal</span></div>
+            <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('presidente','criticas',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#2E7D32"></span><span class="li-name">Secciones Críticas a Defender</span></div>
           </div>
         </div>
 
@@ -2111,6 +2116,11 @@
     return 'Perdida +100 votos';
   }
 
+  function isCritica(d) {
+    return d && !d.sin_datos && d.margen_mc != null && d.margen_mc <= -100
+      && ['Media', 'Baja', 'Crítica'].includes(d.clasificacion_participacion);
+  }
+
   async function fetchElecData(tab) {
     if (ELEC_DATA[tab]) return ELEC_DATA[tab];
     const r = await fetch(ELEC_BASE + ELEC_TABS[tab] + '.json');
@@ -2168,6 +2178,27 @@
           <tr><td style="padding:2px 4px;color:#777">Participación</td><td style="padding:2px 4px">${t10.clas_part}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_part} pts</td></tr>
           <tr style="background:#f9f9f9"><td style="padding:2px 4px;color:#777">Lista Nominal</td><td style="padding:2px 4px">${t10.clas_ln}</td><td style="padding:2px 4px;font-weight:700;text-align:right;color:#E65100">${t10.pts_ln} pts</td></tr>
         </table>
+      </div>`;
+    }
+    if (type === 'criticas') {
+      const munName = d.municipio ? (MUN_NL[String(d.municipio)] || d.municipio) : (d.distrito || '—');
+      const tipoLabel = { ayun:'Ayuntamiento', dip_loc:'Diputación Local', dip_fed:'Diputación Federal', senadores:'Senaduría', presidente:'Presidencia' };
+      const pctStr = d.pct_participacion != null ? d.pct_participacion.toFixed(2) + '%' : '—';
+      const margenStr = Math.abs(d.margen_mc) + ' votos';
+      const clas_part = d.clasificacion_participacion || '—';
+      const lnStr = d.lista_nominal != null ? Number(d.lista_nominal).toLocaleString('es-MX') : '—';
+      return `<div style="min-width:240px;padding:6px;font-size:12px;line-height:1.7">
+        <b style="font-size:13px">Sección ${sec}</b><br>
+        Municipio: <b>${munName}</b><br>
+        Tipo: ${tipoLabel[tab] || tab}<br>
+        <div style="margin:4px 0 3px;padding:3px 7px;background:#2E7D32;color:#fff;border-radius:4px;font-size:11px;font-weight:600">⚠️ Sección Crítica a Defender</div>
+        <b style="font-size:11px;color:#555">Por qué es crítica:</b><br>
+        · MC perdió por <b>${margenStr}</b> (${margenLabel(d.margen_mc)})<br>
+        · Participación <b style="color:#C62828">${clas_part}</b> — ${pctStr}<br>
+        <hr style="margin:4px 0">
+        1er Lugar: <b>${d.ganador_1 || '—'}</b><br>
+        Votos MC: <b>${d.mc_votos ?? '—'}</b> · Lugar MC: ${d.mc_lugar ? d.mc_lugar + 'º' : '—'}<br>
+        Lista Nominal: <b>${lnStr}</b> electores
       </div>`;
     }
     if (!d || d.sin_datos) {
@@ -2274,6 +2305,11 @@
               ? { fillColor: '#FF6D00', fillOpacity: 0.80, strokeColor: '#BF360C', strokeWeight: 1.5 }
               : { fillOpacity: 0, strokeWeight: 0 };
           }
+          if (type === 'criticas') {
+            return isCritica(d)
+              ? { fillColor: '#2E7D32', fillOpacity: 0.80, strokeColor: '#1B5E20', strokeWeight: 1.5 }
+              : { fillOpacity: 0, strokeWeight: 0 };
+          }
           if (!d || d.sin_datos) {
             if (type === 'calor_mc') return { fillColor: '#FFE8DC', fillOpacity: 0.72, strokeColor: '#FFE8DC', strokeWeight: 1 };
             if (['lugar1','lugar2','lugar3','lugar4','calor_margen','calor_participacion','calor_lista_nominal'].includes(type)) return { fillColor: '#4A4A4A', fillOpacity: 0.70, strokeColor: '#4A4A4A', strokeWeight: 0.5 };
@@ -2294,6 +2330,7 @@
           const sec = String(ev.feature.getProperty('SECCION'));
           if ((type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df')
               && !(top10Data && top10Data[sec])) return;
+          if (type === 'criticas' && !isCritica(elecData[sec] || {})) return;
           const d   = elecData[sec] || {};
           infoWindow.setContent(buildElecPopup(sec, d, type, tab));
           infoWindow.setPosition(ev.latLng);
