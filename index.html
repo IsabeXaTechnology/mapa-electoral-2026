@@ -1622,6 +1622,7 @@
         L.data = new google.maps.Data();
         L.data.setStyle(L.styleFn);
         L.data.addListener('click', ev => {
+          if (Object.values(ELEC_LAYERS).some(layer => layer && layer.getMap())) return;
           const p = {};
           ev.feature.forEachProperty((v, k) => p[k] = v);
           infoWindow.setContent('<div style="min-width:160px;padding:4px">' + L.infoFn(p) + '</div>');
