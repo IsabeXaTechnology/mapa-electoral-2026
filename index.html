@@ -482,9 +482,7 @@
       display: flex; justify-content: space-between; align-items: center; z-index: 1;
     }
     .lp-logo { display: flex; align-items: center; gap: 10px; }
-    .lp-logo-iso { height: 36px; width: auto; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 0 6px rgba(63,217,179,.35)); flex-shrink: 0; }
-    .lp-logo-wordmark { display: flex; align-items: baseline; gap: 6px; font-size: 18px; font-weight: 700; letter-spacing: .04em; color: #fff; }
-    .lp-logo-version { font-size: 11px; font-weight: 600; color: var(--teal); }
+    .lp-logo-full { height: 72px; width: auto; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 0 6px rgba(63,217,179,.35)); flex-shrink: 0; }
     .lp-logo-tagline { font-family: var(--font-mono); font-size: 10px; color: #7e8fa3; letter-spacing: .08em; }
     .lp-body {
       position: relative; padding: 0 52px; flex: 1;
@@ -765,11 +763,7 @@
     <!-- Header: logo + build -->
     <div class="lp-header">
       <div class="lp-logo">
-        <img src="assets/terraxis-iso.png" class="lp-logo-iso" alt="TERRAXIS"/>
-        <div class="lp-logo-wordmark">
-          TERRAXIS
-          <span class="lp-logo-version">3.0</span>
-        </div>
+        <img src="assets/terraxis-logo.png" class="lp-logo-full" alt="TERRAXIS"/>
       </div>
       <span class="lp-logo-tagline mono">v3.0.18 &middot; BUILD 24816</span>
     </div>
