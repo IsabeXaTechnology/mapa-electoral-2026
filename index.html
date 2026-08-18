@@ -1618,6 +1618,7 @@
     const L = GEO_LAYERS[name];
     if (!L) return;
     if (on) {
+      if (name === 'SECCION' && !ELEC_DATA['ayun']) fetchElecData('ayun');
       if (!L.data) {
         L.data = new google.maps.Data();
         L.data.setStyle(L.styleFn);
@@ -1955,7 +1956,7 @@
 
     GEO_LAYERS = {
       MUNICIPIO:             { data:null, styleFn: poly('#1565C0','#1565C0',0.10), infoFn: p => '<b>' + (p.MUNICIPIO||p.NOMBRE||'Municipio') + '</b>' },
-      SECCION:               { data:null, styleFn: poly('#7B1FA2','#7B1FA2',0.08), infoFn: p => '<b>Sección ' + p.SECCION + '</b><br>' + (p.MUNICIPIO||'') },
+      SECCION:               { data:null, styleFn: poly('#7B1FA2','#7B1FA2',0.08), infoFn: seccionInfoFull },
       DISTRITO_LOCAL:        { data:null, styleFn: poly('#E65100','#E65100',0.10), infoFn: p => '<b>Distrito Local ' + p.DISTRITO_L + '</b><br>' + (p.MUNICIPIO||'') },
       DISTRITO_FEDERAL:      { data:null, styleFn: poly('#B71C1C','#B71C1C',0.10), infoFn: p => '<b>Distrito Federal ' + p.DISTRITO_F + '</b>' },
       CABECERA_MUNICIPAL:    { data:null, styleFn: pt('#FFD600'),                  infoFn: p => '<b>' + (p.MUNICIPIO||p.NOMBRE||'Cabecera') + '</b>' },
@@ -2175,6 +2176,17 @@
     const r = await fetch(GEO_BASE + 'SECCION.geojson');
     SECCION_GEO_CACHE.gj = await r.json();
     return SECCION_GEO_CACHE.gj;
+  }
+
+  function seccionInfoFull(p){
+    const sec=p.SECCION, d=(ELEC_DATA['ayun']||{})[String(sec)];
+    if(!d) return '<b style="font-size:13px">Sección '+sec+'</b><br><span style="color:#9E9E9E;font-size:12px">Cargando datos… vuelve a hacer clic.</span>';
+    const tot=d.total_votos||0, pct=v=>(tot>0&&v!=null)?((v/tot)*100).toFixed(1)+'%':'—';
+    const mun=d.municipio?(MUN_NL[String(d.municipio)]||d.municipio):(d.distrito||'—');
+    let filas=''; for(let n=1;n<=4;n++){const g=d['ganador_'+n]; if(!g)continue; const v=d['votos_'+n];
+      filas+='<tr><td style="padding:1px 8px 1px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:'+colorGanador(g)+';margin-right:5px"></span>'+n+'º '+g+'</td><td style="text-align:right;font-weight:600">'+(v??'—')+'</td><td style="text-align:right;color:#78716c">'+pct(v)+'</td></tr>';}
+    const margen=d.margen_mc!=null?(d.margen_mc>=0?'+':'')+d.margen_mc+' votos':'—';
+    return '<div style="min-width:236px;font-size:12px;line-height:1.55"><b style="font-size:13px">Sección '+sec+'</b><br>Municipio: <b>'+mun+'</b><br>Participación: <b>'+(d.pct_participacion!=null?d.pct_participacion.toFixed(2)+'%':'—')+'</b> ('+(d.clasificacion_participacion||'—')+')<br>Lista nominal: '+(d.lista_nominal??'—')+' · Total votos: '+(tot||'—')+'<hr style="margin:5px 0;border:none;border-top:1px solid #eee"><table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="color:#78716c"><td>Fuerza (Ayto. 2024)</td><td style="text-align:right">Votos</td><td style="text-align:right">%</td></tr>'+filas+'</table><hr style="margin:5px 0;border:none;border-top:1px solid #eee">MC: <b>'+(d.mc_votos??'—')+'</b> · <b>'+(d.mc_lugar?d.mc_lugar+'º lugar':'—')+'</b><br>Margen MC vs 1º: <b>'+margen+'</b></div>';
   }
 
   function buildElecPopup(sec, d, type, tab) {
