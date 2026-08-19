@@ -1660,6 +1660,7 @@
         L.data.setStyle(L.styleFn);
         L.data.addListener('click', ev => {
           if (Object.values(ELEC_LAYERS).some(layer => layer && layer.getMap())) return;
+          if (['MUNICIPIO','DISTRITO_LOCAL','DISTRITO_FEDERAL','COLONIA'].includes(name) && GEO_LAYERS.SECCION && GEO_LAYERS.SECCION.data && GEO_LAYERS.SECCION.data.getMap()) return;
           const p = {};
           ev.feature.forEachProperty((v, k) => p[k] = v);
           infoWindow.setContent('<div style="min-width:160px;padding:4px">' + L.infoFn(p) + '</div>');
@@ -1991,7 +1992,7 @@
     const pt   = (color) => () => ({ icon: { path: google.maps.SymbolPath.CIRCLE, scale: 5, fillColor: color, fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1.5 } });
 
     GEO_LAYERS = {
-      MUNICIPIO:             { data:null, styleFn: poly('#1565C0','#1565C0',0.10), infoFn: p => '<b>' + (p.MUNICIPIO||p.NOMBRE||'Municipio') + '</b>' },
+      MUNICIPIO:             { data:null, styleFn: poly('#1565C0','#1565C0',0.10), infoFn: p => '<b>' + (p.NOMBRE||p.MUNICIPIO||'Municipio') + '</b>' },
       SECCION:               { data:null, styleFn: poly('#7B1FA2','#7B1FA2',0.08), infoFn: seccionInfoFull },
       DISTRITO_LOCAL:        { data:null, styleFn: poly('#E65100','#E65100',0.10), infoFn: p => '<b>Distrito Local ' + p.DISTRITO_L + '</b><br>' + (p.MUNICIPIO||'') },
       DISTRITO_FEDERAL:      { data:null, styleFn: poly('#B71C1C','#B71C1C',0.10), infoFn: p => '<b>Distrito Federal ' + p.DISTRITO_F + '</b>' },
