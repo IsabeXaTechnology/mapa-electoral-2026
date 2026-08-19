@@ -2218,6 +2218,7 @@
   function seccionInfoFull(p){
     const sec=p.SECCION, d=(ELEC_DATA['ayun']||{})[String(sec)];
     if(!d) return '<b style="font-size:13px">Sección '+sec+'</b><br><span style="color:#9E9E9E;font-size:12px">Cargando datos… vuelve a hacer clic.</span>';
+    if(d.sin_datos) return '<b style="font-size:13px">Sección '+sec+'</b><br><span style="color:#9E9E9E;font-size:12px">Sección nueva (redistritación 2027).<br>Sin resultados electorales 2024.</span>';
     const tot=d.total_votos||0, pct=v=>(tot>0&&v!=null)?((v/tot)*100).toFixed(1)+'%':'—';
     const mun=d.municipio?(MUN_NL[String(d.municipio)]||d.municipio):(d.distrito||'—');
     let filas=''; for(let n=1;n<=4;n++){const g=d['ganador_'+n]; if(!g)continue; const v=d['votos_'+n];
