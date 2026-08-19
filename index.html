@@ -951,6 +951,11 @@
         <span class="nav-label">Alertas</span>
         <span class="nav-badge-live"><span class="live-dot"></span> LIVE</span>
       </button>
+      <button class="tb nav-item" data-tab="12" onclick="switchTab(12)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        <span class="nav-label">Movilización</span>
+        <span class="nav-badge-live"><span class="live-dot"></span> LIVE</span>
+      </button>
       <button class="tb nav-item" data-tab="4" onclick="switchTab(4)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="18" height="11" rx="1"/><polyline points="7 14 10 17 17 10"/><path d="M8 10V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v5"/></svg>
         <span class="nav-label">Conteo Interno</span>
@@ -1535,6 +1540,28 @@
       </div>
     </div>
 
+    <div class="panel" id="panel-12">
+      <div style="padding:18px">
+        <div class="kpi-big">
+          <div class="kpi-big-lbl">Personas movilizadas</div>
+          <div class="kpi-big-val" id="mob-personas">—</div>
+          <div class="kpi-big-sub" id="mob-sub">actualizando…</div>
+        </div>
+        <div class="kpi-grid" style="margin-top:12px">
+          <div class="kpi-mini" style="border-color:#22c55e">
+            <div class="kpi-mini-lbl">Líderes</div>
+            <div class="kpi-mini-val" id="mob-lideres" style="color:#16a34a">—</div>
+          </div>
+          <div class="kpi-mini" style="border-color:#22c55e">
+            <div class="kpi-mini-lbl">Registros</div>
+            <div class="kpi-mini-val" id="mob-registros" style="color:#16a34a">—</div>
+          </div>
+        </div>
+        <div class="flbl" style="margin-top:16px">Líderes movilizando</div>
+        <div id="mob-lista"></div>
+        <button class="btn-act" onclick="loadMobilizacion()" style="margin-top:12px">↻ Actualizar</button>
+      </div>
+    </div>
       </div><!-- /panel-area -->
 
       <div id="map"></div>
@@ -1565,14 +1592,15 @@
   let crtData = null;
   let crtMarkers = [];
   let incMarkers = [], incData = [];
+  let mobMarkers = [], mobData = [];
 
   // ── Tab navigation ───────────────────────────────────────────────────────────
   const TAB_LABELS = {
     1:'Mapa Electoral', 2:'Check In', 3:'Alertas', 4:'Conteo Interno',
     5:'Estad\xEDsticas', 6:'Registro', 7:'Tablero Electoral', 8:'Calendario',
-    9:'Inicio', 10:'Comunidad', 11:'Auditor\xEDa'
+    9:'Inicio', 10:'Comunidad', 11:'Auditor\xEDa', 12:'Movilización'
   };
-  const LIVE_TABS = new Set([2, 3, 4, 11]);
+  const LIVE_TABS = new Set([2, 3, 4, 11, 12]);
 
   function updateTopbar(n) {
     const secEl = document.getElementById('topbar-section');
@@ -1611,6 +1639,68 @@
     }
   }
 
+  async function loadMobilizacion() {
+    try {
+      const rows = await fetchSheetId(SHEET_ID, 'MOVILIZACION', 'A1:Z5000');
+      mobData = rows;
+      let totalPersonas = 0;
+      const tels = new Set();
+      rows.forEach(r => {
+        const n = parseInt(r.num_personas, 10);
+        if (Number.isFinite(n)) totalPersonas += n;
+        if (r.telefono) tels.add(r.telefono);
+      });
+      const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      setTxt('mob-personas', totalPersonas.toLocaleString('es-MX'));
+      setTxt('mob-lideres', tels.size.toLocaleString('es-MX'));
+      setTxt('mob-registros', rows.length.toLocaleString('es-MX'));
+      setTxt('mob-sub', totalPersonas === 1 ? '1 persona movilizada' : totalPersonas.toLocaleString('es-MX') + ' personas movilizadas');
+      renderMobLista(rows);
+      if (currentTab === 12) renderMobMarkers(rows);
+    } catch (e) { console.error('Movilizacion error:', e); const el = document.getElementById('mob-sub'); if (el) el.textContent = 'Error al cargar'; }
+  }
+
+  function renderMobLista(rows) {
+    const cont = document.getElementById('mob-lista');
+    if (!cont) return;
+    if (!rows.length) { cont.innerHTML = '<div style="color:var(--text-2);font-size:13px;padding:8px 0">Sin registros de movilización aún.</div>'; return; }
+    const recent = rows.slice(-40).reverse();
+    cont.innerHTML = recent.map(r => {
+      const hora = r.timestamp ? new Date(r.timestamp).toLocaleString('es-MX', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : (r.hora || '');
+      return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px">'
+        + '<div style="min-width:0"><div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (r.nombre || 'Sin nombre') + '</div>'
+        + '<div style="color:var(--text-2);font-size:11px">' + hora + '</div></div>'
+        + '<div style="font-weight:700;color:#16a34a;font-size:15px;white-space:nowrap">' + (r.num_personas || '0') + ' \u{1F465}</div></div>';
+    }).join('');
+  }
+
+  function renderMobMarkers(rows) {
+    mobMarkers.forEach(m => m.setMap(null));
+    mobMarkers = [];
+    if (currentTab !== 12) return;
+    rows.forEach(r => {
+      const lat = parseFloat(r.lat), lng = parseFloat(r.lng);
+      if (!lat || !lng) return;
+      const marker = new google.maps.Marker({
+        position: { lat, lng }, map: map,
+        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#22c55e', fillOpacity: 0.92, strokeColor: 'white', strokeWeight: 2.5 },
+        title: r.nombre || 'Movilización', zIndex: 200
+      });
+      marker.addListener('click', () => {
+        const foto = r.url_foto ? '<a href="' + r.url_foto + '" target="_blank" style="color:#16a34a">Ver foto de evidencia</a>' : '—';
+        infoWindow.setContent('<div style="min-width:220px;font-family:\'IBM Plex Sans\',sans-serif;padding:4px">'
+          + '<div style="font-weight:600;color:#16a34a;margin-bottom:4px;font-size:13px">\u{1F6D2} ' + (r.nombre || 'Movilización') + '</div>'
+          + '<table style="font-size:12px;width:100%;border-collapse:collapse">'
+          + '<tr><td style="color:#78716c;padding:2px 6px 2px 0">Personas</td><td style="font-weight:700">' + (r.num_personas || '0') + '</td></tr>'
+          + '<tr><td style="color:#78716c">Teléfono</td><td>' + (r.telefono || '—') + '</td></tr>'
+          + '<tr><td style="color:#78716c">Evidencia</td><td>' + foto + '</td></tr>'
+          + '</table></div>');
+        infoWindow.open(map, marker);
+      });
+      mobMarkers.push(marker);
+    });
+  }
+
   function switchTab(n) {
     const prev = currentTab;
     currentTab = n;
@@ -1623,6 +1713,7 @@
     else if (prev === 4) { crtMarkers.forEach(m => m.setMap(null)); }
     else if (prev === 6) { Object.values(adminMarkers).flat().forEach(m => m.setMap(null)); }
     else if (prev === 7) { agendaMarkers.forEach(m => m.setMap(null)); }
+    else if (prev === 12) { mobMarkers.forEach(m => m.setMap(null)); }
     if (prev === 8 || prev === 11) {
       document.getElementById('map').style.display = '';
       document.getElementById('panel-area').style.width = '';
@@ -1647,6 +1738,7 @@
       document.getElementById('panel-area').style.maxWidth = '100%';
       loadAuditScans();
     }
+    else if (n === 12) { loadMobilizacion(); }
   }
 
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
@@ -2026,6 +2118,7 @@
     setInterval(() => loadConteo(), 30000);
     setInterval(() => { if (currentTab === 6) loadAdminPins(); }, 60000);
     setInterval(() => { if (currentTab === 11) loadAuditScans(); }, 30000);
+    setInterval(() => { if (currentTab === 12) loadMobilizacion(); }, 30000);
 
     map.addListener('click', e => {
       const lat = e.latLng.lat(), lng = e.latLng.lng();
