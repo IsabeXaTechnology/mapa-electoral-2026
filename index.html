@@ -1909,6 +1909,7 @@
   }
 
   let homeMap = null;
+  let homeMuni = null;
   async function loadInicio() {
     const setTxt = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
     const nf = n => (Number(n) || 0).toLocaleString('es-MX');
@@ -1921,6 +1922,12 @@
       if (el && window.google && google.maps) {
         if (!homeMap) {
           homeMap = new google.maps.Map(el, { center:{lat:25.6866,lng:-100.3161}, zoom:9, disableDefaultUI:true, gestureHandling:'none', clickableIcons:false, keyboardShortcuts:false });
+        }
+        if (homeMap && !homeMuni) {
+          homeMuni = new google.maps.Data();
+          homeMuni.setStyle({ fillColor:'#1565C0', strokeColor:'#1565C0', strokeWeight:1, strokeOpacity:0.9, fillOpacity:0.10 });
+          homeMuni.loadGeoJson('https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/MUNICIPIO.geojson');
+          homeMuni.setMap(homeMap);
         }
         setTimeout(() => { try { google.maps.event.trigger(homeMap, 'resize'); homeMap.setCenter({lat:25.6866,lng:-100.3161}); } catch(e){} }, 200);
       }
@@ -1967,6 +1974,7 @@
       document.getElementById('map').style.display = '';
       document.getElementById('panel-area').style.width = '';
       document.getElementById('panel-area').style.maxWidth = '';
+      setTimeout(() => { try { if (map) google.maps.event.trigger(map, 'resize'); } catch(e){} }, 0);
     }
 
     if (n === 2 && allData.length > 0) { applyFilters(); }
