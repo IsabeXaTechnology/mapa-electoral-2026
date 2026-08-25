@@ -853,7 +853,7 @@
             <span class="lp-input-icon">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
             </span>
-            <input class="input" id="login-email" type="email" placeholder="nombre@institucion.gob" autocomplete="username"/>
+            <input class="input" id="login-email" type="text" placeholder="nombre@institucion.gob" autocomplete="username"/>
           </div>
         </div>
         <div>
@@ -1859,6 +1859,7 @@
   async function loadEstadisticas() {
     const setTxt = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
     const nf = n => (Number(n) || 0).toLocaleString('es-MX');
+    if (isMorena()) { try { await fetchElecData('ayun'); } catch(e){} }
     // 1) Registro (webhook admin-pins)
     try {
       const r = await fetch(ADMIN_API); const d = await r.json(); const k = d.kpis || {};
@@ -1866,14 +1867,14 @@
     } catch (e) { console.error('stats registro', e); }
     // 2) Check In (Estatus_Casillas)
     try {
-      const rows = await fetchSheetId(SHEET_ID, 'Estatus_Casillas', 'A1:F5000');
+      const rows0 = await fetchSheetId(SHEET_ID, 'Estatus_Casillas', 'A1:F5000'); const rows = isMorena() ? rows0.filter(r => GPE_SECCIONES.has(String(r.seccion))) : rows0;
       const c = { VERDE:0, NARANJA:0, ROJO:0, gris:0 };
       rows.forEach(r => { const kk = String(r.estatus || '').toUpperCase(); c[(kk === 'VERDE' || kk === 'NARANJA' || kk === 'ROJO') ? kk : 'gris']++; });
       setTxt('st-chk-verde', nf(c.VERDE)); setTxt('st-chk-naranja', nf(c.NARANJA)); setTxt('st-chk-rojo', nf(c.ROJO)); setTxt('st-chk-total', nf(rows.length));
     } catch (e) { console.error('stats checkin', e); }
     // 3) Alertas (INCIDENCIAS_MAPA)
     try {
-      const rows = await fetchSheetId(SHEET_ID_INC, 'INCIDENCIAS_MAPA', 'A1:N5000');
+      const rows0 = await fetchSheetId(SHEET_ID_INC, 'INCIDENCIAS_MAPA', 'A1:N5000'); const rows = isMorena() ? rows0.filter(r => String(r.MUNICIPIO || '').toLowerCase().includes('guadalupe')) : rows0;
       const c = { AMARILLO:0, NARANJA:0, ROJO:0, MORADO:0 };
       rows.forEach(r => { if (c[r.COLOR] !== undefined) c[r.COLOR]++; });
       setTxt('st-alr-amarillo', nf(c.AMARILLO)); setTxt('st-alr-naranja', nf(c.NARANJA)); setTxt('st-alr-rojo', nf(c.ROJO)); setTxt('st-alr-morado', nf(c.MORADO));
@@ -1913,6 +1914,7 @@
   async function loadInicio() {
     const setTxt = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
     const nf = n => (Number(n) || 0).toLocaleString('es-MX');
+    if (isMorena()) { try { await fetchElecData('ayun'); } catch(e){} }
     try {
       const s = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
       setTxt('home-date', s.charAt(0).toUpperCase() + s.slice(1));
@@ -1925,18 +1927,18 @@
         }
         if (homeMap && !homeMuni) {
           homeMuni = new google.maps.Data();
-          homeMuni.setStyle({ fillColor:'#1565C0', strokeColor:'#1565C0', strokeWeight:1, strokeOpacity:0.9, fillOpacity:0.10 });
+          homeMuni.setStyle(f => (isMorena() && Number(f.getProperty('MUNICIPIO'))===26) ? { fillColor:'#9F2241', strokeColor:'#9F2241', strokeWeight:1.5, strokeOpacity:1, fillOpacity:0.40 } : { fillColor:'#1565C0', strokeColor:'#1565C0', strokeWeight:1, strokeOpacity:0.9, fillOpacity:0.10 });
           homeMuni.loadGeoJson('https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/MUNICIPIO.geojson');
           homeMuni.setMap(homeMap);
         }
-        setTimeout(() => { try { google.maps.event.trigger(homeMap, 'resize'); homeMap.setCenter({lat:25.6866,lng:-100.3161}); } catch(e){} }, 200);
+        setTimeout(() => { try { google.maps.event.trigger(homeMap, 'resize'); if (isMorena()) { homeMap.setCenter({lat:25.677,lng:-100.256}); homeMap.setZoom(11); } else { homeMap.setCenter({lat:25.6866,lng:-100.3161}); } } catch(e){} }, 200);
       }
     } catch (e) { console.error('home map', e); }
     try { const r = await fetch(ADMIN_API); const d = await r.json(); setTxt('home-afiliados', nf((d.kpis||{}).afiliado)); } catch (e) {}
-    try { const rows = await fetchSheetId(SHEET_ID, 'Estatus_Casillas', 'A1:F5000'); setTxt('home-checkins', nf(rows.length)); } catch (e) {}
+    try { const rows0 = await fetchSheetId(SHEET_ID, 'Estatus_Casillas', 'A1:F5000'); const rows = isMorena() ? rows0.filter(r => GPE_SECCIONES.has(String(r.seccion))) : rows0; setTxt('home-checkins', nf(rows.length)); } catch (e) {}
     try { const rows = await fetchSheetId(SHEET_ID, 'MOVILIZACION', 'A1:Z5000'); let t = 0; rows.forEach(r => { const n = parseInt(r.num_personas, 10); if (Number.isFinite(n)) t += n; }); setTxt('home-movilizados', nf(t)); } catch (e) {}
     try {
-      const rows = await fetchSheetId(SHEET_ID_INC, 'INCIDENCIAS_MAPA', 'A1:N5000');
+      const rows0 = await fetchSheetId(SHEET_ID_INC, 'INCIDENCIAS_MAPA', 'A1:N5000'); const rows = isMorena() ? rows0.filter(r => String(r.MUNICIPIO || '').toLowerCase().includes('guadalupe')) : rows0;
       setTxt('home-alertas', nf(rows.length));
       const c = { AMARILLO:0, NARANJA:0, ROJO:0, MORADO:0 };
       rows.forEach(r => { if (c[r.COLOR] !== undefined) c[r.COLOR]++; });
@@ -2019,6 +2021,12 @@
       if (!L.data) {
         L.data = new google.maps.Data();
         L.data.setStyle(L.styleFn);
+        const GPE_FILTER_LAYERS = ['COLONIA','COLONIA_PUNTUAL','CARRETERAS_X_MUNICIPIO','LINEA_METRO','RIOS','LAGOS','CASILLA','ESCUELA'];
+        if (isMorena() && GPE_FILTER_LAYERS.includes(name)) {
+          const _base = L.styleFn;
+          const _apply = () => L.data.setStyle(f => { const s = (typeof _base === 'function') ? _base(f) : _base; return gpeFeatureInside(f) ? s : Object.assign({}, s, { visible:false }); });
+          _apply(); loadGpePolys().then(_apply);
+        }
         L.data.addListener('click', ev => {
           if (Object.values(ELEC_LAYERS).some(layer => layer && layer.getMap())) return;
           const p = {};
@@ -2305,14 +2313,15 @@
     const tipo   = document.getElementById('sel-tipo').value;
     const estKey = document.getElementById('sel-estatus').value;
     const filtered = allData.filter(r => {
-      if (mun    && r.municipio !== mun)              return false;
+      if (isMorena()) { if (!String(r.municipio || '').toLowerCase().includes('guadalupe')) return false; }
+      else if (mun && r.municipio !== mun)           return false;
       if (tipo   && !r.tipo_casilla.startsWith(tipo)) return false;
       if (estKey && estatusKey(r.estatus) !== estKey)  return false;
       return true;
     });
     renderMarkers(filtered);
     updateStats(filtered);
-    if (mun && filtered.length > 0) {
+    if ((mun || isMorena()) && filtered.length > 0) {
       const bounds = new google.maps.LatLngBounds();
       filtered.forEach(r => { const lat = parseFloat(r.latitud), lng = parseFloat(r.longitud); if (lat && lng) bounds.extend({ lat, lng }); });
       map.fitBounds(bounds);
@@ -2353,8 +2362,8 @@
     const pt   = (color) => () => ({ icon: { path: google.maps.SymbolPath.CIRCLE, scale: 5, fillColor: color, fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1.5 } });
 
     GEO_LAYERS = {
-      MUNICIPIO:             { data:null, styleFn: poly('#1565C0','#1565C0',0.10), infoFn: p => '<b>' + (p.NOMBRE||p.MUNICIPIO||'Municipio') + '</b>' },
-      SECCION:               { data:null, styleFn: poly('#7B1FA2','#7B1FA2',0.08, 100), infoFn: seccionInfoFull },
+      MUNICIPIO:             { data:null, styleFn: f => (isMorena() && Number(f.getProperty('MUNICIPIO'))===26) ? { strokeColor:'#9F2241', strokeOpacity:1, strokeWeight:2.5, fillColor:'#9F2241', fillOpacity:0.35, zIndex:5 } : { strokeColor:'#1565C0', strokeOpacity:1, strokeWeight:2, fillColor:'#1565C0', fillOpacity:0.10, zIndex:1 }, infoFn: p => '<b>' + (p.NOMBRE||p.MUNICIPIO||'Municipio') + '</b>' },
+      SECCION:               { data:null, styleFn: f => (isMorena() && Number(f.getProperty('MUNICIPIO'))!==26) ? { fillOpacity:0, strokeWeight:0 } : { strokeColor:'#7B1FA2', strokeOpacity:1, strokeWeight:2, fillColor:'#7B1FA2', fillOpacity:0.08, zIndex:100 }, infoFn: seccionInfoFull },
       DISTRITO_LOCAL:        { data:null, styleFn: poly('#E65100','#E65100',0.10), infoFn: p => '<b>Distrito Local ' + p.DISTRITO_L + '</b><br>' + (p.MUNICIPIO||'') },
       DISTRITO_FEDERAL:      { data:null, styleFn: poly('#B71C1C','#B71C1C',0.10), infoFn: p => '<b>Distrito Federal ' + p.DISTRITO_F + '</b>' },
       CABECERA_MUNICIPAL:    { data:null, styleFn: pt('#FFD600'),                  infoFn: p => '<b>' + (p.MUNICIPIO||p.NOMBRE||'Cabecera') + '</b>' },
@@ -2431,6 +2440,92 @@
 
   const ELEC_BASE = 'https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/electoral/';
   const GEO_BASE  = 'https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/';
+
+  // ===== Vista "Morena Guadalupe" (solo activa si USER_MODE==='morena') =====
+  const GPE_CODE = 26, GPE_NAME = 'Guadalupe';
+  let GPE_SECCIONES = new Set();
+  let gpePolys = [];
+  let gpePolysLoaded = false;
+  const MORENA_T10 = { sec:{}, dl:{}, df:{} };
+  function isMorena(){ return typeof USER_MODE !== 'undefined' && USER_MODE === 'morena'; }
+  function ptsLugar(l){ return ({1:3,2:2,3:1})[l] || 0; }
+  function ptsPartV(c){ return c === 'Excelente' ? 2 : 0; }
+  function ptsLNV(ln){ const c = clasificarListaNominal(ln); return c === 'Muy alta' ? 2 : (c === 'Alta' ? 1 : 0); }
+
+  function deriveMorenaFocus(elecData){
+    if (!elecData || elecData.__morena) return elecData;
+    for (const sec in elecData){
+      const d = elecData[sec];
+      if (!d || typeof d !== 'object') continue;
+      const isGpe = String(d.municipio || '').trim().toLowerCase() === 'guadalupe';
+      d._gpe = isGpe;
+      if (isGpe && !d.sin_datos){
+        let mn = 0, mv = null;
+        for (let n = 1; n <= 4; n++){ const g = d['ganador_' + n]; if (g && String(g).indexOf('MORENA') >= 0){ mn = n; mv = d['votos_' + n]; break; } }
+        if (mn){
+          const margen = mn === 1 ? ((d.votos_1||0) - (d.votos_2||0)) : ((mv||0) - (d.votos_1||0));
+          d.mc_lugar = mn; d.mc_votos = mv; d.margen_mc = margen;
+        }
+      }
+    }
+    try { Object.defineProperty(elecData, '__morena', { value:true, enumerable:false }); } catch(e){ elecData.__morena = true; }
+    return elecData;
+  }
+
+  function buildMorenaTop10(tab, elecData, geoJSON){
+    const dist = {};
+    ((geoJSON && geoJSON.features) || []).forEach(f => { const p = f.properties || {}; dist[String(p.SECCION)] = { dl:p.DISTRITO_L, df:p.DISTRITO_F }; });
+    const rows = [];
+    for (const sec in elecData) {
+      const d = elecData[sec]; if (!d || d.sin_datos || !d._gpe) continue;
+      rows.push({ sec, score: ptsLugar(d.mc_lugar) + ptsPartV(d.clasificacion_participacion) + ptsLNV(d.lista_nominal),
+        votos: d.mc_votos || 0, dl:(dist[sec]||{}).dl, df:(dist[sec]||{}).df,
+        lugar_mc: d.mc_lugar ? d.mc_lugar + ' LUGAR' : '—', pts_lugar: ptsLugar(d.mc_lugar), pts_margen:0,
+        pts_part: ptsPartV(d.clasificacion_participacion), pts_ln: ptsLNV(d.lista_nominal),
+        margen_cat:'—', clas_part: d.clasificacion_participacion || '—', clas_ln: clasificarListaNominal(d.lista_nominal) });
+    }
+    const groupTop = (keyFn, out, labelFn) => {
+      const groups = {};
+      rows.forEach(r => { const k = keyFn(r); if (k == null || k === '') return; (groups[k] = groups[k] || []).push(r); });
+      Object.values(groups).forEach(arr => {
+        arr.sort((a,b) => b.score - a.score || b.votos - a.votos);
+        arr.slice(0,10).forEach((r,i) => { out[r.sec] = { score:r.score, rank:i+1, municipio: labelFn(r), pts_lugar:r.pts_lugar, pts_margen:0, pts_part:r.pts_part, pts_ln:r.pts_ln, lugar_mc:r.lugar_mc, margen_cat:'—', clas_part:r.clas_part, clas_ln:r.clas_ln }; });
+      });
+    };
+    MORENA_T10.sec[tab] = {}; MORENA_T10.dl[tab] = {}; MORENA_T10.df[tab] = {};
+    groupTop(() => 'GPE', MORENA_T10.sec[tab], () => 'Guadalupe');
+    groupTop(r => r.dl, MORENA_T10.dl[tab], r => 'Distrito Local ' + r.dl);
+    groupTop(r => r.df, MORENA_T10.df[tab], r => 'Distrito Federal ' + r.df);
+  }
+
+  async function loadGpePolys(){
+    if (gpePolysLoaded) return;
+    gpePolysLoaded = true;
+    try {
+      const r = await fetch(GEO_BASE + 'MUNICIPIO.geojson'); const gj = await r.json();
+      const feat = (gj.features || []).find(f => Number((f.properties||{}).MUNICIPIO) === GPE_CODE || String((f.properties||{}).NOMBRE||'').toUpperCase() === 'GUADALUPE');
+      if (feat && feat.geometry){
+        const polys = feat.geometry.type === 'Polygon' ? [feat.geometry.coordinates] : feat.geometry.coordinates;
+        polys.forEach(poly => { const ring = poly[0].map(c => ({ lat:c[1], lng:c[0] })); gpePolys.push(new google.maps.Polygon({ paths: ring })); });
+      }
+    } catch(e){ console.error('gpe polys', e); }
+  }
+
+  function gpeFeatureInside(feature){
+    const mun = feature.getProperty('MUNICIPIO');
+    if (mun !== null && mun !== undefined && mun !== '') return Number(mun) === GPE_CODE;
+    if (!gpePolys.length) return true;
+    let inside = false;
+    const g = feature.getGeometry(); if (!g) return false;
+    g.forEachLatLng(ll => { if (inside) return; for (const poly of gpePolys){ if (google.maps.geometry && google.maps.geometry.poly.containsLocation(ll, poly)){ inside = true; break; } } });
+    return inside;
+  }
+
+  async function initMorenaView(){
+    try { document.querySelectorAll('.li-name').forEach(el => { if (el.textContent.trim() === 'Mapa de Calor MC') el.textContent = 'Mapa de Calor MORENA'; }); } catch(e){}
+    try { loadGpePolys(); } catch(e){}
+    try { const d = await fetchElecData('ayun'); GPE_SECCIONES = new Set(); for (const s in d){ const x = d[s]; if (x && x._gpe && !x.sin_datos) GPE_SECCIONES.add(String(s)); } } catch(e){ console.error('morena secciones', e); }
+  }
 
   function toggleElecGroup(tab) {
     const body  = document.getElementById('body-' + tab);
@@ -2526,15 +2621,18 @@
   }
 
   function isSpecialActive(tab, sec) {
-    if (TOP10_DATA[tab] && TOP10_DATA[tab][sec]) {
+    const _T10 = isMorena() ? MORENA_T10.sec : TOP10_DATA;
+    const _T10DL = isMorena() ? MORENA_T10.dl : TOP10DL_DATA;
+    const _T10DF = isMorena() ? MORENA_T10.df : TOP10DF_DATA;
+    if (_T10[tab] && _T10[tab][sec]) {
       const k = tab + '_top10_secciones';
       if (ELEC_LAYERS[k] && ELEC_LAYERS[k].getMap()) return true;
     }
-    if (TOP10DL_DATA[tab] && TOP10DL_DATA[tab][sec]) {
+    if (_T10DL[tab] && _T10DL[tab][sec]) {
       const k = tab + '_top10_distrito';
       if (ELEC_LAYERS[k] && ELEC_LAYERS[k].getMap()) return true;
     }
-    if (TOP10DF_DATA[tab] && TOP10DF_DATA[tab][sec]) {
+    if (_T10DF[tab] && _T10DF[tab][sec]) {
       const k = tab + '_top10_df';
       if (ELEC_LAYERS[k] && ELEC_LAYERS[k].getMap()) return true;
     }
@@ -2549,6 +2647,7 @@
     if (ELEC_DATA[tab]) return ELEC_DATA[tab];
     const r = await fetch(ELEC_BASE + ELEC_TABS[tab] + '.json');
     ELEC_DATA[tab] = await r.json();
+    if (isMorena()) deriveMorenaFocus(ELEC_DATA[tab]);
     return ELEC_DATA[tab];
   }
 
@@ -2594,7 +2693,9 @@
 
   function buildElecPopup(sec, d, type, tab) {
     if (type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df') {
-      const dataMap = type === 'top10_secciones' ? TOP10_DATA : type === 'top10_distrito' ? TOP10DL_DATA : TOP10DF_DATA;
+      const dataMap = isMorena()
+        ? (type === 'top10_secciones' ? MORENA_T10.sec : type === 'top10_distrito' ? MORENA_T10.dl : MORENA_T10.df)
+        : (type === 'top10_secciones' ? TOP10_DATA : type === 'top10_distrito' ? TOP10DL_DATA : TOP10DF_DATA);
       const t10 = dataMap[tab] && dataMap[tab][sec];
       if (!t10) {
         const munName = d.municipio ? (MUN_NL[String(d.municipio)] || d.municipio) : (d.distrito || '—');
@@ -2721,6 +2822,18 @@
     return `<div style="padding:6px;font-size:12px">${base}</div>`;
   }
 
+  (function(){
+    const _sif = seccionInfoFull, _bep = buildElecPopup;
+    const relabel = h => (typeof h === 'string' && isMorena())
+      ? h.replace(/Votos MC/g,'Votos MORENA').replace(/Lugar MC/g,'Lugar MORENA').replace(/Margen MC/g,'Margen MORENA').replace(/MC:/g,'MORENA:').replace(/MC perdió/g,'MORENA perdió').replace(/Fuerza \(Ayto\. 2024\)/g,'Fuerza')
+      : h;
+    seccionInfoFull = function(p){
+      if (isMorena()){ const d = (ELEC_DATA['ayun']||{})[String(p.SECCION)]; if (!d || !d._gpe) return '<b style="font-size:13px">Sección '+p.SECCION+'</b><br><span style="color:#9E9E9E;font-size:12px">Fuera del municipio de Guadalupe.</span>'; }
+      return relabel(_sif(p));
+    };
+    buildElecPopup = function(sec, d, type, tab){ return relabel(_bep(sec, d, type, tab)); };
+  })();
+
   async function toggleElectoralLayer(tab, type, on) {
     const key = tab + '_' + type;
     if (!on) {
@@ -2729,10 +2842,19 @@
     }
     try {
       const fetchList = [fetchElecData(tab), fetchSeccionGeoJSON()];
-      if (type === 'top10_secciones') fetchList.push(fetchTop10Data(tab));
-      else if (type === 'top10_distrito') fetchList.push(fetchTop10DLData(tab));
-      else if (type === 'top10_df') fetchList.push(fetchTop10DFData(tab));
-      const [elecData, geoJSON, top10Data] = await Promise.all(fetchList);
+      if (!isMorena()) {
+        if (type === 'top10_secciones') fetchList.push(fetchTop10Data(tab));
+        else if (type === 'top10_distrito') fetchList.push(fetchTop10DLData(tab));
+        else if (type === 'top10_df') fetchList.push(fetchTop10DFData(tab));
+      }
+      let [elecData, geoJSON, top10Data] = await Promise.all(fetchList);
+      if (isMorena()) {
+        deriveMorenaFocus(elecData);
+        if (!MORENA_T10.sec[tab]) buildMorenaTop10(tab, elecData, geoJSON);
+        if (type === 'top10_secciones') top10Data = MORENA_T10.sec[tab];
+        else if (type === 'top10_distrito') top10Data = MORENA_T10.dl[tab];
+        else if (type === 'top10_df') top10Data = MORENA_T10.df[tab];
+      }
 
       if (!ELEC_LAYERS[key]) {
         const layer = new google.maps.Data();
@@ -2740,6 +2862,7 @@
         layer.setStyle(feature => {
           const sec = String(feature.getProperty('SECCION'));
           const d   = elecData[sec];
+          if (isMorena() && (!d || !d._gpe)) return { fillOpacity: 0, strokeWeight: 0 };
           if (type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df') {
             return top10Data && top10Data[sec]
               ? { fillColor: '#FF6D00', fillOpacity: 0.80, strokeColor: '#BF360C', strokeWeight: 1.5 }
@@ -3642,19 +3765,25 @@
   }
 
   // ── TERRAXIS 3.0: Login / Logout / Theme / Nav ──────────────────────────
-  const TX_CREDENTIALS = {
-    email: 'isabexatechnology@gmail.com',
-    pass:  'Terraxis.2026'
-  };
+  const TX_USERS = [
+    { email: 'isabexatechnology@gmail.com', pass: 'Terraxis.2026', mode: 'admin' },
+    { email: 'Morena Guadalupe', pass: 'Terraxis.2026', mode: 'morena' }
+  ];
+  let USER_MODE = 'admin';
+  let loginTabMode = 'admin';
 
   function doLogin() {
     const email = document.getElementById('login-email').value.trim();
     const pass  = document.getElementById('login-pass').value;
     const errEl = document.getElementById('login-error');
     const btn   = document.getElementById('login-btn');
-    if (email === TX_CREDENTIALS.email && pass === TX_CREDENTIALS.pass) {
+    const wantMode = (loginTabMode === 'user') ? 'morena' : 'admin';
+    const matched = TX_USERS.find(u => u.email === email && u.pass === pass && u.mode === wantMode);
+    if (matched) {
+      USER_MODE = matched.mode;
       btn.innerHTML = '<span class="mono" style="opacity:.85">verificando…</span>';
       btn.disabled = true;
+      if (USER_MODE === 'morena') { try { initMorenaView(); } catch(e){ console.error('morena init', e); } }
       setTimeout(() => {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app').style.display = 'flex';
@@ -3670,6 +3799,7 @@
   }
 
   function setLoginMode(mode) {
+    loginTabMode = mode;
     document.getElementById('mode-admin').classList.toggle('active', mode === 'admin');
     document.getElementById('mode-user').classList.toggle('active', mode === 'user');
     const isAdmin = mode === 'admin';
@@ -3682,6 +3812,7 @@
   }
 
   function doLogout() {
+    USER_MODE = 'admin'; loginTabMode = 'admin';
     document.getElementById('app').style.display = 'none';
     document.getElementById('login-screen').style.display = 'grid';
     document.getElementById('login-pass').value = '';
@@ -3936,7 +4067,7 @@
 </script>
 
 <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&callback=initMap&loading=async" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvJaDrA2x5dR-y-4sXuPyyKvcePf_DLNI&libraries=geometry&callback=initMap&loading=async" async defer></script>
 
 <!-- ─── Modal ADMIN ─────────────────────────────────────────────────────────── -->
 <div id="adm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center">
