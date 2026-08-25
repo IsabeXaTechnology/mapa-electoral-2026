@@ -2528,6 +2528,7 @@
       document.querySelectorAll('input[onchange*="calor_margen"]').forEach(inp => { const li = inp.closest('.li'); const s = li && li.querySelector('.swatch'); if (s) s.style.background = 'linear-gradient(90deg,#4A148C,#7B1FA2,#9F2241)'; });
     } catch(e){}
     try { loadGpePolys(); } catch(e){}
+    try { const reMuni = () => { try { if (GEO_LAYERS.MUNICIPIO && GEO_LAYERS.MUNICIPIO.data) GEO_LAYERS.MUNICIPIO.data.setStyle(GEO_LAYERS.MUNICIPIO.styleFn); } catch(e){} }; reMuni(); setTimeout(reMuni, 1200); setTimeout(reMuni, 2500); } catch(e){}
     try { const d = await fetchElecData('ayun'); GPE_SECCIONES = new Set(); for (const s in d){ const x = d[s]; if (x && x._gpe && !x.sin_datos) GPE_SECCIONES.add(String(s)); } } catch(e){ console.error('morena secciones', e); }
   }
 
@@ -2660,7 +2661,7 @@
   }
 
   async function fetchElecData(tab) {
-    if (ELEC_DATA[tab]) return ELEC_DATA[tab];
+    if (ELEC_DATA[tab]) { if (isMorena()) deriveMorenaFocus(ELEC_DATA[tab]); return ELEC_DATA[tab]; }
     const r = await fetch(ELEC_BASE + ELEC_TABS[tab] + '.json');
     ELEC_DATA[tab] = await r.json();
     if (isMorena()) deriveMorenaFocus(ELEC_DATA[tab]);
@@ -2844,7 +2845,13 @@
       ? h.replace(/Votos MC/g,'Votos MORENA').replace(/Lugar MC/g,'Lugar MORENA').replace(/Margen MC/g,'Margen MORENA').replace(/MC:/g,'MORENA:').replace(/MC perdió/g,'MORENA perdió').replace(/Fuerza \(Ayto\. 2024\)/g,'Fuerza')
       : h;
     seccionInfoFull = function(p){
-      if (isMorena()){ const d = (ELEC_DATA['ayun']||{})[String(p.SECCION)]; if (!d || !d._gpe) return '<b style="font-size:13px">Sección '+p.SECCION+'</b><br><span style="color:#9E9E9E;font-size:12px">Fuera del municipio de Guadalupe.</span>'; }
+      if (isMorena()){
+        const ed = ELEC_DATA['ayun'];
+        if (!ed) { try { fetchElecData('ayun'); } catch(e){} return '<b style="font-size:13px">Sección '+p.SECCION+'</b><br><span style="color:#9E9E9E;font-size:12px">Cargando datos… vuelve a hacer clic.</span>'; }
+        if (!ed.__morena) deriveMorenaFocus(ed);
+        const d = ed[String(p.SECCION)];
+        if (!d || !d._gpe) return '<b style="font-size:13px">Sección '+p.SECCION+'</b><br><span style="color:#9E9E9E;font-size:12px">Fuera del municipio de Guadalupe.</span>';
+      }
       return relabel(_sif(p));
     };
     buildElecPopup = function(sec, d, type, tab){ return relabel(_bep(sec, d, type, tab)); };
