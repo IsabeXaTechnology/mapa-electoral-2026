@@ -2459,7 +2459,7 @@
       if (!d || typeof d !== 'object') continue;
       const isGpe = String(d.municipio || '').trim().toLowerCase() === 'guadalupe';
       d._gpe = isGpe;
-      if (isGpe && !d.sin_datos){
+      if (!d.sin_datos){
         let mn = 0, mv = null;
         for (let n = 1; n <= 4; n++){ const g = d['ganador_' + n]; if (g && String(g).indexOf('MORENA') >= 0){ mn = n; mv = d['votos_' + n]; break; } }
         if (mn){
@@ -2846,11 +2846,10 @@
       : h;
     seccionInfoFull = function(p){
       if (isMorena()){
+        if (Number(p.MUNICIPIO) !== 26) return '<b style="font-size:13px">Sección '+p.SECCION+'</b><br><span style="color:#9E9E9E;font-size:12px">Fuera del municipio de Guadalupe.</span>';
         const ed = ELEC_DATA['ayun'];
         if (!ed) { try { fetchElecData('ayun'); } catch(e){} return '<b style="font-size:13px">Sección '+p.SECCION+'</b><br><span style="color:#9E9E9E;font-size:12px">Cargando datos… vuelve a hacer clic.</span>'; }
         if (!ed.__morena) deriveMorenaFocus(ed);
-        const d = ed[String(p.SECCION)];
-        if (!d || !d._gpe) return '<b style="font-size:13px">Sección '+p.SECCION+'</b><br><span style="color:#9E9E9E;font-size:12px">Fuera del municipio de Guadalupe.</span>';
       }
       return relabel(_sif(p));
     };
@@ -2882,10 +2881,10 @@
       if (!ELEC_LAYERS[key]) {
         const layer = new google.maps.Data();
         layer.addGeoJson(geoJSON);
-        layer.setStyle(feature => {
+        const _elecStyle = feature => {
           const sec = String(feature.getProperty('SECCION'));
           const d   = elecData[sec];
-          if (isMorena() && (!d || !d._gpe)) return { fillOpacity: 0, strokeWeight: 0 };
+          if (isMorena() && Number(feature.getProperty('MUNICIPIO')) !== 26) return { fillOpacity: 0, strokeWeight: 0 };
           if (type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df') {
             return top10Data && top10Data[sec]
               ? { fillColor: isMorena() ? '#9F2241' : '#FF6D00', fillOpacity: 0.80, strokeColor: isMorena() ? '#6E0E29' : '#BF360C', strokeWeight: 1.5 }
@@ -2911,7 +2910,8 @@
           else if (type === 'calor_participacion') color = colorParticipacion(d.clasificacion_participacion);
           else if (type === 'calor_lista_nominal') color = colorListaNominal(d.lista_nominal);
           return { fillColor: color, fillOpacity: 0.72, strokeColor: color, strokeWeight: 1 };
-        });
+        };
+        layer.setStyle(feature => { const s = _elecStyle(feature) || {}; if (isMorena() && s && s.fillOpacity) s.zIndex = 200; return s; });
         layer.addListener('click', ev => {
           const sec = String(ev.feature.getProperty('SECCION'));
           if ((type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df')
