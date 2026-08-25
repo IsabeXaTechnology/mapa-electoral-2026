@@ -2321,7 +2321,7 @@
     });
     renderMarkers(filtered);
     updateStats(filtered);
-    if ((mun || isMorena()) && filtered.length > 0) {
+    if ((mun || isMorena()) && filtered.length > 0 && currentTab === 2) {
       const bounds = new google.maps.LatLngBounds();
       filtered.forEach(r => { const lat = parseFloat(r.latitud), lng = parseFloat(r.longitud); if (lat && lng) bounds.extend({ lat, lng }); });
       map.fitBounds(bounds);
@@ -2362,7 +2362,7 @@
     const pt   = (color) => () => ({ icon: { path: google.maps.SymbolPath.CIRCLE, scale: 5, fillColor: color, fillOpacity: 1, strokeColor: '#fff', strokeWeight: 1.5 } });
 
     GEO_LAYERS = {
-      MUNICIPIO:             { data:null, styleFn: f => (isMorena() && Number(f.getProperty('MUNICIPIO'))===26) ? { strokeColor:'#9F2241', strokeOpacity:1, strokeWeight:2.5, fillColor:'#9F2241', fillOpacity:0.35, zIndex:5 } : { strokeColor:'#1565C0', strokeOpacity:1, strokeWeight:2, fillColor:'#1565C0', fillOpacity:0.10, zIndex:1 }, infoFn: p => '<b>' + (p.NOMBRE||p.MUNICIPIO||'Municipio') + '</b>' },
+      MUNICIPIO:             { data:null, styleFn: f => (isMorena() && Number(f.getProperty('MUNICIPIO'))===26) ? { strokeColor:'#9F2241', strokeOpacity:1, strokeWeight:2.5, fillColor:'#9F2241', fillOpacity:0, zIndex:5 } : { strokeColor:'#1565C0', strokeOpacity:1, strokeWeight:2, fillColor:'#1565C0', fillOpacity:0.10, zIndex:1 }, infoFn: p => '<b>' + (p.NOMBRE||p.MUNICIPIO||'Municipio') + '</b>' },
       SECCION:               { data:null, styleFn: f => (isMorena() && Number(f.getProperty('MUNICIPIO'))!==26) ? { fillOpacity:0, strokeWeight:0 } : { strokeColor:'#7B1FA2', strokeOpacity:1, strokeWeight:2, fillColor:'#7B1FA2', fillOpacity:0.08, zIndex:100 }, infoFn: seccionInfoFull },
       DISTRITO_LOCAL:        { data:null, styleFn: poly('#E65100','#E65100',0.10), infoFn: p => '<b>Distrito Local ' + p.DISTRITO_L + '</b><br>' + (p.MUNICIPIO||'') },
       DISTRITO_FEDERAL:      { data:null, styleFn: poly('#B71C1C','#B71C1C',0.10), infoFn: p => '<b>Distrito Federal ' + p.DISTRITO_F + '</b>' },
@@ -2523,6 +2523,10 @@
 
   async function initMorenaView(){
     try { document.querySelectorAll('.li-name').forEach(el => { if (el.textContent.trim() === 'Mapa de Calor MC') el.textContent = 'Mapa de Calor MORENA'; }); } catch(e){}
+    try {
+      document.querySelectorAll('input[onchange*="calor_mc"], input[onchange*="top10_"]').forEach(inp => { const li = inp.closest('.li'); const s = li && li.querySelector('.swatch'); if (s) s.style.background = '#9F2241'; });
+      document.querySelectorAll('input[onchange*="calor_margen"]').forEach(inp => { const li = inp.closest('.li'); const s = li && li.querySelector('.swatch'); if (s) s.style.background = 'linear-gradient(90deg,#4A148C,#7B1FA2,#9F2241)'; });
+    } catch(e){}
     try { loadGpePolys(); } catch(e){}
     try { const d = await fetchElecData('ayun'); GPE_SECCIONES = new Set(); for (const s in d){ const x = d[s]; if (x && x._gpe && !x.sin_datos) GPE_SECCIONES.add(String(s)); } } catch(e){ console.error('morena secciones', e); }
   }
@@ -2536,6 +2540,7 @@
   }
 
   function colorMCLugar(lugar) {
+    if (isMorena()) { const g = { 1:'#7A1230', 2:'#A83254', 3:'#CB7A90' }; return g[lugar] || '#EFD9E0'; }
     const m = { 1:'#E65100', 2:'#FF7043', 3:'#FFAB91' };
     return m[lugar] || '#FFE8DC';
   }
@@ -2565,6 +2570,17 @@
   };
 
   function colorMargenMC(m) {
+    if (isMorena()) {
+      if (m === 0)    return '#E8BCCA';
+      if (m >= 100)   return '#6E0E29';
+      if (m >= 50)    return '#8A1538';
+      if (m >= 20)    return '#AE3A5A';
+      if (m >= 1)     return '#D384A0';
+      if (m >= -19)   return '#CE93D8';
+      if (m >= -49)   return '#AB47BC';
+      if (m >= -99)   return '#7B1FA2';
+      return '#4A148C';
+    }
     if (m === 0)    return '#FFAB91';
     if (m >= 100)   return '#BF360C';
     if (m >= 50)    return '#E65100';
@@ -2865,7 +2881,7 @@
           if (isMorena() && (!d || !d._gpe)) return { fillOpacity: 0, strokeWeight: 0 };
           if (type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df') {
             return top10Data && top10Data[sec]
-              ? { fillColor: '#FF6D00', fillOpacity: 0.80, strokeColor: '#BF360C', strokeWeight: 1.5 }
+              ? { fillColor: isMorena() ? '#9F2241' : '#FF6D00', fillOpacity: 0.80, strokeColor: isMorena() ? '#6E0E29' : '#BF360C', strokeWeight: 1.5 }
               : { fillOpacity: 0, strokeWeight: 0 };
           }
           if (type === 'criticas') {
@@ -2874,7 +2890,7 @@
               : { fillOpacity: 0, strokeWeight: 0 };
           }
           if (!d || d.sin_datos) {
-            if (type === 'calor_mc') return { fillColor: '#FFE8DC', fillOpacity: 0.72, strokeColor: '#FFE8DC', strokeWeight: 1 };
+            if (type === 'calor_mc') return { fillColor: isMorena() ? '#EFD9E0' : '#FFE8DC', fillOpacity: 0.72, strokeColor: isMorena() ? '#EFD9E0' : '#FFE8DC', strokeWeight: 1 };
             if (['lugar1','lugar2','lugar3','lugar4','calor_margen','calor_participacion','calor_lista_nominal'].includes(type)) return { fillColor: '#4A4A4A', fillOpacity: 0.70, strokeColor: '#4A4A4A', strokeWeight: 0.5 };
             return { fillColor: '#BDBDBD', fillOpacity: 0.22, strokeColor: '#9E9E9E', strokeWeight: 0.5 };
           }
