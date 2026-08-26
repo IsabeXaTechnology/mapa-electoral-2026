@@ -458,6 +458,7 @@
       display: block; font-size: 11px; font-weight: 600; color: var(--text-2);
       text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px;
     }
+    .sec-num { position:absolute; transform:translate(-50%,-50%); font-family:'IBM Plex Sans',sans-serif; font-weight:700; font-size:11px; line-height:1; color:#9F2241; white-space:nowrap; pointer-events:none; text-shadow: -1.2px -1.2px 0 #fff, 1.2px -1.2px 0 #fff, -1.2px 1.2px 0 #fff, 1.2px 1.2px 0 #fff, 0 0 3px #fff, 0 0 3px #fff; }
 
     /* ── Pills ────────────────────────────────────────────────────────────── */
     .pill {
@@ -2012,6 +2013,39 @@
     else if (n === 12) { loadMobilizacion(); }
   }
 
+  // ── Etiquetas de número de sección (solo Morena Guadalupe) ──────────────────
+  let secLabelsOverlay = null;
+  function clearSeccionLabels(){ if (secLabelsOverlay){ try { secLabelsOverlay.setMap(null); } catch(e){} secLabelsOverlay = null; } }
+  function renderSeccionLabels(){
+    clearSeccionLabels();
+    try {
+      const L = GEO_LAYERS.SECCION;
+      if (!L || !L.data || !map || !google.maps) return;
+      const items = [];
+      L.data.forEach(feature => {
+        if (Number(feature.getProperty('MUNICIPIO')) !== 26) return;
+        const g = feature.getGeometry(); if (!g) return;
+        let sLat = 0, sLng = 0, n = 0;
+        g.forEachLatLng(ll => { sLat += ll.lat(); sLng += ll.lng(); n++; });
+        if (!n) return;
+        items.push({ lat: sLat / n, lng: sLng / n, text: String(feature.getProperty('SECCION')) });
+      });
+      if (!items.length) return;
+      class SecLabels extends google.maps.OverlayView {
+        constructor(its){ super(); this._items = its; this._div = null; this._spans = []; }
+        onAdd(){
+          const d = document.createElement('div'); d.style.position = 'absolute'; d.style.top = '0'; d.style.left = '0'; d.style.pointerEvents = 'none';
+          this._spans = this._items.map(it => { const s = document.createElement('div'); s.className = 'sec-num'; s.textContent = it.text; d.appendChild(s); return s; });
+          this._div = d; this.getPanes().overlayLayer.appendChild(d);
+        }
+        draw(){ const proj = this.getProjection(); if (!proj) return; for (let i = 0; i < this._items.length; i++){ const pt = proj.fromLatLngToDivPixel(new google.maps.LatLng(this._items[i].lat, this._items[i].lng)); if (pt){ this._spans[i].style.left = pt.x + 'px'; this._spans[i].style.top = pt.y + 'px'; } } }
+        onRemove(){ if (this._div){ this._div.parentNode && this._div.parentNode.removeChild(this._div); this._div = null; } this._spans = []; }
+      }
+      secLabelsOverlay = new SecLabels(items);
+      secLabelsOverlay.setMap(map);
+    } catch(e){ console.error('sec labels', e); }
+  }
+
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
   function toggleLayer(name, on) {
     const L = GEO_LAYERS[name];
@@ -2036,11 +2070,13 @@
           infoWindow.open(map);
         });
         const BASE = 'https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/';
-        L.data.loadGeoJson(BASE + name + '.geojson', {}, features => { console.log(name + ': ' + features.length + ' features'); });
+        L.data.loadGeoJson(BASE + name + '.geojson', {}, features => { console.log(name + ': ' + features.length + ' features'); if (name === 'SECCION' && isMorena()) renderSeccionLabels(); });
       }
       L.data.setMap(map);
+      if (name === 'SECCION' && isMorena()) renderSeccionLabels();
     } else {
       if (L.data) L.data.setMap(null);
+      if (name === 'SECCION') clearSeccionLabels();
     }
   }
 
@@ -2313,7 +2349,7 @@
     const tipo   = document.getElementById('sel-tipo').value;
     const estKey = document.getElementById('sel-estatus').value;
     const filtered = allData.filter(r => {
-      if (isMorena()) { if (!String(r.municipio || '').toLowerCase().includes('guadalupe')) return false; }
+      if (isMorena()) { if (!String(r.municipio || '').toLowerCase().includes('guadalupe')) return false; if (!gpePointInside(parseFloat(r.latitud), parseFloat(r.longitud))) return false; }
       else if (mun && r.municipio !== mun)           return false;
       if (tipo   && !r.tipo_casilla.startsWith(tipo)) return false;
       if (estKey && estatusKey(r.estatus) !== estKey)  return false;
@@ -2519,6 +2555,16 @@
     const g = feature.getGeometry(); if (!g) return false;
     g.forEachLatLng(ll => { if (inside) return; for (const poly of gpePolys){ if (google.maps.geometry && google.maps.geometry.poly.containsLocation(ll, poly)){ inside = true; break; } } });
     return inside;
+  }
+
+  function gpePointInside(lat, lng){
+    if (!(lat && lng) || isNaN(lat) || isNaN(lng)) return false;
+    if (gpePolys.length && google.maps.geometry){
+      const ll = new google.maps.LatLng(lat, lng);
+      for (const poly of gpePolys){ if (google.maps.geometry.poly.containsLocation(ll, poly)) return true; }
+      return false;
+    }
+    return (lat >= 23 && lat <= 28 && lng <= -98 && lng >= -101.5);
   }
 
   async function initMorenaView(){
