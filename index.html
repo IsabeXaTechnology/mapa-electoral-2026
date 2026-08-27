@@ -1096,6 +1096,7 @@
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','lugar3',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#4A148C)"></span><span class="li-name">Resultados 3 Lugar</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','lugar4',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#E65100,#880E4F,#4A148C)"></span><span class="li-name">Resultados 4 Lugar</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','calor_margen',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#4A148C,#FFCCBC,#BF360C)"></span><span class="li-name">Mapa de Calor por votación</span></div>
+            <div class="li" data-sw="1" style="display:none"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','switchers',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#1565C0,#2E7D32,#C62828,#F9A825)"></span><span class="li-name">Switchers</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','calor_participacion',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#1B5E20,#F9A825,#B71C1C)"></span><span class="li-name">Participación Ciudadana</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','calor_lista_nominal',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:linear-gradient(90deg,#4E342E,#D4A067,#FFF9C4)"></span><span class="li-name">Lista Nominal</span></div>
             <div class="li"><label class="tog"><input type="checkbox" onchange="toggleElectoralLayer('ayun','top10_secciones',this.checked)"><span class="tog-sl"></span></label><span class="swatch" style="background:#FF6D00"></span><span class="li-name">TOP 10 por Municipio</span></div>
@@ -2016,13 +2017,13 @@
   // ── Etiquetas de número de sección (solo Morena Guadalupe) ──────────────────
   let secLabelsOverlay = null;
   function clearSeccionLabels(){ if (secLabelsOverlay){ try { secLabelsOverlay.setMap(null); } catch(e){} secLabelsOverlay = null; } }
-  function renderSeccionLabels(){
+  function renderSeccionLabels(srcData){
     clearSeccionLabels();
     try {
-      const L = GEO_LAYERS.SECCION;
-      if (!L || !L.data || !map || !google.maps) return;
+      const data = srcData || (GEO_LAYERS.SECCION && GEO_LAYERS.SECCION.data);
+      if (!data || !map || !google.maps) return;
       const items = [];
-      L.data.forEach(feature => {
+      data.forEach(feature => {
         if (Number(feature.getProperty('MUNICIPIO')) !== 26) return;
         const g = feature.getGeometry(); if (!g) return;
         let sLat = 0, sLng = 0, n = 0;
@@ -2044,6 +2045,17 @@
       secLabelsOverlay = new SecLabels(items);
       secLabelsOverlay.setMap(map);
     } catch(e){ console.error('sec labels', e); }
+  }
+  function activeSectionData(){
+    try { const sw = ELEC_LAYERS['ayun_switchers']; if (sw && sw.getMap && sw.getMap()) return sw; } catch(e){}
+    const L = GEO_LAYERS.SECCION;
+    if (L && L.data && L.data.getMap && L.data.getMap()) return L.data;
+    return null;
+  }
+  function refreshSectionLabels(){
+    if (!isMorena()) { clearSeccionLabels(); return; }
+    const src = activeSectionData();
+    if (src) renderSeccionLabels(src); else clearSeccionLabels();
   }
 
   // ── GeoJSON layers ───────────────────────────────────────────────────────────
@@ -2070,13 +2082,13 @@
           infoWindow.open(map);
         });
         const BASE = 'https://raw.githubusercontent.com/IsabeXaTechnology/mapa-electoral-2026/main/layers/';
-        L.data.loadGeoJson(BASE + name + '.geojson', {}, features => { console.log(name + ': ' + features.length + ' features'); if (name === 'SECCION' && isMorena()) renderSeccionLabels(); });
+        L.data.loadGeoJson(BASE + name + '.geojson', {}, features => { console.log(name + ': ' + features.length + ' features'); if (name === 'SECCION' && isMorena()) refreshSectionLabels(); });
       }
       L.data.setMap(map);
-      if (name === 'SECCION' && isMorena()) renderSeccionLabels();
+      if (name === 'SECCION' && isMorena()) refreshSectionLabels();
     } else {
       if (L.data) L.data.setMap(null);
-      if (name === 'SECCION') clearSeccionLabels();
+      if (name === 'SECCION') refreshSectionLabels();
     }
   }
 
@@ -2457,6 +2469,9 @@
 
   // ── C · Análisis Electoral 2024 ─────────────────────────────────────────────
 
+  const SWITCHERS_GPE = {"147":{"a":"PRI","b":null,"c":null,"x":"amarillo"},"526":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"527":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"528":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"529":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"530":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"531":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"532":{"a":"PRI","b":null,"c":"MC","x":"amarillo"},"533":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"534":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"535":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"536":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"537":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"538":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"539":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"540":{"a":"PAN","b":"MORENA","c":"MC","x":"azul"},"541":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"542":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"543":{"a":"PAN","b":"MORENA","c":"MORENA","x":"verde"},"544":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"545":{"a":"INDEP","b":"PAN","c":"MC","x":"azul"},"546":{"a":"PRI","b":"PAN","c":"MORENA","x":"azul"},"547":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"548":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"549":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"550":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"551":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"552":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"553":{"a":"INDEP","b":"PAN","c":"MC","x":"azul"},"554":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"555":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"556":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"557":{"a":"INDEP","b":"PAN","c":"MC","x":"azul"},"558":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"559":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"560":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"561":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"562":{"a":"INDEP","b":"PRI","c":"MC","x":"azul"},"563":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"564":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"565":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"566":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"567":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"568":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"569":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"570":{"a":"INDEP","b":"PRI","c":"MC","x":"azul"},"571":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"572":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"573":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"574":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"575":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"576":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"577":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"578":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"579":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"580":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"581":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"582":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"583":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"584":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"585":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"586":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"587":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"588":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"589":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"590":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"591":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"592":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"593":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"594":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"595":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"596":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"597":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"598":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"599":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"600":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"601":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"602":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"603":{"a":"PAN","b":"PRI","c":"PAN","x":"verde"},"604":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"606":{"a":"PRI","b":"PAN","c":"MORENA","x":"azul"},"607":{"a":"PAN","b":"PAN","c":null,"x":"amarillo"},"608":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"609":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"610":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"611":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"612":{"a":"PRI","b":"MORENA","c":"MORENA","x":"verde"},"613":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"614":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"615":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"616":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"617":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"618":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"619":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"620":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"621":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"622":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"624":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"625":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"626":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"627":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"628":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"629":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"630":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"631":{"a":"PRI","b":"PAN","c":"PAN","x":"verde"},"632":{"a":"INDEP","b":"PAN","c":"MC","x":"azul"},"633":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"634":{"a":"INDEP","b":"MORENA","c":"PAN","x":"azul"},"635":{"a":"INDEP","b":"MORENA","c":"MORENA","x":"verde"},"636":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"637":{"a":"INDEP","b":"PAN","c":"MC","x":"azul"},"638":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"639":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"640":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"641":{"a":"INDEP","b":"PAN","c":"MC","x":"azul"},"642":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"643":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"644":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"645":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"646":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"647":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"649":{"a":"PRI","b":"PAN","c":"MORENA","x":"azul"},"650":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"651":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"653":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"654":{"a":"INDEP","b":"PAN","c":"MORENA","x":"azul"},"655":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"656":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"657":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"658":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"659":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"660":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"661":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"662":{"a":"INDEP","b":"PRI","c":"PAN","x":"azul"},"663":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"664":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"665":{"a":"INDEP","b":"PAN","c":"PAN","x":"verde"},"666":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"667":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"668":{"a":"PAN","b":"PAN","c":"MORENA","x":"verde"},"669":{"a":"INDEP","b":"PAN","c":"MC","x":"azul"},"670":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"671":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"672":{"a":"PRI","b":"MORENA","c":"MORENA","x":"verde"},"673":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"674":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"675":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"676":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"677":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"678":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"679":{"a":"PRI","b":"MORENA","c":"MORENA","x":"verde"},"680":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"681":{"a":"INDEP","b":"PAN","c":"MC","x":"azul"},"682":{"a":"PRI","b":"MORENA","c":"MORENA","x":"verde"},"683":{"a":"PRI","b":"PAN","c":"MORENA","x":"azul"},"684":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"685":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"686":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"687":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"688":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"689":{"a":"PRI","b":"MORENA","c":"MORENA","x":"verde"},"690":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"691":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"692":{"a":"PAN","b":"MORENA","c":"MC","x":"azul"},"693":{"a":"PRI","b":"MORENA","c":"MC","x":"azul"},"694":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"695":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"696":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"697":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"698":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"699":{"a":"PAN","b":"PAN","c":null,"x":"amarillo"},"700":{"a":"PAN","b":"PAN","c":null,"x":"amarillo"},"701":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"702":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"703":{"a":"PRI","b":"PRI","c":null,"x":"amarillo"},"704":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"705":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"706":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"707":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"708":{"a":"PAN","b":"PRI","c":"MORENA","x":"azul"},"709":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"710":{"a":"PAN","b":"PAN","c":"MORENA","x":"verde"},"711":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"712":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"713":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"714":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"715":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"716":{"a":"PAN","b":"PRI","c":"MORENA","x":"azul"},"717":{"a":"PAN","b":"PAN","c":"MORENA","x":"verde"},"718":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"719":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"720":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"721":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"722":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"723":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"724":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"725":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"726":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"727":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"728":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"729":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"730":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"731":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"732":{"a":"PAN","b":"PAN","c":"MORENA","x":"verde"},"733":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"734":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"735":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"736":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"737":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"738":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"739":{"a":"PAN","b":"PAN","c":null,"x":"amarillo"},"740":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"741":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"742":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"743":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"744":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"745":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"746":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"747":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"748":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"749":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"750":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"751":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"752":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"753":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"754":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"755":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"756":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"757":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"758":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"759":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"760":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"761":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"762":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"763":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"764":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"765":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"766":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"767":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"768":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"769":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"770":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"771":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"772":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"773":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"774":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"775":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"776":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"777":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"778":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"779":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"780":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"781":{"a":"PAN","b":"PAN","c":"PAN","x":"rojo"},"782":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"783":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"784":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"785":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"786":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"787":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"788":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"789":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"790":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"791":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"792":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"793":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"794":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"795":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"796":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"797":{"a":"PAN","b":"PRI","c":"MORENA","x":"azul"},"798":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"799":{"a":"PAN","b":"PRI","c":"MC","x":"azul"},"800":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"801":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"802":{"a":"INDEP","b":"MORENA","c":"MC","x":"azul"},"803":{"a":"INDEP","b":"PRI","c":"MC","x":"azul"},"804":{"a":"PRI","b":"PRI","c":"MC","x":"verde"},"2695":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"2696":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"2697":{"a":"PRI","b":null,"c":"MC","x":"amarillo"},"2698":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"2699":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"2700":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"2701":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"2702":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"2703":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"2704":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"2705":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"2706":{"a":"PRI","b":"PAN","c":"MC","x":"azul"},"2707":{"a":"PAN","b":"PAN","c":"MC","x":"verde"},"2708":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"2709":{"a":"PRI","b":"PRI","c":"MORENA","x":"verde"},"2733":{"a":"PRI","b":null,"c":null,"x":"amarillo"},"2898":{"a":null,"b":"PAN","c":"MORENA","x":"amarillo"},"2899":{"a":null,"b":"PAN","c":"PAN","x":"amarillo"},"2900":{"a":null,"b":"PAN","c":"MC","x":"amarillo"},"2901":{"a":null,"b":"PAN","c":"PAN","x":"amarillo"},"2902":{"a":null,"b":"PAN","c":"MC","x":"amarillo"},"2903":{"a":null,"b":"PAN","c":"MC","x":"amarillo"}};
+  function colorSwitchers(x){ return {rojo:'#C62828',verde:'#2E7D32',azul:'#1565C0',amarillo:'#F9A825'}[x] || '#9E9E9E'; }
+
   const ELEC_TABS = {
     ayun:       'ayuntamientos',
     dip_loc:    'diputados_locales',
@@ -2573,6 +2588,7 @@
       document.querySelectorAll('input[onchange*="calor_mc"], input[onchange*="top10_"]').forEach(inp => { const li = inp.closest('.li'); const s = li && li.querySelector('.swatch'); if (s) s.style.background = '#9F2241'; });
       document.querySelectorAll('input[onchange*="calor_margen"]').forEach(inp => { const li = inp.closest('.li'); const s = li && li.querySelector('.swatch'); if (s) s.style.background = 'linear-gradient(90deg,#4A148C,#7B1FA2,#9F2241)'; });
     } catch(e){}
+    try { document.querySelectorAll('[data-sw="1"]').forEach(el => { el.style.display = ''; }); } catch(e){}
     try { loadGpePolys(); } catch(e){}
     try { const reMuni = () => { try { if (GEO_LAYERS.MUNICIPIO && GEO_LAYERS.MUNICIPIO.data) GEO_LAYERS.MUNICIPIO.data.setStyle(GEO_LAYERS.MUNICIPIO.styleFn); } catch(e){} }; reMuni(); setTimeout(reMuni, 1200); setTimeout(reMuni, 2500); } catch(e){}
     try { const d = await fetchElecData('ayun'); GPE_SECCIONES = new Set(); for (const s in d){ const x = d[s]; if (x && x._gpe && !x.sin_datos) GPE_SECCIONES.add(String(s)); } } catch(e){ console.error('morena secciones', e); }
@@ -2882,6 +2898,7 @@
         Color: <span style="display:inline-block;background:${colL};width:14px;height:10px;border-radius:2px;vertical-align:middle;border:1px solid #ccc"></span>
       </div>`;
     }
+    if (type === 'switchers') { const sw = SWITCHERS_GPE[sec] || {}; const _lab = {azul:'3 partidos distintos (alta rotación)',verde:'2 partidos distintos',rojo:'Mismo partido las 3 (bastión)',amarillo:'Sección nueva / redistritación'}[sw.x] || '—'; return `<div style="padding:6px;font-size:12px;line-height:1.7">${base}<hr style="margin:4px 0"><b>Switchers · Historial Ayuntamiento</b><br>2018: <b>${sw.a||'—'}</b><br>2021: <b>${sw.b||'—'}</b><br>2024: <b>${sw.c||'—'}</b><br><b style="color:${colorSwitchers(sw.x)}">${_lab}</b></div>`; }
     return `<div style="padding:6px;font-size:12px">${base}</div>`;
   }
 
@@ -2904,8 +2921,10 @@
 
   async function toggleElectoralLayer(tab, type, on) {
     const key = tab + '_' + type;
+    if (type === 'switchers' && !isMorena()) { if (ELEC_LAYERS[key]) ELEC_LAYERS[key].setMap(null); return; }
     if (!on) {
       if (ELEC_LAYERS[key]) ELEC_LAYERS[key].setMap(null);
+      if (type === 'switchers') refreshSectionLabels();
       return;
     }
     try {
@@ -2931,6 +2950,7 @@
           const sec = String(feature.getProperty('SECCION'));
           const d   = elecData[sec];
           if (isMorena() && Number(feature.getProperty('MUNICIPIO')) !== 26) return { fillOpacity: 0, strokeWeight: 0 };
+          if (type === 'switchers') { const sw = SWITCHERS_GPE[sec]; return sw ? { fillColor: colorSwitchers(sw.x), fillOpacity: 0.72, strokeColor: colorSwitchers(sw.x), strokeWeight: 1 } : { fillOpacity: 0, strokeWeight: 0 }; }
           if (type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df') {
             return top10Data && top10Data[sec]
               ? { fillColor: isMorena() ? '#9F2241' : '#FF6D00', fillOpacity: 0.80, strokeColor: isMorena() ? '#6E0E29' : '#BF360C', strokeWeight: 1.5 }
@@ -2963,7 +2983,7 @@
           if ((type === 'top10_secciones' || type === 'top10_distrito' || type === 'top10_df')
               && !(top10Data && top10Data[sec])) return;
           if (type === 'criticas' && !isCritica(elecData[sec] || {})) return;
-          const REGULAR_TYPES = ['calor_mc','lugar1','lugar2','lugar3','lugar4','calor_margen','calor_participacion','calor_lista_nominal'];
+          const REGULAR_TYPES = ['calor_mc','lugar1','lugar2','lugar3','lugar4','calor_margen','calor_participacion','calor_lista_nominal','switchers'];
           if (REGULAR_TYPES.includes(type) && isSpecialActive(tab, sec)) return;
           const d   = elecData[sec] || {};
           infoWindow.setContent(buildElecPopup(sec, d, type, tab));
@@ -2973,6 +2993,7 @@
         ELEC_LAYERS[key] = layer;
       }
       ELEC_LAYERS[key].setMap(map);
+      if (type === 'switchers' && isMorena()) refreshSectionLabels();
     } catch(err) {
       console.error('toggleElectoralLayer error [' + tab + '/' + type + ']:', err);
       alert('Error al cargar la capa electoral.\nDetalle: ' + err.message + '\n\nRevisa la consola del navegador (F12) para más información.');
