@@ -2093,7 +2093,7 @@
     if (m.fav === 'low') lvl = 6 - lvl;         // valor bajo = favorable = verde
     return SOCIO_PAL_RG[lvl - 1];
   }
-  function rezLabel(v){ if (v < 1.5) return 'Muy bajo'; if (v < 2.5) return 'Bajo'; if (v < 3.5) return 'Medio'; if (v < 4.5) return 'Alto'; return 'Muy alto'; }
+  function rezLabel(v){ if (v <= 1.5) return 'Muy bajo'; if (v <= 2.0) return 'Bajo'; if (v <= 2.5) return 'Medio'; if (v <= 3.0) return 'Alto'; return 'Muy alto'; }
 
   function socioPopup(name){
     const rec = SOCIO_DATA.d[name];
