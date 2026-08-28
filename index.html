@@ -2108,9 +2108,9 @@
       '<div style="font-weight:700;color:#9F2241;font-size:13px;margin-bottom:5px">' + name + '</div>' +
       '<table style="font-size:12px;width:100%;border-collapse:collapse">' +
       '<tr' + hi('nse') + '><td style="' + L + '">Nivel socioec.</td><td><b>' + rezLabel(rez) + '</b> <span style="color:#999">(rezago ' + rez.toFixed(2) + ')</span></td></tr>' +
-      '<tr' + hi('escol') + '><td style="' + L + '">Escolaridad</td><td>' + escol.toFixed(1) + ' años</td></tr>' +
-      '<tr' + hi('internet') + '><td style="' + L + '">Internet</td><td>' + net.toFixed(0) + '% viviendas</td></tr>' +
-      '<tr' + hi('auto') + '><td style="' + L + '">Automóvil</td><td>' + auto.toFixed(0) + '% viviendas</td></tr>' +
+      '<tr' + hi('escol') + '><td style="' + L + '">Escolaridad</td><td>' + escol.toFixed(2) + ' años</td></tr>' +
+      '<tr' + hi('internet') + '><td style="' + L + '">Internet</td><td>' + net.toFixed(1) + '% viviendas</td></tr>' +
+      '<tr' + hi('auto') + '><td style="' + L + '">Automóvil</td><td>' + auto.toFixed(1) + '% viviendas</td></tr>' +
       '<tr' + hi('edad') + '><td style="' + L + '">Edad promedio</td><td>' + edad.toFixed(1) + ' años</td></tr>' +
       '</table>' +
       '<div style="margin-top:6px;font-size:11px;color:#57534e">Población ' + pop.toLocaleString() + ' · distribución por edad</div>' +
@@ -2156,7 +2156,7 @@
   function showSocioLegend(metric){
     hideSocioLegend();
     const m = SOCIO_METRICS[metric]; const cuts = SOCIO_DATA.th[m.thk];
-    const fmt = v => (m.thk === 'escol' || m.thk === 'edad') ? v.toFixed(1) : (m.thk === 'rez' ? v.toFixed(1) : Math.round(v));
+    const fmt = v => m.thk === 'escol' ? v.toFixed(2) : (m.thk === 'edad' || m.thk === 'rez') ? v.toFixed(1) : v.toFixed(1);
     const unit = (metric === 'internet' || metric === 'auto') ? '%' : (metric === 'escol' || metric === 'edad') ? ' años' : '';
     // bandas ascendentes por valor: (-∞,c0),(c0,c1),(c1,c2),(c2,c3),(c3,∞)
     const rows = [];
