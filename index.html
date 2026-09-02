@@ -1469,6 +1469,7 @@
     <!-- Panel 7: Agenda -->
     <div class="panel" id="panel-7">
       <div class="lg-title">Agenda de Eventos</div>
+      <div id="ag-kpi-fixed">
       <div class="kpi-grid-3" style="margin-top:6px">
         <div class="kpi-mini"><div class="kpi-mini-lbl">Brigadas</div><div class="kpi-mini-val" id="ag-k-brigada" style="color:#E65100">—</div></div>
         <div class="kpi-mini"><div class="kpi-mini-lbl">J. Vecinales</div><div class="kpi-mini-val" id="ag-k-junta_vecinal" style="color:#00897B">—</div></div>
@@ -1484,6 +1485,8 @@
         <div style="flex:2"></div>
         <div class="kpi-mini"><div class="kpi-mini-lbl">Total</div><div class="kpi-mini-val" id="ag-k-total" style="color:#e2e8f0">—</div></div>
       </div>
+      </div>
+      <div id="ag-kpi-dyn" style="display:none"></div>
 
       <div class="flbl" style="margin-top:8px">Filtro de fechas</div>
       <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
@@ -3789,6 +3792,16 @@
 
   function makeAgendaIcon(type) {
     const cfg = AGENDA_TYPES[type] || AGENDA_TYPES.otro;
+    if (typeof isMorena === 'function' && isMorena()) {
+      // Pin de color por tipo con el ÍCONO (emoji) del tipo dentro (estilo chips del sub-cuadro)
+      const emoji = cfg.emoji || '📍';
+      const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="44" viewBox="0 0 34 44"><path d="M17 1C8.2 1 1 8.2 1 17c0 11.5 16 25.5 16 25.5S33 28.5 33 17C33 8.2 25.8 1 17 1z" fill="' + cfg.color + '" stroke="#fff" stroke-width="1.8"/><circle cx="17" cy="16.5" r="11" fill="#fff"/><text x="17" y="17" font-size="14" text-anchor="middle" dominant-baseline="central">' + emoji + '</text></svg>';
+      return {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+        scaledSize: new google.maps.Size(34, 44),
+        anchor: new google.maps.Point(17, 44)
+      };
+    }
     const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="36" viewBox="0 0 30 36"><path d="M15 0C6.7 0 0 6.7 0 15c0 10 15 21 15 21s15-11 15-21C30 6.7 23.3 0 15 0z" fill="' + cfg.color + '" stroke="#fff" stroke-width="1.5"/><rect x="8" y="8" width="14" height="14" rx="2" fill="none" stroke="#fff" stroke-width="1.5"/><line x1="11" y1="8" x2="11" y2="6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="19" y1="8" x2="19" y2="6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="12" x2="22" y2="12" stroke="#fff" stroke-width="1.5"/></svg>';
     return {
       url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
@@ -3862,6 +3875,18 @@
 
   function renderAgendaKPIs(kpis) {
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = (val || 0).toLocaleString('es-MX'); };
+    if (typeof isMorena === 'function' && isMorena()) {
+      const fixed = document.getElementById('ag-kpi-fixed'); if (fixed) fixed.style.display = 'none';
+      const dyn = document.getElementById('ag-kpi-dyn'); if (!dyn) return;
+      dyn.style.display = '';
+      const counts = {}; (agendaData || []).forEach(ev => { counts[ev.type] = (counts[ev.type] || 0) + 1; });
+      const keys = Object.keys(AGENDA_TYPES).filter(k => counts[k]).sort((a, b) => counts[b] - counts[a]);
+      let h = '<div style="display:flex;flex-wrap:wrap;gap:5px">';
+      keys.forEach(k => { const c = AGENDA_TYPES[k]; h += '<div style="flex:0 0 auto;min-width:82px;background:#0f172a;border:1px solid ' + c.color + '66;border-left:3px solid ' + c.color + ';border-radius:7px;padding:4px 8px"><div style="font-size:9px;color:#94a3b8;white-space:nowrap">' + c.emoji + ' ' + c.label + '</div><div style="font-size:17px;font-weight:800;color:' + c.color + '">' + counts[k].toLocaleString('es-MX') + '</div></div>'; });
+      h += '</div><div style="margin-top:7px;font-size:12px;color:#cbd5e1">Total de eventos en agenda: <b style="color:#fff;font-size:14px">' + (agendaData || []).length.toLocaleString('es-MX') + '</b></div>';
+      dyn.innerHTML = h;
+      return;
+    }
     set('ag-k-brigada',          kpis.brigada);
     set('ag-k-junta_vecinal',    kpis.junta_vecinal);
     set('ag-k-evento',           kpis.evento);
@@ -3876,7 +3901,12 @@
     const cont = document.getElementById('agenda-filter-btns');
     if (!cont) return;
     cont.innerHTML = '';
-    Object.entries(AGENDA_TYPES).forEach(([k, cfg]) => {
+    let entries = Object.entries(AGENDA_TYPES);
+    if (typeof isMorena === 'function' && isMorena()) {
+      const present = {}; (agendaData || []).forEach(ev => { present[ev.type] = 1; });
+      entries = entries.filter(([k]) => present[k]);
+    }
+    entries.forEach(([k, cfg]) => {
       const btn = document.createElement('button');
       const active = agendaFilters.has(k);
       btn.style.cssText = 'padding:4px 8px;border-radius:12px;border:1px solid ' + cfg.color + ';background:' +
